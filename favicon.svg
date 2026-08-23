@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="100%" height="100%">
+  <rect width="64" height="64" rx="16" fill="#0A1128" />
+  
+  <!-- "c" in White -->
+  <path d="M23 20 C21.5 17 18.5 15 14.5 15 C8.5 15 4 20.5 4 27.5 C4 34.5 8.5 40 14.5 40 C19 40 22.5 37 24 33" 
+        fill="none" stroke="#FFFFFF" stroke-width="4.8" stroke-linecap="round" />
+  
+  <!-- "m" in Electric Blue -->
+  <path d="M24 33 C26 29 29 15 36.5 15 C41.5 15 44.5 19 46 23.5 C47.5 18 52 15 57 15 C63.5 15 67 20 67 27.5 L67 40 M46 25 L46 40 M28 24 L28 40" 
+        fill="none" stroke="#38BDF8" stroke-width="4.8" stroke-linecap="round" stroke-linejoin="round" transform="scale(0.85) translate(4, 4)" />
+
+  <!-- Play Triangle -->
+  <polygon points="53,16 61,21 53,26" fill="#38BDF8" />
+</svg>

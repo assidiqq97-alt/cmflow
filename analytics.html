@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="fr" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analytics & Rapport Mensuel Multi-Canal — CMFlow</title>
+  <meta name="description" content="Tableau de bord statistique complet et générateur de rapport PDF pour Community Managers et Agences.">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #F1F5F9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #CBD5E1;
+      border-radius: 999px;
+    }
+    @media print {
+      body {
+        background: white !important;
+      }
+      #sidebar, header, #app-toast, .no-print {
+        display: none !important;
+      }
+      .main-content {
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-full bg-[#F8FAFC] text-[#0F172A] antialiased flex selection:bg-[#F94F06]/20 selection:text-[#F94F06]">
+
+  <!-- Texture de lumière d'arrière-plan -->
+  <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden no-print">
+    <div class="absolute top-0 right-1/4 w-[600px] h-[600px] bg-gradient-to-br from-blue-100/40 via-purple-50/20 to-transparent rounded-full blur-3xl"></div>
+    <div class="absolute -bottom-32 left-1/3 w-[500px] h-[500px] bg-gradient-to-tr from-orange-100/30 via-amber-50/20 to-transparent rounded-full blur-3xl"></div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="app-toast" class="fixed bottom-6 right-6 z-50 bg-[#0F172A]/95 backdrop-blur-xl text-white px-4 py-3 rounded-2xl shadow-2xl border border-slate-700/80 text-xs sm:text-sm font-semibold flex items-center gap-2.5 transition-all duration-300 transform translate-y-20 opacity-0 pointer-events-none no-print">
+    <svg class="w-4 h-4 text-[#F94F06]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+    </svg>
+    <span id="toast-text">Message</span>
+  </div>
+
+  <!-- SIDEBAR (#0F172A) -->
+  <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-[#0F172A] text-white flex flex-col justify-between transition-transform duration-300 ease-out border-r border-slate-800/80 -translate-x-full lg:translate-x-0 no-print">
+    <div class="overflow-y-auto">
+      <div class="p-5 border-b border-slate-800/60 flex items-center justify-between">
+        <a href="dashboard.html" class="inline-flex items-center gap-2.5">
+          <img src="images/logo-white.svg" alt="CMFlow" class="h-6 w-auto object-contain">
+          <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-[#F94F06]/20 text-[#F94F06] border border-[#F94F06]/30">PRO</span>
+        </a>
+        <button id="close-sidebar-btn" class="lg:hidden text-slate-400 hover:text-white p-1 cursor-pointer">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+
+      <!-- Sélecteur de Marque & Workspace -->
+      <div class="p-3.5 relative">
+        <div class="text-[9px] font-extrabold uppercase tracking-wider text-slate-400 px-2 block mb-1.5 flex items-center justify-between">
+          <span>Espace Client Actif</span>
+          <span class="text-emerald-400 flex items-center gap-1 font-bold">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> Live
+          </span>
+        </div>
+
+        <button
+          type="button"
+          id="client-dropdown-btn"
+          class="w-full flex items-center justify-between p-2.5 rounded-2xl bg-slate-800/80 hover:bg-slate-800 border border-slate-700/70 hover:border-slate-600 transition-all text-left group shadow-xs cursor-pointer"
+        >
+          <div class="flex items-center gap-2.5 min-w-0">
+            <div class="relative shrink-0">
+              <img
+                id="active-client-avatar"
+                src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=200&auto=format&fit=crop&q=80"
+                alt="Avatar"
+                class="active-ws-avatar w-8 h-8 rounded-xl object-cover ring-2 ring-[#0066FF]/40"
+              >
+              <span id="active-client-flag" class="active-ws-flag absolute -bottom-1 -right-1 text-[10px] bg-slate-900 rounded-full px-0.5 border border-slate-700">
+                🇸🇳
+              </span>
+            </div>
+            <div class="min-w-0 flex-1">
+              <div id="active-client-name" class="active-ws-name text-xs font-bold text-white truncate group-hover:text-sky-300 transition-colors">
+                Teranga Gourmet
+              </div>
+              <div id="active-client-cat" class="active-ws-cat text-[10px] text-slate-400 truncate">
+                Haute Gastronomie & Traiteur
+              </div>
+            </div>
+          </div>
+          <svg class="w-4 h-4 text-slate-400 group-hover:text-white shrink-0 ml-1 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+
+        <div id="client-dropdown-menu" class="hidden absolute top-full left-3.5 right-3.5 mt-2 bg-slate-900/95 backdrop-blur-xl border border-slate-700/80 rounded-3xl shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 duration-150">
+          <div class="text-[10px] font-bold text-slate-400 px-3 py-1.5 uppercase tracking-wider flex items-center justify-between">
+            <span>Changer de Workspace</span>
+            <span class="text-[9px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full font-semibold">3 marques</span>
+          </div>
+          <div id="client-list-container" class="max-h-56 overflow-y-auto space-y-1 pr-1">
+            <!-- Injecté par workspace-state.js -->
+          </div>
+        </div>
+      </div>
+
+      <nav class="px-3 space-y-1 mt-1">
+        <a href="dashboard.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span>Calendrier & Queue</span>
+        </a>
+
+        <a href="clients.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span>Espaces Clients</span>
+        </a>
+
+        <a href="media.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          <span>Médiathèque Assets</span>
+        </a>
+
+        <a href="inbox.html" class="flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+          <div class="flex items-center gap-3">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <span>Inbox Unifiée</span>
+          </div>
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#10B981] opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-[#10B981]"></span>
+          </span>
+        </a>
+
+        <a href="startpage.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          <span>Start Page (Bio)</span>
+        </a>
+
+        <a href="analytics.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold bg-[#F94F06] text-white shadow-[0_8px_20px_-4px_rgba(249,79,6,0.35)] transition-all">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          <span>Analytics & Rapports</span>
+        </a>
+
+        <a href="validation.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span>Portail Validation</span>
+        </a>
+
+        <a href="billing.html" class="flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+          <div class="flex items-center gap-3">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+            <span>Facturation & Forfaits</span>
+          </div>
+          <span class="bg-[#1E90FF]/15 text-[#1E90FF] border border-[#1E90FF]/30 px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-tight">
+            Wave
+          </span>
+        </a>
+
+        <a href="channels.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+          <span>Canaux sociaux</span>
+        </a>
+
+        <a href="settings.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <span>Paramètres Agence</span>
+        </a>
+      </nav>
+    </div>
+
+    <div class="p-3.5 border-t border-slate-800/70 bg-slate-900/60">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#0066FF] to-sky-400 flex items-center justify-center font-black text-xs text-white">AD</div>
+        <div>
+          <div class="text-xs font-bold text-white">Awa Diop</div>
+          <div class="text-[10px] text-slate-400">Lead CM · Dakar 🇸🇳</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <div id="sidebar-backdrop" class="fixed inset-0 bg-black/60 z-30 hidden backdrop-blur-xs no-print"></div>
+
+  <!-- MAIN WRAPPER -->
+  <div class="flex-1 flex flex-col min-w-0 lg:pl-64 z-10 min-h-screen overflow-y-auto main-content">
+    
+    <!-- Topbar -->
+    <header class="sticky top-0 z-30 backdrop-blur-xl bg-white/80 border-b border-slate-200/60 px-4 sm:px-8 py-3.5 flex items-center justify-between gap-3 no-print">
+      <div class="flex items-center gap-3">
+        <button id="open-sidebar-btn" class="lg:hidden p-2 rounded-xl text-slate-700 bg-slate-100 cursor-pointer">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+        </button>
+        <div class="flex items-center gap-2 text-sm sm:text-base font-extrabold text-[#0F172A]">
+          <span class="text-slate-400 font-medium">CMFlow</span>
+          <span class="text-slate-300">/</span>
+          <span>Analytics &amp; Rapport Mensuel</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2.5">
+        <button type="button" onclick="triggerPdfExport()" class="px-4 py-2 bg-[#F94F06] hover:bg-[#e04605] text-white text-xs font-black rounded-xl shadow-lg shadow-orange-500/25 active:scale-[0.98] transition-all cursor-pointer flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          <span id="btn-pdf-label">Télécharger le Rapport PDF</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Corps Principal (10 Sections Dynamiques) -->
+    <main class="p-4 sm:p-6 lg:p-8 space-y-6 max-w-7xl">
+      
+      <!-- En-tête Rapport & Client -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-slate-200/80">
+        <div>
+          <div class="flex items-center gap-2.5 flex-wrap">
+            <h1 class="text-xl sm:text-2xl font-black text-[#0F172A]">
+              Analytics &amp; Rapport Mensuel
+            </h1>
+            <span class="px-3 py-1 rounded-full text-xs font-bold bg-orange-50 text-[#F94F06] border border-orange-200">
+              Teranga Gourmet 🇸🇳
+            </span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-500 mt-1">Période : <strong>Août 2026 (30 Derniers Jours)</strong> · Analyse de performance ROI par canal.</p>
+        </div>
+      </div>
+
+      <!-- =========================================================================
+          BARRE DE SÉLECTION MULTI-PLATEFORME (ONGLETS DYNAMIQUES)
+          ========================================================================= -->
+      <div class="bg-white/90 backdrop-blur-md p-2 rounded-2xl border border-slate-200/80 shadow-2xs no-print">
+        <div class="flex items-center gap-1.5 overflow-x-auto text-xs font-bold text-slate-600">
+          
+          <button
+            type="button"
+            id="tab-all"
+            onclick="setPlatform('all')"
+            class="platform-tab flex items-center gap-2 px-4 py-2.5 rounded-xl transition-all whitespace-nowrap cursor-pointer bg-[#F94F06] text-white font-black shadow-md shadow-orange-500/25"
+          >
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            <span>Vue Globale (Tous les réseaux)</span>
+          </button>
+
+          <button
+            type="button"
+            id="tab-instagram"
+            onclick="setPlatform('instagram')"
+            class="platform-tab flex items-center gap-2 px-4 py-2.5 rounded-xl transition-all whitespace-nowrap cursor-pointer hover:bg-slate-100 hover:text-slate-900"
+          >
+            <span>📸</span>
+            <span>Instagram</span>
+          </button>
+
+          <button
+            type="button"
+            id="tab-facebook"
+            onclick="setPlatform('facebook')"
+            class="platform-tab flex items-center gap-2 px-4 py-2.5 rounded-xl transition-all whitespace-nowrap cursor-pointer hover:bg-slate-100 hover:text-slate-900"
+          >
+            <span>📘</span>
+            <span>Facebook</span>
+          </button>
+
+          <button
+            type="button"
+            id="tab-tiktok"
+            onclick="setPlatform('tiktok')"
+            class="platform-tab flex items-center gap-2 px-4 py-2.5 rounded-xl transition-all whitespace-nowrap cursor-pointer hover:bg-slate-100 hover:text-slate-900"
+          >
+            <span>🎵</span>
+            <span>TikTok</span>
+          </button>
+
+          <button
+            type="button"
+            id="tab-linkedin"
+            onclick="setPlatform('linkedin')"
+            class="platform-tab flex items-center gap-2 px-4 py-2.5 rounded-xl transition-all whitespace-nowrap cursor-pointer hover:bg-slate-100 hover:text-slate-900"
+          >
+            <span>💼</span>
+            <span>LinkedIn</span>
+          </button>
+
+        </div>
+      </div>
+
+      <!-- =========================================================================
+          SECTION 1 : VUE D'ENSEMBLE (6 CARTES KPIS CLÉS)
+          ========================================================================= -->
+      <div class="space-y-3">
+        <h2 id="section1-title" class="text-xs font-black uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-[#F94F06]"></span>
+          1. Vue d&apos;Ensemble &amp; KPIs — Vue Globale Multi-Canal
+        </h2>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3.5">
+          <!-- Total Abonnés -->
+          <div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-2">
+            <div class="text-[10px] font-black uppercase text-slate-500">Total Abonnés</div>
+            <div class="flex items-baseline justify-between">
+              <span id="kpi-followers" class="text-2xl font-black text-[#0F172A]">53.7K</span>
+              <span id="kpi-followers-growth" class="text-[10px] font-extrabold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded-full border border-emerald-200">+3.4%</span>
+            </div>
+            <p id="kpi-followers-sub" class="text-[10px] text-slate-400 font-semibold">+1 842 abonnés</p>
+          </div>
+
+          <!-- Croissance Nette -->
+          <div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-2">
+            <div class="text-[10px] font-black uppercase text-slate-500">Croissance Nette</div>
+            <div class="flex items-baseline justify-between">
+              <span id="kpi-net" class="text-2xl font-black text-[#0F172A]">+1 842</span>
+              <span class="text-[10px] font-extrabold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded-full border border-emerald-200">+12.4%</span>
+            </div>
+            <p class="text-[10px] text-slate-400 font-semibold">vs mois précédent</p>
+          </div>
+
+          <!-- Portée (Reach) -->
+          <div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-2">
+            <div class="text-[10px] font-black uppercase text-slate-500">Portée (Reach)</div>
+            <div class="flex items-baseline justify-between">
+              <span id="kpi-reach" class="text-2xl font-black text-[#0F172A]">142.8K</span>
+              <span id="kpi-reach-growth" class="text-[10px] font-extrabold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded-full border border-emerald-200">+18.2%</span>
+            </div>
+            <p class="text-[10px] text-slate-400 font-semibold">Comptes uniques</p>
+          </div>
+
+          <!-- Impressions -->
+          <div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-2">
+            <div class="text-[10px] font-black uppercase text-slate-500">Impressions</div>
+            <div class="flex items-baseline justify-between">
+              <span id="kpi-impressions" class="text-2xl font-black text-[#0F172A]">164.4K</span>
+              <span id="kpi-impressions-growth" class="text-[10px] font-extrabold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded-full border border-emerald-200">+22.4%</span>
+            </div>
+            <p class="text-[10px] text-slate-400 font-semibold">Vues totales</p>
+          </div>
+
+          <!-- Total Engagement -->
+          <div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-2xs space-y-2">
+            <div class="text-[10px] font-black uppercase text-slate-500">Total Engagement</div>
+            <div class="flex items-baseline justify-between">
+              <span id="kpi-engagement" class="text-2xl font-black text-[#0F172A]">9 500</span>
+              <span id="kpi-engagement-growth" class="text-[10px] font-extrabold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded-full border border-emerald-200">+15.8%</span>
+            </div>
+            <p class="text-[10px] text-slate-400 font-semibold">Interactions directes</p>
+          </div>
+
+          <!-- Taux d'Engagement -->
+          <div class="p-4 rounded-2xl bg-gradient-to-br from-orange-50 to-amber-50 border border-orange-200 space-y-2">
+            <div class="text-[10px] font-black uppercase text-[#F94F06]">Taux d&apos;Engagement</div>
+            <div class="flex items-baseline justify-between">
+              <span id="kpi-rate" class="text-2xl font-black text-[#F94F06]">5.8%</span>
+              <span id="kpi-diff" class="text-[10px] font-extrabold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded-full border border-emerald-200">+0.6 pt</span>
+            </div>
+            <p id="kpi-bench" class="text-[10px] text-slate-500 font-semibold">Bench. 2.8%</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- =========================================================================
+          SECTION 2 : ÉVOLUTION DES PERFORMANCES (GRAPHIQUE 30 JOURS)
+          ========================================================================= -->
+      <div class="bg-white/90 backdrop-blur-md p-6 rounded-3xl border border-slate-200/80 shadow-xs space-y-4">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+          <div>
+            <h2 id="section2-title" class="text-sm font-black text-[#0F172A]">2. Évolution Temporelle sur 30 Jours</h2>
+            <p class="text-xs text-slate-500">Trajectoire quotidienne du reach et interactions.</p>
+          </div>
+          <span id="badge-highlight" class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-xl">Pic Viral : 38.4K vues 🔥</span>
+        </div>
+
+        <div id="timeline-bars-container" class="h-48 flex items-end justify-between gap-2 pt-6 px-2 border-b border-slate-200">
+          <!-- Injecté dynamiquement par JavaScript -->
+        </div>
+      </div>
+
+      <!-- =========================================================================
+          SECTION 3 & 5 : DÉTAIL DE L'ENGAGEMENT + PERFORMANCE PAR FORMAT
+          ========================================================================= -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- SECTION 3 : DÉTAIL ENGAGEMENT -->
+        <div class="lg:col-span-5 bg-white/90 backdrop-blur-md p-6 rounded-3xl border border-slate-200/80 shadow-xs space-y-3.5">
+          <h2 class="text-sm font-black text-[#0F172A] pb-2 border-b border-slate-100 flex justify-between">
+            <span>3. Détail de l&apos;Engagement</span>
+            <span id="engagement-total-badge" class="text-xs font-black text-[#F94F06]">9 500 total</span>
+          </h2>
+          
+          <div id="engagement-list-container" class="space-y-2.5 text-xs font-bold">
+            <!-- Injecté par JavaScript -->
+          </div>
+        </div>
+
+        <!-- SECTION 5 : PERFORMANCE PAR FORMAT -->
+        <div class="lg:col-span-7 bg-white/90 backdrop-blur-md p-6 rounded-3xl border border-slate-200/80 shadow-xs space-y-3.5">
+          <h2 class="text-sm font-black text-[#0F172A] pb-2 border-b border-slate-100">5. Performance par Format de Contenu</h2>
+
+          <div id="format-list-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <!-- Injecté par JavaScript -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- =========================================================================
+          SECTION 4 : TOP 5 DES MEILLEURES PUBLICATIONS
+          ========================================================================= -->
+      <div class="bg-white/90 backdrop-blur-md p-6 rounded-3xl border border-slate-200/80 shadow-xs space-y-4">
+        <h2 id="section4-title" class="text-sm font-black text-[#0F172A] pb-2 border-b border-slate-100">4. Top 5 des Meilleures Publications du Mois</h2>
+
+        <div id="top-posts-container" class="divide-y divide-slate-100 space-y-2 text-xs">
+          <!-- Injecté par JavaScript -->
+        </div>
+      </div>
+
+      <!-- =========================================================================
+          SECTION 6 & 7 : AUDIENCE & MEILLEURS MOMENTS
+          ========================================================================= -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- SECTION 6 : AUDIENCE -->
+        <div class="lg:col-span-6 bg-white/90 backdrop-blur-md p-6 rounded-3xl border border-slate-200/80 shadow-xs space-y-3.5">
+          <h2 class="text-sm font-black text-[#0F172A] pb-2 border-b border-slate-100">6. Démographie &amp; Données d&apos;Audience</h2>
+          
+          <div class="grid grid-cols-2 gap-4 text-xs">
+            <div id="audience-cities-container" class="space-y-1.5">
+              <!-- Injecté -->
+            </div>
+
+            <div class="space-y-1.5">
+              <span class="text-[10px] font-black uppercase text-slate-500">Cœur de Cible</span>
+              <div id="audience-age-container" class="space-y-1"></div>
+              <div id="audience-gender" class="pt-1 text-[11px] font-extrabold text-pink-600">58% Femmes / 42% Hommes</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 7 : MEILLEURS MOMENTS -->
+        <div class="lg:col-span-6 bg-white/90 backdrop-blur-md p-6 rounded-3xl border border-slate-200/80 shadow-xs space-y-3.5">
+          <h2 class="text-sm font-black text-[#0F172A] pb-2 border-b border-slate-100">7. Meilleurs Moments pour Publier</h2>
+
+          <div id="best-moments-container" class="grid grid-cols-3 gap-2.5 text-xs text-center">
+            <!-- Injecté -->
+          </div>
+          <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-600">
+            <span class="font-black text-slate-800">💡 Conseil :</span> <span id="best-moments-tip"></span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- =========================================================================
+          SECTION 8 : TRAFIC & CONVERSIONS
+          ========================================================================= -->
+      <div class="bg-white/90 backdrop-blur-md p-6 rounded-3xl border border-slate-200/80 shadow-xs space-y-4">
+        <h2 class="text-sm font-black text-[#0F172A] pb-2 border-b border-slate-100">8. Trafic, Clics &amp; Conversions Business (WhatsApp)</h2>
+
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-3.5 text-xs">
+          <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200">
+            <span class="text-[10px] font-black uppercase text-slate-500">Visites du Profil</span>
+            <div id="traffic-profile-views" class="text-xl font-black text-slate-900">12 400</div>
+            <span id="traffic-profile-growth" class="text-[10px] text-emerald-600 font-bold">+14.2% vs M-1</span>
+          </div>
+
+          <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200">
+            <span class="text-[10px] font-black uppercase text-slate-500">Clics Lien Bio</span>
+            <div id="traffic-link-clicks" class="text-xl font-black text-[#0066FF]">1 842</div>
+            <span id="traffic-ctr" class="text-[10px] text-slate-500 font-bold">CTR : 14.8%</span>
+          </div>
+
+          <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200">
+            <span id="traffic-action-label" class="text-[10px] font-black uppercase text-slate-500">Clics Menu PDF</span>
+            <div id="traffic-action-clicks" class="text-xl font-black text-emerald-600">842</div>
+            <span id="traffic-action-percent" class="text-[10px] text-slate-500 font-bold">45.7% des clics</span>
+          </div>
+
+          <div class="p-3.5 rounded-2xl bg-orange-50 border border-orange-200">
+            <span class="text-[10px] font-black uppercase text-[#F94F06]">Leads WhatsApp</span>
+            <div id="traffic-whatsapp" class="text-xl font-black text-[#F94F06]">348</div>
+            <span class="text-[10px] text-slate-600 font-bold">Commandes directes</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- =========================================================================
+          SECTION 9 & 10 : INSIGHTS & RECOMMANDATIONS
+          ========================================================================= -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- SECTION 9 : INSIGHTS AUTOMATIQUES -->
+        <div class="lg:col-span-6 bg-slate-900 text-white p-6 rounded-3xl shadow-xl space-y-3.5">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+            <h2 id="section9-title" class="text-sm font-black text-white">9. Insights Automatiques CMFlow</h2>
+            <span class="text-[10px] font-black bg-[#F94F06] text-white px-2 py-0.5 rounded-full">IA Analytics</span>
+          </div>
+
+          <div id="insights-container" class="space-y-2.5 text-xs text-slate-300">
+            <!-- Injecté -->
+          </div>
+        </div>
+
+        <!-- SECTION 10 : RECOMMANDATIONS -->
+        <div class="lg:col-span-6 bg-white/90 backdrop-blur-md p-6 rounded-3xl border border-slate-200/80 shadow-xs space-y-3.5">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+            <h2 id="section10-title" class="text-sm font-black text-[#0F172A]">10. Recommandations pour Septembre 2026</h2>
+            <span class="text-xs font-bold text-slate-500">Plan d&apos;action</span>
+          </div>
+
+          <div id="recommendations-container" class="space-y-2.5 text-xs">
+            <!-- Injecté -->
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    const DATA = {
+      all: {
+        name: 'Vue Globale Multi-Canal',
+        btnPdf: 'Télécharger le Rapport Global PDF',
+        followers: '53.7K', followersGrowth: '+3.4%', followersNet: '+1 842',
+        reach: '142.8K', reachGrowth: '+18.2%',
+        impressions: '164.4K', impressionsGrowth: '+22.4%',
+        engagement: '9 500', engagementGrowth: '+15.8%',
+        rate: '5.8%', diff: '+0.6 pt', bench: 'Bench. 2.8%',
+        timeline: [
+          { day: '01', val: 3200 }, { day: '04', val: 4100 }, { day: '10', val: 5600 },
+          { day: '16', val: 6400 }, { day: '18', val: 11200, isPeak: true }, { day: '21', val: 7800 },
+          { day: '27', val: 8400 }, { day: '30', val: 9100 }
+        ],
+        engagements: [
+          { label: '❤️ J\'aime (Likes)', count: '6 840 (72%)', percent: 72, color: 'bg-rose-500' },
+          { label: '↗️ Partages & DMs', count: '1 120 (12%)', percent: 12, color: 'bg-[#0066FF]' },
+          { label: '💬 Commentaires', count: '890 (9%)', percent: 9, color: 'bg-emerald-500' },
+          { label: '🔖 Saves (Enregistrements)', count: '650 (7%)', percent: 7, color: 'bg-amber-500' },
+        ],
+        formats: [
+          { name: '🎥 Reels / TikToks (14 posts)', rate: '7.1%', reach: '28.2K', sub: 'Viralité & Nouveaux abonnés' },
+          { name: '📑 Carrousels (12 posts)', rate: '6.4%', reach: '21.5K', sub: '+42% d\'enregistrements' },
+          { name: '🖼️ Images uniques (8 posts)', rate: '4.2%', reach: '11.8K', sub: 'Esthétique de grille' },
+          { name: '📱 Stories (42 stories)', rate: '8.1%', reach: '4.9K', sub: 'Lien sticker WhatsApp' },
+        ],
+        topPosts: [
+          { rank: 1, title: 'Coulisses : Préparation du Thiéboudienne Penda Mbaye Royal', tag: 'Reel Instagram', reach: '38.4K', inter: '2 840', rate: '7.4%', img: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&auto=format&fit=crop&q=80' },
+          { rank: 2, title: 'Carrousel : Les 5 secrets de notre marinade braisée au feu de bois', tag: 'Carrousel Instagram', reach: '24.1K', inter: '1 920', rate: '6.8%', img: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&auto=format&fit=crop&q=80' },
+          { rank: 3, title: 'Menu Spécial Dégustation : Formule Brunch du Dimanche', tag: 'Carrousel Facebook', reach: '19.8K', inter: '1 450', rate: '6.1%', img: 'https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?w=400&auto=format&fit=crop&q=80' }
+        ],
+        cities: [
+          { name: '🇸🇳 Dakar', percent: 68 }, { name: '🇨🇮 Abidjan', percent: 14 }, { name: '🇸🇳 Saint-Louis', percent: 8 }
+        ],
+        ages: [
+          { name: '25 - 34 ans', percent: 54, isMain: true }, { name: '18 - 24 ans', percent: 22 }, { name: '35 - 44 ans', percent: 18 }
+        ],
+        gender: '58% Femmes / 42% Hommes',
+        moments: [
+          { day: 'Vendredi', h: '19h30 - 22h', boost: '+38% Eng.', isMain: true },
+          { day: 'Samedi', h: '12h - 14h', boost: '+26% Eng.' },
+          { day: 'Mercredi', h: '12h30 - 14h', boost: '+19% Eng.' }
+        ],
+        tip: 'Programmez vos posts culinaires entre 11h45 et 12h15 pour capter la décision du déjeuner à Dakar.',
+        traffic: { views: '12 400', viewsGrowth: '+14.2% vs M-1', clicks: '1 842', ctr: 'CTR : 14.8%', actionLabel: 'Clics Menu PDF', actionClicks: '842', actionPercent: '45.7% des clics', wa: '348' },
+        insights: [
+          { title: '🚀 Surperformance des Carrousels', desc: 'Les carrousels ont généré +42% d\'enregistrements (Saves) que les images uniques.' },
+          { title: '🔥 Pic Viral du 18 Août', desc: 'Le Reel Thiéboudienne a capté 38.4K vues et apporté 38% des nouveaux abonnés.' },
+          { title: '⏱️ Créneau Déjeuner Optimal', desc: 'Les publications entre 11h45 et 12h30 convertissent 2.4x plus de clics WhatsApp.' }
+        ],
+        recs: [
+          { num: 1, title: 'Augmenter la cadence des Reels coulisses à 2 / semaine', desc: 'Mettre en avant l\'équipe et les secrets de cuisine.' },
+          { num: 2, title: 'Rituel "Menu du Week-end" chaque Jeudi soir', desc: 'Publier un Carrousel dégustation le jeudi à 19h30 pour anticiper les commandes.' },
+          { num: 3, title: 'Jeu-concours dégustation VIP en Story', desc: 'Sondages et quiz pour qualifier des leads WhatsApp.' }
+        ]
+      },
+
+      instagram: {
+        name: 'Instagram (@teranga_gourmet)',
+        btnPdf: 'Télécharger le Rapport Instagram PDF',
+        followers: '28.4K', followersGrowth: '+4.8%', followersNet: '+1 290',
+        reach: '84.2K', reachGrowth: '+21.5%',
+        impressions: '98.6K', impressionsGrowth: '+26.8%',
+        engagement: '5 720', engagementGrowth: '+18.4%',
+        rate: '6.8%', diff: '+0.9 pt', bench: 'Bench. Insta 3.2%',
+        timeline: [
+          { day: '01', val: 2100 }, { day: '04', val: 2800 }, { day: '10', val: 3900 },
+          { day: '16', val: 4500 }, { day: '18', val: 8900, isPeak: true }, { day: '21', val: 5200 },
+          { day: '27', val: 5800 }, { day: '30', val: 6400 }
+        ],
+        engagements: [
+          { label: '❤️ J\'aime (Likes Reels & Posts)', count: '4 120 (72%)', percent: 72, color: 'bg-rose-500' },
+          { label: '🔖 Enregistrements (Saves)', count: '580 (10%)', percent: 10, color: 'bg-amber-500' },
+          { label: '↗️ Partages en Story & DMs', count: '560 (10%)', percent: 10, color: 'bg-[#E1306C]' },
+          { label: '💬 Commentaires', count: '460 (8%)', percent: 8, color: 'bg-purple-500' },
+        ],
+        formats: [
+          { name: '🎥 Reels Instagram (8 posts)', rate: '7.4%', reach: '31.2K', sub: 'Découverte & Nouveaux abonnés' },
+          { name: '📑 Carrousels 5-10 slides (6 posts)', rate: '6.8%', reach: '22.8K', sub: '+48% de Saves recettes' },
+          { name: '🖼️ Photos uniques (4 posts)', rate: '4.4%', reach: '12.4K', sub: 'Esthétique de profil' },
+          { name: '📱 Stories (28 stories)', rate: '8.8%', reach: '5.6K', sub: 'Sticker de lien WhatsApp' },
+        ],
+        topPosts: [
+          { rank: 1, title: 'Reel : Coulisses de la sauce marinade braisée au feu de bois', tag: 'Reel Instagram', reach: '38.4K', inter: '2 840', rate: '7.4%', img: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&auto=format&fit=crop&q=80' },
+          { rank: 2, title: 'Carrousel : Les 5 déclinaisons de Thiéboudienne du Chef', tag: 'Carrousel Instagram', reach: '24.1K', inter: '1 920', rate: '6.8%', img: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&auto=format&fit=crop&q=80' }
+        ],
+        cities: [
+          { name: '🇸🇳 Dakar (Almadies, Plateau)', percent: 74 }, { name: '🇨🇮 Abidjan', percent: 12 }, { name: '🇫🇷 Paris (Diaspora)', percent: 8 }
+        ],
+        ages: [
+          { name: '25 - 34 ans', percent: 62, isMain: true }, { name: '18 - 24 ans', percent: 24 }, { name: '35 - 44 ans', percent: 14 }
+        ],
+        gender: '64% Femmes / 36% Hommes',
+        moments: [
+          { day: 'Vendredi soir', h: '19h00 - 22h30', boost: '+44% Portée', isMain: true },
+          { day: 'Dimanche matin', h: '10h00 - 12h30', boost: '+32% Inter.' },
+          { day: 'Mardi midi', h: '12h00 - 13h30', boost: '+21% Clics' }
+        ],
+        tip: 'Utilisez les stickers de lien WhatsApp en Story le vendredi dès 18h pour capter les réservations.',
+        traffic: { views: '9 200', viewsGrowth: '+16.8% vs M-1', clicks: '1 420', ctr: 'CTR : 15.4%', actionLabel: 'Menu Bio cliqué', actionClicks: '680', actionPercent: '47.8% des clics', wa: '264' },
+        insights: [
+          { title: '🎥 Reels : x2.8 plus de reach que les photos', desc: 'L\'algorithme Instagram pousse massivement les vidéos coulisses avec audio tendance.' },
+          { title: '📲 Sticker WhatsApp très performant', desc: '82% des leads proviennent directement du sticker Story de vendredi midi.' }
+        ],
+        recs: [
+          { num: 1, title: 'Adopter le format "1 Reel / 1 Recette" le mercredi', desc: 'Montrer la fraîcheur des produits du marché en vidéo dynamique.' },
+          { num: 2, title: 'Activer les rappels d\'événements en Story', desc: 'Programmer des stickers de compte à rebours pour les soirées dégustation.' }
+        ]
+      },
+
+      facebook: {
+        name: 'Facebook (Page Teranga Gourmet)',
+        btnPdf: 'Télécharger le Rapport Facebook PDF',
+        followers: '18.2K', followersGrowth: '+1.2%', followersNet: '+220',
+        reach: '36.4K', reachGrowth: '+8.4%',
+        impressions: '44.2K', impressionsGrowth: '+11.2%',
+        engagement: '1 940', engagementGrowth: '+7.8%',
+        rate: '5.3%', diff: '+0.2 pt', bench: 'Bench. FB 2.1%',
+        timeline: [
+          { day: '01', val: 900 }, { day: '04', val: 1100 }, { day: '10', val: 1400 },
+          { day: '16', val: 1600 }, { day: '18', val: 2400, isPeak: true }, { day: '21', val: 1800 },
+          { day: '27', val: 2100 }, { day: '30', val: 2300 }
+        ],
+        engagements: [
+          { label: '👍 J\'aime & Réactions', count: '1 240 (64%)', percent: 64, color: 'bg-[#1877F2]' },
+          { label: '🔄 Partages de posts', count: '390 (20%)', percent: 20, color: 'bg-sky-500' },
+          { label: '💬 Commentaires & Réservations', count: '240 (12%)', percent: 12, color: 'bg-emerald-500' },
+          { label: '📍 Clics adresse / appel', count: '70 (4%)', percent: 4, color: 'bg-purple-500' }
+        ],
+        formats: [
+          { name: '📸 Albums photos & Événements (6 posts)', rate: '5.8%', reach: '8.4K', sub: 'Partages familiaux & groupes' },
+          { name: '🔗 Posts avec bouton WhatsApp (10 posts)', rate: '4.9%', reach: '6.2K', sub: 'Appels téléphoniques directs' }
+        ],
+        topPosts: [
+          { rank: 1, title: 'Événement Spécial : Soirée Grillades & Musique Live ce Vendredi', tag: 'Image Facebook', reach: '11.8K', inter: '740', rate: '6.2%', img: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&auto=format&fit=crop&q=80' },
+          { rank: 2, title: 'Album Photos : Mariage et Réception Traiteur 150 Personnes', tag: 'Album Photos', reach: '9.2K', inter: '580', rate: '6.3%', img: 'https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?w=400&auto=format&fit=crop&q=80' }
+        ],
+        cities: [
+          { name: '🇸🇳 Dakar & Banlieue', percent: 62 }, { name: '🇸🇳 Thiès & Mbour', percent: 18 }, { name: '🌍 Diaspora France & USA', percent: 14 }
+        ],
+        ages: [
+          { name: '35 - 44 ans', percent: 42, isMain: true }, { name: '25 - 34 ans', percent: 36 }, { name: '45+ ans', percent: 22 }
+        ],
+        gender: '52% Femmes / 48% Hommes',
+        moments: [
+          { day: 'Jeudi midi', h: '12h00 - 14h00', boost: '+28% Clics', isMain: true },
+          { day: 'Dimanche soir', h: '19h00 - 21h30', boost: '+22% Partages' },
+          { day: 'Mardi matin', h: '09h30 - 11h00', boost: '+15% Eng.' }
+        ],
+        tip: 'Facebook est le canal privilégié pour les réservations de groupes familiaux et devis traiteur.',
+        traffic: { views: '2 400', viewsGrowth: '+6.5% vs M-1', clicks: '340', ctr: 'CTR : 14.1%', actionLabel: 'Appels directs', actionClicks: '110', actionPercent: '32.3% des clics', wa: '62' },
+        insights: [
+          { title: '💍 Audience plus mature et décisionnaire', desc: 'Les demandes de devis traiteur pour mariages et baptêmes proviennent à 65% de Facebook.' }
+        ],
+        recs: [
+          { num: 1, title: 'Publier les menus de la semaine chaque lundi à 10h', desc: 'Cibler les comités d\'entreprise et déjeuners professionnels du quartier d\'affaires.' }
+        ]
+      },
+
+      tiktok: {
+        name: 'TikTok (@terangafood)',
+        btnPdf: 'Télécharger le Rapport TikTok PDF',
+        followers: '5.8K', followersGrowth: '+14.2%', followersNet: '+310',
+        reach: '18.6K', reachGrowth: '+48.0%',
+        impressions: '21.6K', impressionsGrowth: '+52.4%',
+        engagement: '1 480', engagementGrowth: '+32.0%',
+        rate: '8.0%', diff: '+1.4 pt', bench: 'Bench. TikTok 4.5%',
+        timeline: [
+          { day: '01', val: 200 }, { day: '04', val: 300 }, { day: '10', val: 450 },
+          { day: '16', val: 520 }, { day: '18', val: 2800, isPeak: true }, { day: '21', val: 850 },
+          { day: '27', val: 980 }, { day: '30', val: 1150 }
+        ],
+        engagements: [
+          { label: '❤️ J\'aime (Likes)', count: '1 120 (76%)', percent: 76, color: 'bg-rose-500' },
+          { label: '↗️ Partages WhatsApp', count: '180 (12%)', percent: 12, color: 'bg-cyan-500' },
+          { label: '💬 Commentaires & Questions', count: '120 (8%)', percent: 8, color: 'bg-emerald-500' },
+          { label: '⭐ Favoris', count: '60 (4%)', percent: 4, color: 'bg-amber-500' }
+        ],
+        formats: [
+          { name: '🎧 Vidéos ASMR & Recettes (6 posts)', rate: '8.4%', reach: '6.4K', sub: 'Temps de visionnage complet' }
+        ],
+        topPosts: [
+          { rank: 1, title: 'ASMR Culinaire : Le croustillant des pastels au poisson frais 🥟', tag: 'TikTok 9:16', reach: '11.4K', inter: '920', rate: '8.1%', img: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&auto=format&fit=crop&q=80' }
+        ],
+        cities: [
+          { name: '🇸🇳 Dakar', percent: 78 }, { name: '🇨🇮 Abidjan', percent: 14 }, { name: '🌍 Autres', percent: 8 }
+        ],
+        ages: [
+          { name: '18 - 24 ans', percent: 58, isMain: true }, { name: '25 - 34 ans', percent: 34 }, { name: '35+ ans', percent: 8 }
+        ],
+        gender: '60% Femmes / 40% Hommes',
+        moments: [
+          { day: 'Samedi soir', h: '21h00 - 23h30', boost: '+52% Viralité', isMain: true },
+          { day: 'Mercredi aprèm', h: '16h00 - 18h00', boost: '+35% Vues' },
+          { day: 'Vendredi soir', h: '20h00 - 22h00', boost: '+28% Partages' }
+        ],
+        tip: 'Utilisez les sons sénégalais tendances (Mbalax, Afrobeats) pour booster l\'algorithme Pour Toi (FYP).',
+        traffic: { views: '1 800', viewsGrowth: '+38.0% vs M-1', clicks: '180', ctr: 'CTR : 10.0%', actionLabel: 'Redirections Insta/WA', actionClicks: '60', actionPercent: '33.3%', wa: '22' },
+        insights: [
+          { title: '🔥 Format ASMR ultra-viral', desc: 'Le son naturel de la cuisine retient l\'attention à 84% jusqu\'à la fin de la vidéo.' }
+        ],
+        recs: [
+          { num: 1, title: 'Tester les défis dégustation en duo avec des créateurs dakarois', desc: 'Générer du reach croisé avec les micro-influenceurs food de la capitale.' }
+        ]
+      },
+
+      linkedin: {
+        name: 'LinkedIn (Teranga Gourmet B2B)',
+        btnPdf: 'Télécharger le Rapport LinkedIn PDF',
+        followers: '1.3K', followersGrowth: '+6.5%', followersNet: '+82',
+        reach: '3.6K', reachGrowth: '+14.2%',
+        impressions: '4.8K', impressionsGrowth: '+16.5%',
+        engagement: '360', engagementGrowth: '+12.0%',
+        rate: '7.5%', diff: '+0.4 pt', bench: 'Bench. B2B 3.8%',
+        timeline: [
+          { day: '01', val: 80 }, { day: '04', val: 110 }, { day: '10', val: 180 },
+          { day: '16', val: 210 }, { day: '18', val: 350, isPeak: true }, { day: '21', val: 240 },
+          { day: '27', val: 280 }, { day: '30', val: 310 }
+        ],
+        engagements: [
+          { label: '👏 Réactions (Bravo & Likes)', count: '240 (67%)', percent: 67, color: 'bg-[#0A66C2]' },
+          { label: '💬 Commentaires pros', count: '70 (19%)', percent: 19, color: 'bg-emerald-500' },
+          { label: '🔄 Reposts professionnels', count: '50 (14%)', percent: 14, color: 'bg-sky-500' }
+        ],
+        formats: [
+          { name: '📄 Carrousels PDF & Retours d\'expérience (3 posts)', rate: '8.1%', reach: '1.8K', sub: 'Téléchargements plaquette B2B' }
+        ],
+        topPosts: [
+          { rank: 1, title: 'Tribune : Valoriser les circuits courts et l\'agriculture locale au Sénégal', tag: 'Article B2B', reach: '2.1K', inter: '190', rate: '9.0%', img: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&auto=format&fit=crop&q=80' }
+        ],
+        cities: [
+          { name: '🇸🇳 Dakar (Direction Générale & RH)', percent: 82 }, { name: '🇨🇮 Abidjan', percent: 10 }, { name: '🌍 Autres', percent: 8 }
+        ],
+        ages: [
+          { name: '30 - 45 ans', percent: 65, isMain: true }, { name: '25 - 29 ans', percent: 25 }, { name: '45+ ans', percent: 10 }
+        ],
+        gender: '45% Femmes / 55% Hommes',
+        moments: [
+          { day: 'Mardi matin', h: '08h00 - 09h30', boost: '+36% Visibilité', isMain: true },
+          { day: 'Jeudi matin', h: '08h30 - 10h00', boost: '+29% Inter.' },
+          { day: 'Mercredi midi', h: '12h00 - 13h30', boost: '+20% Partages' }
+        ],
+        tip: 'Idéal pour promouvoir les plateaux repas en entreprise et les événements de fin d\'année.',
+        traffic: { views: '620', viewsGrowth: '+18.4% vs M-1', clicks: '95', ctr: 'CTR : 15.3%', actionLabel: 'Plaquettes B2B téléchargées', actionClicks: '38', actionPercent: '40.0%', wa: '14' },
+        insights: [
+          { title: '🏢 Forte conversion sur les séminaires d\'entreprise', desc: '14 demandes de devis traiteur d\'entreprises enregistrées ce mois-ci via LinkedIn.' }
+        ],
+        recs: [
+          { num: 1, title: 'Lancer l\'offre "Pause Café & Déjeuners d\'Affaires" fin août', desc: 'Anticiper la rentrée de septembre avec une offre dédiée aux entreprises de Dakar Plateau.' }
+        ]
+      }
+    };
+
+    let activePlatform = 'all';
+
+    function setPlatform(p) {
+      activePlatform = p;
+      const d = DATA[p] || DATA.all;
+
+      // Actualise les classes des onglets
+      document.querySelectorAll('.platform-tab').forEach(btn => {
+        btn.className = 'platform-tab flex items-center gap-2 px-4 py-2.5 rounded-xl transition-all whitespace-nowrap cursor-pointer hover:bg-slate-100 hover:text-slate-900';
+      });
+
+      const activeBtn = document.getElementById('tab-' + p);
+      if (activeBtn) {
+        if (p === 'all') activeBtn.className = 'platform-tab flex items-center gap-2 px-4 py-2.5 rounded-xl transition-all whitespace-nowrap cursor-pointer bg-[#F94F06] text-white font-black shadow-md shadow-orange-500/25';
+        else if (p === 'instagram') activeBtn.className = 'platform-tab flex items-center gap-2 px-4 py-2.5 rounded-xl transition-all whitespace-nowrap cursor-pointer bg-gradient-to-r from-purple-600 via-pink-600 to-amber-500 text-white font-black shadow-md';
+        else if (p === 'facebook') activeBtn.className = 'platform-tab flex items-center gap-2 px-4 py-2.5 rounded-xl transition-all whitespace-nowrap cursor-pointer bg-[#1877F2] text-white font-black shadow-md';
+        else if (p === 'tiktok') activeBtn.className = 'platform-tab flex items-center gap-2 px-4 py-2.5 rounded-xl transition-all whitespace-nowrap cursor-pointer bg-[#0F172A] text-white font-black shadow-md';
+        else if (p === 'linkedin') activeBtn.className = 'platform-tab flex items-center gap-2 px-4 py-2.5 rounded-xl transition-all whitespace-nowrap cursor-pointer bg-[#0A66C2] text-white font-black shadow-md';
+      }
+
+      // En-têtes & KPIs
+      document.getElementById('btn-pdf-label').textContent = d.btnPdf;
+      document.getElementById('section1-title').innerHTML = `<span class="w-2 h-2 rounded-full bg-[#F94F06]"></span> 1. Vue d'Ensemble & KPIs — ${d.name}`;
+      document.getElementById('section2-title').textContent = `2. Évolution Temporelle sur 30 Jours — ${d.name}`;
+      document.getElementById('section4-title').textContent = `4. Top Publications — ${d.name}`;
+      document.getElementById('section9-title').textContent = `9. Insights Automatiques (${d.name})`;
+      document.getElementById('section10-title').textContent = `10. Recommandations pour ${d.name}`;
+
+      document.getElementById('kpi-followers').textContent = d.followers;
+      document.getElementById('kpi-followers-growth').textContent = d.followersGrowth;
+      document.getElementById('kpi-followers-sub').textContent = `${d.followersNet} abonnés`;
+      document.getElementById('kpi-net').textContent = d.followersNet;
+      document.getElementById('kpi-reach').textContent = d.reach;
+      document.getElementById('kpi-reach-growth').textContent = d.reachGrowth;
+      document.getElementById('kpi-impressions').textContent = d.impressions;
+      document.getElementById('kpi-impressions-growth').textContent = d.impressionsGrowth;
+      document.getElementById('kpi-engagement').textContent = d.engagement;
+      document.getElementById('kpi-engagement-growth').textContent = d.engagementGrowth;
+      document.getElementById('kpi-rate').textContent = d.rate;
+      document.getElementById('kpi-diff').textContent = d.diff;
+      document.getElementById('kpi-bench').textContent = d.bench;
+      document.getElementById('engagement-total-badge').textContent = `${d.engagement} total`;
+
+      // Timeline
+      const maxVal = Math.max(...d.timeline.map(t => t.val)) || 1;
+      const timelineHtml = d.timeline.map(item => {
+        const height = Math.min(100, Math.round((item.val / maxVal) * 100));
+        const isPeak = item.isPeak;
+        return `
+          <div class="flex-1 flex flex-col items-center gap-1.5 h-full justify-end group">
+            <span class="text-[9px] ${isPeak ? 'text-[#F94F06] font-black' : 'text-slate-400 font-bold'}">${item.val >= 1000 ? (item.val/1000).toFixed(1)+'K' : item.val}</span>
+            <div class="w-full max-w-[24px] ${isPeak ? 'bg-gradient-to-t from-[#F94F06] to-orange-400 rounded-t-lg shadow-md ring-2 ring-orange-200' : 'bg-slate-200 group-hover:bg-slate-300 rounded-t-lg'}" style="height: ${Math.max(15, height)}%;"></div>
+            <span class="text-[10px] ${isPeak ? 'text-[#F94F06] font-black' : 'text-slate-400 font-bold'}">${item.day}</span>
+          </div>
+        `;
+      }).join('');
+      document.getElementById('timeline-bars-container').innerHTML = timelineHtml;
+
+      // Engagements
+      document.getElementById('engagement-list-container').innerHTML = d.engagements.map(e => `
+        <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-100 space-y-1">
+          <div class="flex justify-between"><span>${e.label}</span><span>${e.count}</span></div>
+          <div class="h-1.5 bg-slate-200 rounded-full overflow-hidden"><div class="h-full ${e.color} rounded-full" style="width: ${e.percent}%"></div></div>
+        </div>
+      `).join('');
+
+      // Formats
+      document.getElementById('format-list-container').innerHTML = d.formats.map(f => `
+        <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 space-y-1">
+          <div class="font-black text-slate-900 flex items-center justify-between">
+            <span>${f.name}</span>
+            <span class="text-emerald-600 font-bold">${f.rate}</span>
+          </div>
+          <div class="text-[11px] text-slate-500">Reach moyen : <strong>${f.reach}</strong></div>
+          <span class="text-[9px] text-slate-400 font-semibold block">${f.sub}</span>
+        </div>
+      `).join('');
+
+      // Top Posts
+      document.getElementById('top-posts-container').innerHTML = d.topPosts.map(p => `
+        <div class="pt-2 flex items-center justify-between gap-3">
+          <div class="flex items-center gap-3 min-w-0 flex-1">
+            <span class="w-6 h-6 rounded-lg ${p.rank === 1 ? 'bg-amber-400 text-slate-900' : 'bg-slate-200 text-slate-700'} flex items-center justify-center font-black shrink-0">#${p.rank}</span>
+            <img src="${p.img}" alt="Post" class="w-10 h-10 rounded-xl object-cover shrink-0 border border-slate-200">
+            <div class="min-w-0">
+              <div class="font-bold text-slate-900 truncate">${p.title}</div>
+              <div class="text-[10px] text-slate-400">${p.tag}</div>
+            </div>
+          </div>
+          <div class="flex gap-4 shrink-0 font-bold">
+            <span>${p.reach} Reach</span>
+            <span>${p.inter} Inter.</span>
+            <span class="text-emerald-600 font-black">${p.rate} Eng.</span>
+          </div>
+        </div>
+      `).join('');
+
+      // Audience
+      document.getElementById('audience-cities-container').innerHTML = `
+        <span class="text-[10px] font-black uppercase text-slate-500">Top Villes</span>
+        ${d.cities.map(c => `<div class="flex justify-between font-bold"><span>${c.name}</span><span>${c.percent}%</span></div>`).join('')}
+      `;
+      document.getElementById('audience-age-container').innerHTML = d.ages.map(a => `
+        <div class="flex justify-between font-bold">
+          <span>${a.name}</span>
+          <span class="${a.isMain ? 'text-[#F94F06] font-black' : 'text-slate-500'}">${a.percent}%</span>
+        </div>
+      `).join('');
+      document.getElementById('audience-gender').textContent = d.gender;
+
+      // Moments
+      document.getElementById('best-moments-container').innerHTML = d.moments.map((m, i) => `
+        <div class="p-2.5 rounded-xl ${m.isMain ? 'bg-orange-50 border border-orange-200' : 'bg-slate-50 border border-slate-200'}">
+          <div class="font-black ${m.isMain ? 'text-[#F94F06]' : 'text-slate-800'}">${m.day}</div>
+          <div class="text-[11px] font-bold text-slate-800">${m.h}</div>
+          <span class="text-[9px] text-emerald-600 font-bold">${m.boost}</span>
+        </div>
+      `).join('');
+      document.getElementById('best-moments-tip').textContent = d.tip;
+
+      // Traffic
+      document.getElementById('traffic-profile-views').textContent = d.traffic.views;
+      document.getElementById('traffic-profile-growth').textContent = d.traffic.viewsGrowth;
+      document.getElementById('traffic-link-clicks').textContent = d.traffic.clicks;
+      document.getElementById('traffic-ctr').textContent = d.traffic.ctr;
+      document.getElementById('traffic-action-label').textContent = d.traffic.actionLabel;
+      document.getElementById('traffic-action-clicks').textContent = d.traffic.actionClicks;
+      document.getElementById('traffic-action-percent').textContent = d.traffic.actionPercent;
+      document.getElementById('traffic-whatsapp').textContent = d.traffic.wa;
+
+      // Insights
+      document.getElementById('insights-container').innerHTML = d.insights.map(ins => `
+        <div class="p-3 rounded-2xl bg-white/10 border border-white/10">
+          <strong class="text-orange-300 block mb-0.5">${ins.title}</strong>
+          <p class="text-[11px]">${ins.desc}</p>
+        </div>
+      `).join('');
+
+      // Recs
+      document.getElementById('recommendations-container').innerHTML = d.recs.map(r => `
+        <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200 flex items-start gap-2.5">
+          <span class="w-5 h-5 rounded-lg bg-orange-100 text-[#F94F06] font-black flex items-center justify-center shrink-0">${r.num}</span>
+          <div>
+            <strong class="text-slate-900 block">${r.title}</strong>
+            <p class="text-slate-600 text-[11px]">${r.desc}</p>
+          </div>
+        </div>
+      `).join('');
+
+      showToast(`Filtre activé : ${d.name}`);
+    }
+
+    function triggerPdfExport() {
+      window.print();
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('app-toast');
+      const text = document.getElementById('toast-text');
+      text.textContent = msg;
+      toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+      }, 3500);
+    }
+
+    // Init
+    document.addEventListener('DOMContentLoaded', () => {
+      setPlatform('all');
+    });
+  </script>
+  <script src="js/workspace-state.js"></script>
+  <script src="js/realtime-listener.js"></script>
+</body>
+</html>

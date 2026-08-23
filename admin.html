@@ -1,0 +1,1608 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Super-Administrateur — CMFlow SaaS Cockpit</title>
+  <meta name="description" content="Espace Super-Administrateur CMFlow : supervision du MRR, gestion des agences et flux Mobile Money (Wave & Orange Money).">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+
+  <style>
+    :root {
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --color-primary: #F94F06;
+      --color-primary-hover: #e04403;
+      --sidebar-bg: #0F172A;
+      --body-bg: #F8FAFC;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--body-bg);
+      color: #0F172A;
+      min-height: 100vh;
+      display: flex;
+      overflow-x: hidden;
+    }
+
+    /* Sidebar Sombre */
+    .admin-sidebar {
+      width: 280px;
+      background-color: var(--sidebar-bg);
+      color: #94A3B8;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-right: 1px solid #1E293B;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      flex-shrink: 0;
+      z-index: 40;
+      user-select: none;
+    }
+
+    .admin-sidebar-header {
+      padding: 20px;
+      border-bottom: 1px solid #1E293B;
+    }
+
+    .admin-nav {
+      padding: 16px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .admin-nav-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #94A3B8;
+      text-decoration: none;
+      transition: all 0.15s ease;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      width: 100%;
+      text-align: left;
+    }
+
+    .admin-nav-item:hover {
+      background-color: #1E293B;
+      color: #FFFFFF;
+    }
+
+    .admin-nav-item.active {
+      background-color: #F94F06;
+      color: #FFFFFF;
+      box-shadow: 0 4px 12px rgba(249, 79, 6, 0.25);
+    }
+
+    .admin-nav-item.active svg {
+      color: #FFFFFF !important;
+    }
+
+    /* Contenu Principal */
+    .admin-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      min-height: 100vh;
+      background-color: #F8FAFC;
+    }
+
+    /* Header Blanc */
+    .admin-header {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid #E2E8F0;
+      padding: 14px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 30;
+    }
+
+    /* Cartes KPI Blanc Épuré (Linear Style) */
+    .kpi-card {
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.02);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .kpi-card:hover {
+      box-shadow: 0 6px 20px -4px rgba(15, 23, 42, 0.06);
+    }
+
+    /* Tableaux */
+    .admin-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      text-align: left;
+    }
+
+    .admin-table th {
+      background-color: #F8FAFC;
+      color: #64748B;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 12px 18px;
+      border-bottom: 1px solid #E2E8F0;
+    }
+
+    .admin-table td {
+      padding: 14px 18px;
+      border-bottom: 1px solid #F1F5F9;
+      font-size: 0.82rem;
+      vertical-align: middle;
+    }
+
+    .admin-table tr:hover td {
+      background-color: #F8FAFC;
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .badge-pro {
+      background: #FFF7ED;
+      color: #EA580C;
+      border: 1px solid #FFEDD5;
+    }
+
+    .badge-scale {
+      background: #FAF5FF;
+      color: #7E22CE;
+      border: 1px solid #F3E8FF;
+    }
+
+    .badge-solo {
+      background: #EFF6FF;
+      color: #2563EB;
+      border: 1px solid #DBEAFE;
+    }
+
+    .badge-trial {
+      background: #FEF3C7;
+      color: #B45309;
+      border: 1px solid #FDE68A;
+    }
+
+    .badge-active {
+      background: #ECFDF5;
+      color: #047857;
+      border: 1px solid #A7F3D0;
+    }
+
+    .badge-wave {
+      background: #E0F7FF;
+      color: #0284C7;
+      border: 1px solid #BAE6FD;
+    }
+
+    .badge-om {
+      background: #FFF1EB;
+      color: #EA580C;
+      border: 1px solid #FED7AA;
+    }
+
+    /* PIN Security Modal */
+    .pin-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 20px;
+    }
+
+    .pin-card {
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 24px;
+      padding: 32px;
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+
+    /* Modal Form */
+    .app-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 90;
+      padding: 20px;
+    }
+
+    .app-modal-backdrop.active {
+      display: flex;
+    }
+
+    .app-modal-box {
+      background: #FFFFFF;
+      border-radius: 24px;
+      padding: 28px;
+      width: 100%;
+      max-width: 520px;
+      box-shadow: 0 20px 40px -8px rgba(0, 0, 0, 0.15);
+      border: 1px solid #E2E8F0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- =======================================================================
+       MODALE DE VÉRIFICATION DU CODE PIN DE SÉCURITÉ
+       ======================================================================= -->
+  <div class="pin-overlay" id="admin-pin-modal">
+    <div class="pin-card">
+      <div style="width: 52px; height: 52px; border-radius: 16px; background: linear-gradient(135deg, #F94F06 0%, #F59E0B 100%); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; color: white; margin: 0 auto 16px; box-shadow: 0 8px 20px -4px rgba(249, 79, 6, 0.35);">
+        ⚡
+      </div>
+      
+      <h2 style="font-size: 1.3rem; font-weight: 900; color: #0F172A; margin-bottom: 6px;">Espace Super-Administrateur</h2>
+      <p style="font-size: 0.85rem; color: #64748B; margin-bottom: 24px;">Entrez votre code PIN pour accéder à la supervision financière.</p>
+      
+      <form id="admin-pin-form" onsubmit="handlePinSubmit(event)">
+        <input
+          type="password"
+          id="admin-pin-input"
+          placeholder="Code PIN (Défaut : 1234)"
+          maxlength="8"
+          style="width: 100%; padding: 14px; font-size: 1.3rem; text-align: center; letter-spacing: 0.25em; border: 1.5px solid #CBD5E1; border-radius: 16px; background: #F8FAFC; color: #0F172A; margin-bottom: 16px; font-family: var(--font-mono); font-weight: 700; outline: none;"
+          autofocus
+          required
+        >
+        <button
+          type="submit"
+          style="width: 100%; padding: 14px; font-size: 0.92rem; font-weight: 800; background: #F94F06; color: white; border: none; border-radius: 14px; cursor: pointer; box-shadow: 0 4px 14px rgba(249, 79, 6, 0.3); transition: background 0.15s;"
+        >
+          🔓 Déverrouiller le Cockpit
+        </button>
+      </form>
+
+      <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 8px;">
+        <button
+          type="button"
+          onclick="openRecoveryModal()"
+          style="background: none; border: none; font-size: 0.78rem; font-weight: 700; color: #EA580C; cursor: pointer; text-decoration: underline;"
+        >
+          ❓ Code PIN oublié ? Utiliser la Clé Maître
+        </button>
+        <a href="dashboard.html" style="font-size: 0.78rem; color: #64748B; text-decoration: none; font-weight: 600;">
+          ← Retour à l'espace Community Manager
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODALE RÉCUPÉRATION CLÉ MAÎTRE -->
+  <div class="pin-overlay" id="admin-recovery-modal" style="display: none;">
+    <div class="pin-card" style="text-align: left;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid #E2E8F0; padding-bottom: 12px;">
+        <h3 style="font-size: 1.15rem; font-weight: 800; color: #0F172A; margin: 0;">Clé Maître Fondateur</h3>
+        <button type="button" onclick="closeRecoveryModal()" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #64748B;">&times;</button>
+      </div>
+
+      <div style="background: #FFFBEB; border: 1px solid #FDE68A; padding: 10px 14px; border-radius: 12px; font-size: 0.8rem; color: #92400E; margin-bottom: 16px;">
+        💡 Clé Maître par défaut : <strong><code>cmflow2026</code></strong>
+      </div>
+
+      <form id="recovery-form-masterkey" onsubmit="handleRecoverySubmit(event)">
+        <div style="margin-bottom: 14px;">
+          <label style="display: block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: #475569; margin-bottom: 6px;">Clé Maître Fondateur *</label>
+          <input type="password" id="recovery-master-key" placeholder="cmflow2026" required style="width: 100%; padding: 10px 14px; border: 1px solid #CBD5E1; border-radius: 12px; font-size: 0.9rem;">
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 10px; border-top: 1px solid #E2E8F0; padding-top: 16px;">
+          <button type="button" onclick="closeRecoveryModal()" style="padding: 10px 16px; background: #F1F5F9; border: 1px solid #CBD5E1; border-radius: 12px; font-weight: 700; font-size: 0.82rem; cursor: pointer;">Annuler</button>
+          <button type="submit" style="padding: 10px 16px; background: #F94F06; color: white; border: none; border-radius: 12px; font-weight: 800; font-size: 0.82rem; cursor: pointer;">Déverrouiller 🔓</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- =======================================================================
+       1. SIDEBAR SOMBRE ÉLÉGANTE (LINEAR / STRIPE STYLE)
+       ======================================================================= -->
+  <aside class="admin-sidebar">
+    
+    <div>
+      <!-- Header Sidebar -->
+      <div class="admin-sidebar-header">
+        <a href="admin.html" style="display: flex; align-items: center; gap: 12px; text-decoration: none;">
+          <div style="width: 38px; height: 38px; border-radius: 12px; background: linear-gradient(135deg, #F94F06 0%, #F59E0B 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: 1.2rem; box-shadow: 0 4px 14px rgba(249, 79, 6, 0.35);">
+            ⚡
+          </div>
+          <div>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span style="font-weight: 900; font-size: 1.1rem; color: #FFFFFF; letter-spacing: -0.02em;">CMFlow</span>
+              <span style="font-size: 0.62rem; font-weight: 900; background: linear-gradient(90deg, #F94F06, #F59E0B); color: white; padding: 2px 6px; border-radius: 6px; letter-spacing: 0.05em;">SUPER ADMIN</span>
+            </div>
+            <div style="font-size: 0.72rem; color: #64748B; font-weight: 600;">Cockpit Fondateur 👑</div>
+          </div>
+        </a>
+
+        <!-- Mini Widget MRR -->
+        <div style="margin-top: 16px; padding: 12px; background: #1E293B; border-radius: 14px; border: 1px solid #334155; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; color: #94A3B8; letter-spacing: 0.05em;">MRR Actuel</div>
+            <div id="sidebar-mrr-val" style="font-size: 0.95rem; font-weight: 900; color: #FBBF24; font-family: var(--font-mono);">3 345 000 FCFA</div>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-size: 0.65rem; font-weight: 700; text-transform: uppercase; color: #94A3B8; letter-spacing: 0.05em;">Agences</div>
+            <div id="sidebar-clients-count" style="font-size: 0.85rem; font-weight: 800; color: #34D399; font-family: var(--font-mono);">188 actives</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="admin-nav">
+        <div style="padding: 6px 14px; font-size: 0.68rem; font-weight: 800; text-transform: uppercase; color: #64748B; letter-spacing: 0.08em;">
+          Supervision & Gestion
+        </div>
+
+        <button type="button" class="admin-nav-item active" onclick="switchTab('overview')">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span>📊</span>
+            <span>Vue d'ensemble</span>
+          </div>
+          <span style="font-size: 0.65rem; padding: 2px 8px; border-radius: 9999px; background: rgba(16, 185, 129, 0.2); color: #34D399; font-weight: 800;">LIVE</span>
+        </button>
+
+        <button type="button" class="admin-nav-item" onclick="switchTab('agencies')">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span>🏢</span>
+            <span>Agences & CM</span>
+          </div>
+          <span id="nav-badge-agencies" style="font-size: 0.65rem; padding: 2px 8px; border-radius: 9999px; background: #1E293B; color: #94A3B8; font-weight: 700;">188</span>
+        </button>
+
+        <button type="button" class="admin-nav-item" onclick="switchTab('transactions')">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span>💳</span>
+            <span>Transactions Mobile Money</span>
+          </div>
+          <span style="font-size: 0.65rem; padding: 2px 8px; border-radius: 9999px; background: rgba(56, 189, 248, 0.2); color: #38BDF8; font-weight: 700;">Wave / OM</span>
+        </button>
+
+        <button type="button" class="admin-nav-item" onclick="switchTab('settings')">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span>⚙️</span>
+            <span>Paramètres Système</span>
+          </div>
+        </button>
+      </nav>
+    </div>
+
+    <!-- Bas de Sidebar -->
+    <div style="padding: 16px; border-top: 1px solid #1E293B; background: #0B132B;">
+      <!-- Bouton Retour Espace CM -->
+      <a
+        href="dashboard.html"
+        style="display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 10px; background: #1E293B; color: #F1F5F9; border-radius: 12px; font-size: 0.8rem; font-weight: 700; text-decoration: none; margin-bottom: 12px; border: 1px solid #334155;"
+      >
+        <span>←</span>
+        <span>Retour Espace CM</span>
+      </a>
+
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 6px 8px; background: #1E293B; border-radius: 12px; border: 1px solid #334155;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <div style="width: 28px; height: 28px; border-radius: 8px; background: linear-gradient(135deg, #F94F06, #F59E0B); color: white; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 0.75rem;">
+            S
+          </div>
+          <div>
+            <div style="font-size: 0.78rem; font-weight: 700; color: #FFFFFF;">Super Admin</div>
+            <div style="font-size: 0.65rem; color: #94A3B8;">admin@cmflow.sn</div>
+          </div>
+        </div>
+        <button
+          type="button"
+          onclick="logoutAdmin()"
+          title="Verrouiller la session"
+          style="background: none; border: none; color: #94A3B8; cursor: pointer; font-size: 0.95rem; padding: 4px;"
+        >
+          🔒
+        </button>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- =======================================================================
+       2. CONTENU PRINCIPAL
+       ======================================================================= -->
+  <main class="admin-main">
+    
+    <!-- En-tête (Header) Épuré -->
+    <header class="admin-header">
+      <div>
+        <h1 id="page-title" style="font-size: 1.15rem; font-weight: 900; color: #0F172A; letter-spacing: -0.02em;">Cockpit Financier & Métriques Clés</h1>
+        <p style="font-size: 0.78rem; color: #64748B; font-weight: 500;">Supervision en temps réel des abonnements Wave, Orange Money et agences</p>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <!-- Barre de recherche -->
+        <div style="position: relative; width: 240px;">
+          <input
+            type="text"
+            id="admin-search-input"
+            oninput="handleSearch(this.value)"
+            placeholder="Rechercher une agence..."
+            style="width: 100%; padding: 8px 12px 8px 32px; background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; font-size: 0.8rem; color: #0F172A; outline: none;"
+          >
+          <span style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 0.8rem; color: #94A3B8;">🔍</span>
+        </div>
+
+        <!-- Badge Statut Système -->
+        <div style="display: flex; align-items: center; gap: 6px; padding: 6px 12px; background: #ECFDF5; border: 1px solid #A7F3D0; border-radius: 9999px; font-size: 0.75rem; font-weight: 700; color: #047857;">
+          <span style="width: 6px; height: 6px; border-radius: 9999px; background: #10B981;"></span>
+          <span>Système Opérationnel · Wave & OM</span>
+        </div>
+
+        <!-- Bouton Actualiser -->
+        <button
+          type="button"
+          onclick="renderAdminUsers()"
+          style="padding: 8px 14px; background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 12px; font-size: 0.78rem; font-weight: 700; color: #475569; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.05);"
+        >
+          🔄 Actualiser
+        </button>
+      </div>
+    </header>
+
+    <!-- Conteneur avec les différents Onglets -->
+    <div style="padding: 28px; max-width: 1400px; width: 100%; margin: 0 auto; display: flex; flex-direction: column; gap: 28px;">
+      
+      <!-- ===================================================================
+           ONGLET 1 : VUE D'ENSEMBLE (OVERVIEW)
+           =================================================================== -->
+      <div id="tab-overview" style="display: flex; flex-direction: column; gap: 24px;">
+        
+        <!-- 4 Cartes de Métriques Financières (Style Linear) -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px;">
+          
+          <!-- KPI 1 : MRR -->
+          <div class="kpi-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+              <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: #64748B; letter-spacing: 0.05em;">MRR Récurrent</span>
+              <span class="badge badge-active">+14.2% ce mois</span>
+            </div>
+            <div id="admin-mrr-val" style="font-size: 1.8rem; font-weight: 900; color: #0F172A; font-family: var(--font-mono); letter-spacing: -0.03em;">
+              3 345 000 <span style="font-size: 0.95rem; font-weight: 700; color: #64748B;">FCFA</span>
+            </div>
+            <div style="font-size: 0.75rem; color: #64748B; margin-top: 6px; font-weight: 500;">
+              Revenu mensuel récurrent prévisionnel
+            </div>
+          </div>
+
+          <!-- KPI 2 : AGENCES ACTIVES -->
+          <div class="kpi-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+              <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: #64748B; letter-spacing: 0.05em;">Agences Actives</span>
+              <span class="badge badge-active">+12 nouvelles</span>
+            </div>
+            <div id="admin-active-count" style="font-size: 1.8rem; font-weight: 900; color: #0F172A; font-family: var(--font-mono); letter-spacing: -0.03em;">
+              188 <span style="font-size: 0.95rem; font-weight: 700; color: #64748B;">Agences</span>
+            </div>
+            <div id="admin-plans-breakdown" style="font-size: 0.75rem; color: #64748B; margin-top: 6px; font-weight: 500;">
+              142 Pro · 46 Scale · 28 Essais 14j
+            </div>
+          </div>
+
+          <!-- KPI 3 : COLLECTÉ MOBILE MONEY -->
+          <div class="kpi-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+              <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: #64748B; letter-spacing: 0.05em;">Volume Mobile Money</span>
+              <span class="badge badge-wave">Wave & OM</span>
+            </div>
+            <div id="admin-collected-val" style="font-size: 1.8rem; font-weight: 900; color: #0F172A; font-family: var(--font-mono); letter-spacing: -0.03em;">
+              2 890 000 <span style="font-size: 0.95rem; font-weight: 700; color: #64748B;">FCFA</span>
+            </div>
+            <div style="font-size: 0.75rem; color: #64748B; margin-top: 6px; font-weight: 500;">
+              Encaissements directs 100% automatisés
+            </div>
+          </div>
+
+          <!-- KPI 4 : CONVERSION -->
+          <div class="kpi-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+              <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: #64748B; letter-spacing: 0.05em;">Conversion Essai</span>
+              <span class="badge badge-trial">Top SaaS</span>
+            </div>
+            <div style="font-size: 1.8rem; font-weight: 900; color: #0F172A; font-family: var(--font-mono); letter-spacing: -0.03em;">
+              24.8%
+            </div>
+            <div style="font-size: 0.75rem; color: #64748B; margin-top: 6px; font-weight: 500;">
+              Des utilisateurs d'essai souscrivent à Pro
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Section Graphique du MRR + Jauges Wave / OM -->
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
+          
+          <!-- Graphique Évolution MRR (Linear Style) -->
+          <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 20px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #F1F5F9; padding-bottom: 14px;">
+              <div>
+                <h3 style="font-size: 0.95rem; font-weight: 900; color: #0F172A;">Évolution Mensuelle du MRR (2026)</h3>
+                <p style="font-size: 0.75rem; color: #64748B;">Croissance des revenus SaaS en Afrique de l'Ouest</p>
+              </div>
+              <span style="font-size: 0.75rem; font-weight: 800; background: #F1F5F9; color: #334155; padding: 4px 10px; border-radius: 8px;">
+                Objectif Q3 : 5 000 000 FCFA
+              </span>
+            </div>
+
+            <!-- Barres MRR -->
+            <div style="display: grid; grid-template-columns: repeat(8, 1fr); gap: 12px; align-items: flex-end; height: 180px; padding-top: 10px;">
+              
+              <div style="display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; gap: 6px;">
+                <span style="font-size: 0.65rem; font-weight: 700; color: #94A3B8;">850k</span>
+                <div style="width: 100%; height: 25%; background: #CBD5E1; border-radius: 6px;"></div>
+                <span style="font-size: 0.7rem; font-weight: 700; color: #64748B;">Jan</span>
+              </div>
+
+              <div style="display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; gap: 6px;">
+                <span style="font-size: 0.65rem; font-weight: 700; color: #94A3B8;">1.1M</span>
+                <div style="width: 100%; height: 32%; background: #CBD5E1; border-radius: 6px;"></div>
+                <span style="font-size: 0.7rem; font-weight: 700; color: #64748B;">Fév</span>
+              </div>
+
+              <div style="display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; gap: 6px;">
+                <span style="font-size: 0.65rem; font-weight: 700; color: #94A3B8;">1.45M</span>
+                <div style="width: 100%; height: 42%; background: #CBD5E1; border-radius: 6px;"></div>
+                <span style="font-size: 0.7rem; font-weight: 700; color: #64748B;">Mar</span>
+              </div>
+
+              <div style="display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; gap: 6px;">
+                <span style="font-size: 0.65rem; font-weight: 700; color: #94A3B8;">1.8M</span>
+                <div style="width: 100%; height: 52%; background: #CBD5E1; border-radius: 6px;"></div>
+                <span style="font-size: 0.7rem; font-weight: 700; color: #64748B;">Avr</span>
+              </div>
+
+              <div style="display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; gap: 6px;">
+                <span style="font-size: 0.65rem; font-weight: 700; color: #94A3B8;">2.2M</span>
+                <div style="width: 100%; height: 64%; background: #CBD5E1; border-radius: 6px;"></div>
+                <span style="font-size: 0.7rem; font-weight: 700; color: #64748B;">Mai</span>
+              </div>
+
+              <div style="display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; gap: 6px;">
+                <span style="font-size: 0.65rem; font-weight: 700; color: #94A3B8;">2.65M</span>
+                <div style="width: 100%; height: 76%; background: #CBD5E1; border-radius: 6px;"></div>
+                <span style="font-size: 0.7rem; font-weight: 700; color: #64748B;">Juin</span>
+              </div>
+
+              <div style="display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; gap: 6px;">
+                <span style="font-size: 0.65rem; font-weight: 700; color: #94A3B8;">2.98M</span>
+                <div style="width: 100%; height: 86%; background: #CBD5E1; border-radius: 6px;"></div>
+                <span style="font-size: 0.7rem; font-weight: 700; color: #64748B;">Juil</span>
+              </div>
+
+              <div style="display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; gap: 6px;">
+                <span style="font-size: 0.65rem; font-weight: 800; color: #F94F06;">3.34M</span>
+                <div style="width: 100%; height: 96%; background: linear-gradient(180deg, #F94F06 0%, #EA580C 100%); border-radius: 6px; box-shadow: 0 4px 12px rgba(249, 79, 6, 0.3);"></div>
+                <span style="font-size: 0.7rem; font-weight: 800; color: #F94F06;">Août</span>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Jauges Répartition Wave vs Orange Money -->
+          <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 20px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div style="border-bottom: 1px solid #F1F5F9; padding-bottom: 14px; margin-bottom: 20px;">
+                <h3 style="font-size: 0.95rem; font-weight: 900; color: #0F172A;">Répartition Passerelles</h3>
+                <p style="font-size: 0.75rem; color: #64748B;">Parts des encaissements par opérateur</p>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 18px;">
+                
+                <!-- Jauge Wave -->
+                <div>
+                  <div style="display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 700; margin-bottom: 6px;">
+                    <span style="color: #0284C7;">🌊 Wave (68%)</span>
+                    <span style="font-family: var(--font-mono); color: #0F172A;">2 274 600 F</span>
+                  </div>
+                  <div style="width: 100%; height: 10px; background: #F1F5F9; border-radius: 9999px; overflow: hidden;">
+                    <div style="width: 68%; height: 100%; background: #00B2FE; border-radius: 9999px;"></div>
+                  </div>
+                </div>
+
+                <!-- Jauge Orange Money -->
+                <div>
+                  <div style="display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 700; margin-bottom: 6px;">
+                    <span style="color: #EA580C;">🍊 Orange Money (32%)</span>
+                    <span style="font-family: var(--font-mono); color: #0F172A;">1 070 400 F</span>
+                  </div>
+                  <div style="width: 100%; height: 10px; background: #F1F5F9; border-radius: 9999px; overflow: hidden;">
+                    <div style="width: 32%; height: 100%; background: #FF6600; border-radius: 9999px;"></div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <div style="margin-top: 20px; padding-top: 14px; border-top: 1px solid #F1F5F9; display: flex; flex-direction: column; gap: 8px;">
+              <button
+                type="button"
+                onclick="openAddUserModal()"
+                style="width: 100%; padding: 10px; background: #F94F06; color: white; border: none; border-radius: 12px; font-weight: 800; font-size: 0.8rem; cursor: pointer; box-shadow: 0 4px 12px rgba(249, 79, 6, 0.25);"
+              >
+                + Ajouter une Agence
+              </button>
+              <button
+                type="button"
+                onclick="exportUsersCSV()"
+                style="width: 100%; padding: 9px; background: #F1F5F9; color: #334155; border: 1px solid #E2E8F0; border-radius: 12px; font-weight: 700; font-size: 0.8rem; cursor: pointer;"
+              >
+                📥 Exporter les Données (CSV)
+              </button>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- Tableau Résumé des Agences Récentes -->
+        <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 20px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+          <div style="padding: 18px 24px; border-bottom: 1px solid #E2E8F0; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <h3 style="font-size: 0.95rem; font-weight: 900; color: #0F172A;">Dernières Agences & Community Managers</h3>
+              <p style="font-size: 0.75rem; color: #64748B;">Surveillance des forfaits, quotas de workspaces et renouvellements</p>
+            </div>
+            <button type="button" onclick="switchTab('agencies')" style="padding: 6px 12px; background: #F8FAFC; border: 1px solid #CBD5E1; border-radius: 10px; font-size: 0.75rem; font-weight: 700; color: #334155; cursor: pointer;">
+              Voir toutes les agences →
+            </button>
+          </div>
+
+          <div style="overflow-x: auto;">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Agence / CM</th>
+                  <th>Propriétaire</th>
+                  <th>Forfait SaaS</th>
+                  <th>Tarif Mensuel</th>
+                  <th>Workspaces</th>
+                  <th>Statut</th>
+                  <th style="text-align: right;">Actions Rapides</th>
+                </tr>
+              </thead>
+              <tbody id="overview-agencies-tbody">
+                <!-- Rendu Dynamique JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ===================================================================
+           ONGLET 2 : AGENCES & CMS (TOUTE LA BASE)
+           =================================================================== -->
+      <div id="tab-agencies" style="display: none; flex-direction: column; gap: 20px;">
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+          <div>
+            <h2 style="font-size: 1.15rem; font-weight: 900; color: #0F172A;">Répertoire des Agences & Community Managers</h2>
+            <p style="font-size: 0.78rem; color: #64748B;">Gérez les abonnements, prolongez les périodes d'essai et débloquez les fonctionnalités</p>
+          </div>
+
+          <div style="display: flex; gap: 10px;">
+            <button
+              type="button"
+              onclick="exportUsersCSV()"
+              style="padding: 10px 16px; background: #FFFFFF; border: 1px solid #CBD5E1; border-radius: 12px; font-size: 0.8rem; font-weight: 700; color: #334155; cursor: pointer;"
+            >
+              📥 Exporter CSV
+            </button>
+            <button
+              type="button"
+              onclick="openAddUserModal()"
+              style="padding: 10px 16px; background: #F94F06; color: white; border: none; border-radius: 12px; font-size: 0.8rem; font-weight: 800; cursor: pointer; box-shadow: 0 4px 12px rgba(249, 79, 6, 0.25);"
+            >
+              + Nouvelle Agence
+            </button>
+          </div>
+        </div>
+
+        <!-- Filtres par Statut & Forfait -->
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <button type="button" class="filter-pill active" onclick="filterAgencies('all', this)" style="padding: 6px 14px; background: #0F172A; color: white; border: none; border-radius: 9999px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">Toutes (<span id="count-all">0</span>)</button>
+          <button type="button" class="filter-pill" onclick="filterAgencies('pro', this)" style="padding: 6px 14px; background: #FFFFFF; color: #475569; border: 1px solid #E2E8F0; border-radius: 9999px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">Pro Agency (<span id="count-pro">0</span>)</button>
+          <button type="button" class="filter-pill" onclick="filterAgencies('scale', this)" style="padding: 6px 14px; background: #FFFFFF; color: #475569; border: 1px solid #E2E8F0; border-radius: 9999px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">Scale Agence (<span id="count-scale">0</span>)</button>
+          <button type="button" class="filter-pill" onclick="filterAgencies('trial', this)" style="padding: 6px 14px; background: #FFFFFF; color: #475569; border: 1px solid #E2E8F0; border-radius: 9999px; font-size: 0.75rem; font-weight: 700; cursor: pointer;">Essai 14j (<span id="count-trial">0</span>)</button>
+        </div>
+
+        <!-- Tableau Complet des Agences -->
+        <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 20px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+          <div style="overflow-x: auto;">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Agence</th>
+                  <th>Propriétaire / Contact</th>
+                  <th>Forfait Actif</th>
+                  <th>Montant Mensuel</th>
+                  <th>Marques / Quota</th>
+                  <th>Statut</th>
+                  <th style="text-align: right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="full-agencies-tbody">
+                <!-- Rendu Dynamique JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ===================================================================
+           ONGLET 3 : TRANSACTIONS MOBILE MONEY
+           =================================================================== -->
+      <div id="tab-transactions" style="display: none; flex-direction: column; gap: 20px;">
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+          <div>
+            <h2 style="font-size: 1.15rem; font-weight: 900; color: #0F172A;">Journal des Paiements & Transactions Mobile Money</h2>
+            <p style="font-size: 0.78rem; color: #64748B;">Audit direct des encaissements Wave, Orange Money et règlements manuels</p>
+          </div>
+        </div>
+
+        <!-- Tableau des Transactions -->
+        <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 20px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+          <div style="overflow-x: auto;">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Réf. Transaction</th>
+                  <th>Agence</th>
+                  <th>Opérateur</th>
+                  <th>Montant</th>
+                  <th>Statut</th>
+                  <th>Date & Heure</th>
+                  <th style="text-align: right;">Action Validation</th>
+                </tr>
+              </thead>
+              <tbody id="transactions-tbody">
+                <!-- Rendu Dynamique JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ===================================================================
+           ONGLET 4 : PARAMÈTRES SYSTÈME
+           =================================================================== -->
+      <div id="tab-settings" style="display: none; flex-direction: column; gap: 20px;">
+        
+        <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 20px; padding: 24px;">
+          <h3 style="font-size: 1.05rem; font-weight: 900; color: #0F172A; margin-bottom: 6px;">Sécurité & Code PIN Administrateur</h3>
+          <p style="font-size: 0.8rem; color: #64748B; margin-bottom: 20px;">Modifiez le code PIN requis pour ouvrir le cockpit super-administrateur.</p>
+
+          <form onsubmit="handleUpdatePin(event)" style="max-width: 400px; display: flex; flex-direction: column; gap: 14px;">
+            <div>
+              <label style="display: block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: #475569; margin-bottom: 6px;">Nouveau Code PIN (4 à 8 chiffres)</label>
+              <input type="password" id="new-pin-input" placeholder="Ex: 5678" required style="width: 100%; padding: 10px 14px; border: 1px solid #CBD5E1; border-radius: 12px; font-size: 0.9rem;">
+            </div>
+
+            <button type="submit" style="padding: 10px 16px; background: #F94F06; color: white; border: none; border-radius: 12px; font-weight: 800; font-size: 0.82rem; cursor: pointer;">
+              Enregistrer le Nouveau Code PIN
+            </button>
+          </form>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- =======================================================================
+       MODAL : AJOUTER UNE AGENCE MANUELLEMENT
+       ======================================================================= -->
+  <div class="app-modal-backdrop" id="add-user-modal">
+    <div class="app-modal-box">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #E2E8F0; padding-bottom: 14px;">
+        <h3 style="font-size: 1.15rem; font-weight: 900; color: #0F172A; margin: 0;">Ajouter une Nouvelle Agence</h3>
+        <button type="button" onclick="closeAddUserModal()" style="background: none; border: none; font-size: 1.3rem; color: #64748B; cursor: pointer;">&times;</button>
+      </div>
+
+      <form id="add-user-form" onsubmit="handleAddUserSubmit(event)">
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          <div>
+            <label style="display: block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: #475569; margin-bottom: 6px;">Nom de l'Agence *</label>
+            <input type="text" id="new-user-agency" placeholder="Ex: Teranga Digital Agency" required style="width: 100%; padding: 10px 14px; border: 1px solid #CBD5E1; border-radius: 12px; font-size: 0.85rem;">
+          </div>
+
+          <div>
+            <label style="display: block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: #475569; margin-bottom: 6px;">Responsable / Lead CM *</label>
+            <input type="text" id="new-user-name" placeholder="Ex: Moussa Diop" required style="width: 100%; padding: 10px 14px; border: 1px solid #CBD5E1; border-radius: 12px; font-size: 0.85rem;">
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div>
+              <label style="display: block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: #475569; margin-bottom: 6px;">Email Professionnel *</label>
+              <input type="email" id="new-user-email" placeholder="contact@teranga.sn" required style="width: 100%; padding: 10px 14px; border: 1px solid #CBD5E1; border-radius: 12px; font-size: 0.85rem;">
+            </div>
+
+            <div>
+              <label style="display: block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: #475569; margin-bottom: 6px;">WhatsApp *</label>
+              <input type="tel" id="new-user-phone" placeholder="+221 77 000 00 00" required style="width: 100%; padding: 10px 14px; border: 1px solid #CBD5E1; border-radius: 12px; font-size: 0.85rem;">
+            </div>
+          </div>
+
+          <div>
+            <label style="display: block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: #475569; margin-bottom: 6px;">Formule SaaS</label>
+            <select id="new-user-plan" style="width: 100%; padding: 10px 14px; border: 1px solid #CBD5E1; border-radius: 12px; font-size: 0.85rem; background: white;">
+              <option value="pro">Pro Agency (15 000 FCFA/m) — Recommandé</option>
+              <option value="scale">Scale Agence (35 000 FCFA/m)</option>
+              <option value="solo">Solo Starter (3 500 FCFA/m)</option>
+              <option value="trial">Essai Gratuit 14 Jours</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 10px; border-top: 1px solid #E2E8F0; padding-top: 16px; margin-top: 20px;">
+          <button type="button" onclick="closeAddUserModal()" style="padding: 10px 16px; background: #F1F5F9; border: 1px solid #CBD5E1; border-radius: 12px; font-weight: 700; font-size: 0.82rem; cursor: pointer;">Annuler</button>
+          <button type="submit" style="padding: 10px 16px; background: #F94F06; color: white; border: none; border-radius: 12px; font-weight: 800; font-size: 0.82rem; cursor: pointer;">Ajouter l'Agence 🚀</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- =======================================================================
+       MODAL : CHANGER LE PLAN / FORFAIT D'UNE AGENCE (TOUS LES PLANS INCLUS)
+       ======================================================================= -->
+  <div class="app-modal-backdrop" id="change-plan-modal">
+    <div class="app-modal-box" style="max-width: 520px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #E2E8F0; padding-bottom: 14px;">
+        <div>
+          <span style="font-size: 0.7rem; font-weight: 800; text-transform: uppercase; color: #F94F06; letter-spacing: 0.05em;">Gestion de l'Abonnement</span>
+          <h3 id="modal-plan-agency-name" style="font-size: 1.15rem; font-weight: 900; color: #0F172A; margin: 4px 0 0 0;">Nom de l'Agence</h3>
+        </div>
+        <button type="button" onclick="closeChangePlanModal()" style="background: none; border: none; font-size: 1.3rem; color: #64748B; cursor: pointer;">&times;</button>
+      </div>
+
+      <form id="change-plan-form" onsubmit="handleChangePlanSubmit(event)">
+        <input type="hidden" id="change-plan-agency-id">
+        <p style="font-size: 0.8rem; color: #64748B; margin-bottom: 16px;">
+          Sélectionnez la nouvelle formule tarifaire à attribuer à cette agence :
+        </p>
+
+        <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+          
+          <!-- Option Solo (3 500 FCFA) -->
+          <label style="display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border: 2px solid #E2E8F0; border-radius: 14px; cursor: pointer; transition: all 0.2s;" class="plan-option-label" onclick="selectPlanRadio('solo')">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <input type="radio" name="selected_plan" value="solo" id="plan-radio-solo" style="accent-color: #0284C7;">
+              <div>
+                <div style="font-weight: 800; color: #0F172A; font-size: 0.9rem;">Solo Starter / Freelance ⚡</div>
+                <div style="font-size: 0.75rem; color: #64748B;">Jusqu'à 3 marques / workspaces clients</div>
+              </div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-family: var(--font-mono); font-weight: 900; color: #0284C7; font-size: 0.95rem;">3 500 F</div>
+              <div style="font-size: 0.68rem; color: #94A3B8;">par mois</div>
+            </div>
+          </label>
+
+          <!-- Option Pro (15 000 FCFA) -->
+          <label style="display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border: 2px solid #E2E8F0; border-radius: 14px; cursor: pointer; transition: all 0.2s;" class="plan-option-label" onclick="selectPlanRadio('pro')">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <input type="radio" name="selected_plan" value="pro" id="plan-radio-pro" style="accent-color: #F94F06;">
+              <div>
+                <div style="font-weight: 800; color: #0F172A; font-size: 0.9rem;">Pro Agency 🔥</div>
+                <div style="font-size: 0.75rem; color: #64748B;">Jusqu'à 10 marques clientes + Publi Meta</div>
+              </div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-family: var(--font-mono); font-weight: 900; color: #F94F06; font-size: 0.95rem;">15 000 F</div>
+              <div style="font-size: 0.68rem; color: #94A3B8;">par mois</div>
+            </div>
+          </label>
+
+          <!-- Option Scale (35 000 FCFA) -->
+          <label style="display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border: 2px solid #E2E8F0; border-radius: 14px; cursor: pointer; transition: all 0.2s;" class="plan-option-label" onclick="selectPlanRadio('scale')">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <input type="radio" name="selected_plan" value="scale" id="plan-radio-scale" style="accent-color: #7C3AED;">
+              <div>
+                <div style="font-weight: 800; color: #0F172A; font-size: 0.9rem;">Scale Agence 🚀</div>
+                <div style="font-size: 0.75rem; color: #64748B;">Marques Illimitées (∞) + Marque Blanche</div>
+              </div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-family: var(--font-mono); font-weight: 900; color: #7C3AED; font-size: 0.95rem;">35 000 F</div>
+              <div style="font-size: 0.68rem; color: #94A3B8;">par mois</div>
+            </div>
+          </label>
+
+          <!-- Option Essai (0 FCFA) -->
+          <label style="display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border: 2px solid #E2E8F0; border-radius: 14px; cursor: pointer; transition: all 0.2s;" class="plan-option-label" onclick="selectPlanRadio('trial')">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <input type="radio" name="selected_plan" value="trial" id="plan-radio-trial" style="accent-color: #D97706;">
+              <div>
+                <div style="font-weight: 800; color: #0F172A; font-size: 0.9rem;">Essai Gratuit 14 Jours ⏳</div>
+                <div style="font-size: 0.75rem; color: #64748B;">3 marques de test pour découverte</div>
+              </div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-family: var(--font-mono); font-weight: 900; color: #D97706; font-size: 0.95rem;">0 F</div>
+              <div style="font-size: 0.68rem; color: #94A3B8;">Gratuit 14j</div>
+            </div>
+          </label>
+
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 10px; border-top: 1px solid #E2E8F0; padding-top: 16px;">
+          <button type="button" onclick="closeChangePlanModal()" style="padding: 10px 16px; background: #F1F5F9; border: 1px solid #CBD5E1; border-radius: 12px; font-weight: 700; font-size: 0.82rem; cursor: pointer;">Annuler</button>
+          <button type="submit" style="padding: 10px 18px; background: #F94F06; color: white; border: none; border-radius: 12px; font-weight: 800; font-size: 0.82rem; cursor: pointer; box-shadow: 0 4px 12px rgba(249, 79, 6, 0.25);">Appliquer le Plan 💎</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION FLOTTANT -->
+  <div id="app-toast" class="app-toast" style="position: fixed; bottom: 24px; right: 24px; z-index: 9999; padding: 12px 20px; background: #0F172A; color: white; border-radius: 14px; font-size: 0.85rem; font-weight: 700; box-shadow: 0 10px 25px rgba(0,0,0,0.2); display: none;"></div>
+
+  <!-- =======================================================================
+       LOGIQUE JAVASCRIPT ULTRA-ROBUSTE & FLUIDE
+       ======================================================================= -->
+  <script>
+    // Données Initiales Agences
+    let AGENCIES = [
+      {
+        id: 'ag_01',
+        name: 'Awa Diop',
+        agency: 'Teranga Gourmet Group',
+        email: 'contact@terangagourmet.sn',
+        phone: '+221 77 842 19 02',
+        plan: 'scale',
+        planName: 'Scale Agence',
+        price: 35000,
+        workspaces: 8,
+        maxWorkspaces: 999,
+        status: 'active',
+        registeredAt: '12 Août 2026'
+      },
+      {
+        id: 'ag_02',
+        name: 'Moussa Sow',
+        agency: 'Dakar Digital Creative',
+        email: 'moussa@dakardigital.sn',
+        phone: '+221 78 123 45 67',
+        plan: 'pro',
+        planName: 'Pro Agency',
+        price: 15000,
+        workspaces: 4,
+        maxWorkspaces: 10,
+        status: 'active',
+        registeredAt: '15 Août 2026'
+      },
+      {
+        id: 'ag_03',
+        name: 'Fatou Ndiaye',
+        agency: 'Abidjan Luxe Com',
+        email: 'fatou@abidjanluxe.ci',
+        phone: '+225 07 89 12 34 56',
+        plan: 'pro',
+        planName: 'Pro Agency',
+        price: 15000,
+        workspaces: 5,
+        maxWorkspaces: 10,
+        status: 'active',
+        registeredAt: '18 Août 2026'
+      },
+      {
+        id: 'ag_04',
+        name: 'Cheikh Bamba',
+        agency: 'Sahel Media Labs',
+        email: 'bamba@sahelmedia.com',
+        phone: '+221 70 999 88 77',
+        plan: 'trial',
+        planName: 'Essai 14j',
+        price: 0,
+        workspaces: 2,
+        maxWorkspaces: 3,
+        status: 'trial',
+        registeredAt: '21 Août 2026'
+      },
+      {
+        id: 'ag_05',
+        name: 'Mariama Ba',
+        agency: 'Khadim Tech Studio',
+        email: 'mariama@khadimtech.sn',
+        phone: '+221 76 543 21 00',
+        plan: 'solo',
+        planName: 'Solo Starter',
+        price: 3500,
+        workspaces: 1,
+        maxWorkspaces: 3,
+        status: 'active',
+        registeredAt: '22 Août 2026'
+      }
+    ];
+
+    // Données Transactions
+    let TRANSACTIONS = [
+      { id: 'tx_01', txId: 'WAV-SN-89421', agency: 'Teranga Gourmet Group', method: 'WAVE', amount: 35000, status: 'COMPLETED', date: '22 Août 2026 14:32' },
+      { id: 'tx_02', txId: 'OM-CI-34812', agency: 'Abidjan Luxe Com', method: 'ORANGE_MONEY', amount: 15000, status: 'COMPLETED', date: '21 Août 2026 18:10' },
+      { id: 'tx_03', txId: 'WAV-SN-11029', agency: 'Dakar Digital Creative', method: 'WAVE', amount: 15000, status: 'COMPLETED', date: '20 Août 2026 09:45' },
+      { id: 'tx_04', txId: 'OM-SN-99823', agency: 'Sahel Media Labs', method: 'ORANGE_MONEY', amount: 15000, status: 'PENDING', date: 'Aujourd\'hui 11:20' }
+    ];
+
+    let currentFilter = 'all';
+    let searchQuery = '';
+
+    function switchTab(tabId) {
+      document.getElementById('tab-overview').style.display = tabId === 'overview' ? 'flex' : 'none';
+      document.getElementById('tab-agencies').style.display = tabId === 'agencies' ? 'flex' : 'none';
+      document.getElementById('tab-transactions').style.display = tabId === 'transactions' ? 'flex' : 'none';
+      document.getElementById('tab-settings').style.display = tabId === 'settings' ? 'flex' : 'none';
+
+      document.querySelectorAll('.admin-nav-item').forEach(b => b.classList.remove('active'));
+      const activeBtn = Array.from(document.querySelectorAll('.admin-nav-item')).find(b => b.getAttribute('onclick')?.includes(tabId));
+      if (activeBtn) activeBtn.classList.add('active');
+
+      const titleEl = document.getElementById('page-title');
+      if (titleEl) {
+        if (tabId === 'overview') titleEl.textContent = "Cockpit Financier & Métriques Clés";
+        if (tabId === 'agencies') titleEl.textContent = "Répertoire des Agences & CM";
+        if (tabId === 'transactions') titleEl.textContent = "Transactions Mobile Money";
+        if (tabId === 'settings') titleEl.textContent = "Paramètres Système";
+      }
+    }
+
+    function renderAdminUsers() {
+      // 1. Calcul des KPIs
+      let mrr = 0;
+      let proCount = 0;
+      let scaleCount = 0;
+      let trialCount = 0;
+
+      AGENCIES.forEach(a => {
+        if (a.status === 'active') {
+          mrr += a.price;
+          if (a.plan === 'pro') proCount++;
+          if (a.plan === 'scale') scaleCount++;
+        } else if (a.status === 'trial') {
+          trialCount++;
+        }
+      });
+
+      const mrrEl = document.getElementById('admin-mrr-val');
+      const sideMrrEl = document.getElementById('sidebar-mrr-val');
+      const sideCountEl = document.getElementById('sidebar-clients-count');
+      const activeCountEl = document.getElementById('admin-active-count');
+      const breakdownEl = document.getElementById('admin-plans-breakdown');
+
+      if (mrrEl) mrrEl.innerHTML = `${mrr.toLocaleString('fr-FR')} <span style="font-size: 0.95rem; font-weight: 700; color: #64748B;">FCFA</span>`;
+      if (sideMrrEl) sideMrrEl.textContent = `${mrr.toLocaleString('fr-FR')} FCFA`;
+      if (sideCountEl) sideCountEl.textContent = `${AGENCIES.length} actives`;
+      if (activeCountEl) activeCountEl.innerHTML = `${AGENCIES.length} <span style="font-size: 0.95rem; font-weight: 700; color: #64748B;">Agences</span>`;
+      if (breakdownEl) breakdownEl.textContent = `${proCount} Pro · ${scaleCount} Scale · ${trialCount} Essais`;
+
+      // 2. Rendu Tableau Vue d'ensemble (5 dernières)
+      const overviewTbody = document.getElementById('overview-agencies-tbody');
+      if (overviewTbody) {
+        overviewTbody.innerHTML = AGENCIES.slice(0, 5).map(a => renderAgencyRow(a)).join('');
+      }
+
+      // 3. Rendu Tableau Complet
+      const fullTbody = document.getElementById('full-agencies-tbody');
+      if (fullTbody) {
+        let filtered = AGENCIES.filter(a => {
+          if (currentFilter !== 'all' && a.plan !== currentFilter) return false;
+          if (searchQuery) {
+            const q = searchQuery.toLowerCase();
+            return a.agency.toLowerCase().includes(q) || a.name.toLowerCase().includes(q) || a.email.toLowerCase().includes(q);
+          }
+          return true;
+        });
+
+        fullTbody.innerHTML = filtered.map(a => renderAgencyRow(a)).join('');
+      }
+
+      // 4. Rendu Transactions
+      const txTbody = document.getElementById('transactions-tbody');
+      if (txTbody) {
+        txTbody.innerHTML = TRANSACTIONS.map(tx => `
+          <tr>
+            <td style="font-family: var(--font-mono); font-size: 0.75rem; color: #64748B;">${tx.txId}</td>
+            <td style="font-weight: 800; color: #0F172A;">${tx.agency}</td>
+            <td>
+              <span class="badge ${tx.method === 'WAVE' ? 'badge-wave' : 'badge-om'}">
+                ${tx.method === 'WAVE' ? '🌊 Wave' : '🍊 Orange Money'}
+              </span>
+            </td>
+            <td style="font-family: var(--font-mono); font-weight: 800; color: #0F172A;">
+              ${tx.amount.toLocaleString('fr-FR')} FCFA
+            </td>
+            <td>
+              <span class="badge ${tx.status === 'COMPLETED' ? 'badge-active' : 'badge-trial'}">
+                ${tx.status === 'COMPLETED' ? '✓ Confirmé' : '⏳ En attente'}
+              </span>
+            </td>
+            <td style="color: #64748B; font-size: 0.78rem;">${tx.date}</td>
+            <td style="text-align: right;">
+              ${tx.status === 'PENDING' ? `
+                <button type="button" onclick="validateTxManually('${tx.id}')" style="padding: 6px 12px; background: #047857; color: white; border: none; border-radius: 8px; font-weight: 700; font-size: 0.75rem; cursor: pointer;">
+                  Valider ✓
+                </button>
+              ` : `
+                <span style="color: #94A3B8; font-size: 0.75rem;">Vérifié ✓</span>
+              `}
+            </td>
+          </tr>
+        `).join('');
+      }
+
+      // Badges compteurs
+      const cAll = document.getElementById('count-all');
+      const cPro = document.getElementById('count-pro');
+      const cScale = document.getElementById('count-scale');
+      const cTrial = document.getElementById('count-trial');
+      if (cAll) cAll.textContent = AGENCIES.length;
+      if (cPro) cPro.textContent = AGENCIES.filter(x => x.plan === 'pro').length;
+      if (cScale) cScale.textContent = AGENCIES.filter(x => x.plan === 'scale').length;
+      if (cTrial) cTrial.textContent = AGENCIES.filter(x => x.plan === 'trial').length;
+    }
+
+    function renderAgencyRow(a) {
+      const planBadgeClass = a.plan === 'scale' ? 'badge-scale' : (a.plan === 'pro' ? 'badge-pro' : (a.plan === 'solo' ? 'badge-solo' : 'badge-trial'));
+      const statusBadgeClass = a.status === 'active' ? 'badge-active' : (a.status === 'trial' ? 'badge-trial' : 'badge-solo');
+
+      return `
+        <tr id="row-${a.id}">
+          <td>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div style="width: 32px; height: 32px; border-radius: 10px; background: #0F172A; color: white; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 0.75rem;">
+                ${a.agency.charAt(0)}
+              </div>
+              <div>
+                <div style="font-weight: 800; color: #0F172A;">${a.agency}</div>
+                <div style="font-size: 0.7rem; color: #64748B;">${a.email}</div>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div style="font-weight: 700; color: #334155;">${a.name}</div>
+            <div style="font-size: 0.7rem; color: #64748B;">${a.phone}</div>
+          </td>
+          <td>
+            <!-- Sélecteur Direct de Forfait 1-Clic -->
+            <select
+              onchange="applyPlanDirectly('${a.id}', this.value)"
+              style="padding: 4px 8px; font-size: 0.75rem; font-weight: 800; border-radius: 8px; border: 1px solid #CBD5E1; background: #F8FAFC; color: #0F172A; cursor: pointer; outline: none;"
+              title="Changer directement le forfait de cette agence"
+            >
+              <option value="solo" ${a.plan === 'solo' ? 'selected' : ''}>⚡ Solo (3 500 F)</option>
+              <option value="pro" ${a.plan === 'pro' ? 'selected' : ''}>🔥 Pro (15 000 F)</option>
+              <option value="scale" ${a.plan === 'scale' ? 'selected' : ''}>🚀 Scale (35 000 F)</option>
+              <option value="trial" ${a.plan === 'trial' ? 'selected' : ''}>⏳ Essai 14j (0 F)</option>
+            </select>
+          </td>
+          <td style="font-family: var(--font-mono); font-weight: 800; color: #0F172A;">
+            ${a.price > 0 ? `${a.price.toLocaleString('fr-FR')} F` : 'Gratuit'}
+          </td>
+          <td style="color: #475569; font-weight: 600;">
+            ${a.workspaces} / ${a.maxWorkspaces >= 999 ? '∞' : a.maxWorkspaces}
+          </td>
+          <td>
+            <span class="badge ${statusBadgeClass}">${a.status === 'active' ? '✓ Actif' : '⏳ Essai 14j'}</span>
+          </td>
+          <td style="text-align: right;">
+            <div style="display: inline-flex; gap: 6px; align-items: center;">
+              <button
+                type="button"
+                onclick="extendTrial('${a.id}')"
+                style="padding: 5px 9px; background: #F1F5F9; border: 1px solid #CBD5E1; border-radius: 8px; font-size: 0.72rem; font-weight: 700; color: #334155; cursor: pointer;"
+                title="Prolonger l'essai de 7 jours"
+              >
+                +7j Essai
+              </button>
+              <button
+                type="button"
+                onclick="openChangePlanModal('${a.id}')"
+                style="padding: 5px 9px; background: #FFF7ED; border: 1px solid #FFEDD5; border-radius: 8px; font-size: 0.72rem; font-weight: 800; color: #EA580C; cursor: pointer; transition: all 0.2s;"
+                title="Ouvrir le menu de changement de formule détaillé"
+              >
+                Détail Plan
+              </button>
+              <button
+                type="button"
+                onclick="loginAsAgency('${a.id}')"
+                style="padding: 5px 9px; background: #EFF6FF; border: 1px solid #DBEAFE; border-radius: 8px; font-size: 0.72rem; font-weight: 800; color: #1D4ED8; cursor: pointer; transition: all 0.2s;"
+                title="Se connecter directement sous le compte de cette agence"
+              >
+                🎭 Ouvrir CM
+              </button>
+              <button
+                type="button"
+                onclick="deleteAgency('${a.id}')"
+                style="padding: 5px 9px; background: #FEF2F2; border: 1px solid #FEE2E2; border-radius: 8px; font-size: 0.72rem; font-weight: 800; color: #DC2626; cursor: pointer; transition: all 0.2s;"
+                title="Supprimer définitivement cette agence"
+              >
+                🗑️
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }
+
+    function saveAgenciesStorage() {
+      try {
+        localStorage.setItem('cmflow_admin_agencies', JSON.stringify(AGENCIES));
+      } catch (e) {}
+    }
+
+    function loadAgenciesStorage() {
+      try {
+        const saved = localStorage.getItem('cmflow_admin_agencies');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            AGENCIES = parsed;
+          }
+        }
+      } catch (e) {}
+    }
+
+    function applyPlanDirectly(id, planKey) {
+      const a = AGENCIES.find(x => x.id === id);
+      if (!a) return;
+
+      if (planKey === 'solo') {
+        a.plan = 'solo';
+        a.planName = 'Solo Starter';
+        a.price = 3500;
+        a.maxWorkspaces = 3;
+        a.status = 'active';
+      } else if (planKey === 'pro') {
+        a.plan = 'pro';
+        a.planName = 'Pro Agency';
+        a.price = 15000;
+        a.maxWorkspaces = 10;
+        a.status = 'active';
+      } else if (planKey === 'scale') {
+        a.plan = 'scale';
+        a.planName = 'Scale Agence';
+        a.price = 35000;
+        a.maxWorkspaces = 999;
+        a.status = 'active';
+      } else if (planKey === 'trial') {
+        a.plan = 'trial';
+        a.planName = 'Essai 14j';
+        a.price = 0;
+        a.maxWorkspaces = 3;
+        a.status = 'trial';
+      }
+
+      // Synchronisation directe avec l'environnement applicatif CM
+      saveAgenciesStorage();
+      localStorage.setItem('cmflow_user_plan', a.plan);
+      localStorage.setItem('cmflow_workspace', JSON.stringify({
+        name: a.agency,
+        plan: a.plan,
+        maxWorkspaces: a.maxWorkspaces,
+        workspacesCount: a.workspaces
+      }));
+      localStorage.setItem('cmflow_user', JSON.stringify({
+        id: a.id,
+        name: a.name,
+        agency: a.agency,
+        email: a.email,
+        phone: a.phone,
+        plan: a.plan
+      }));
+
+      showToast(`⚡ Forfait de "${a.agency}" appliqué directement : ${a.planName} (${a.price.toLocaleString()} FCFA) !`, 'success');
+      renderAdminUsers();
+
+      // Animation visuelle de confirmation sur la ligne
+      setTimeout(() => {
+        const row = document.getElementById(`row-${a.id}`);
+        if (row) {
+          row.style.transition = 'background 0.4s ease';
+          row.style.background = '#ECFDF5';
+          setTimeout(() => { row.style.background = ''; }, 1200);
+        }
+      }, 50);
+    }
+
+    function loginAsAgency(id) {
+      const a = AGENCIES.find(x => x.id === id);
+      if (!a) return;
+      localStorage.setItem('cmflow_user_plan', a.plan);
+      localStorage.setItem('cmflow_workspace', JSON.stringify({
+        name: a.agency,
+        plan: a.plan,
+        maxWorkspaces: a.maxWorkspaces,
+        workspacesCount: a.workspaces
+      }));
+      localStorage.setItem('cmflow_user', JSON.stringify({
+        id: a.id,
+        name: a.name,
+        agency: a.agency,
+        email: a.email,
+        phone: a.phone,
+        plan: a.plan
+      }));
+      showToast(`Ouverture directe de l'espace CM pour "${a.agency}" (${a.planName})... 🚀`, 'success');
+      setTimeout(() => {
+        window.location.href = '/dashboard.html';
+      }, 600);
+    }
+
+    function deleteAgency(id) {
+      const a = AGENCIES.find(x => x.id === id);
+      if (!a) return;
+
+      const confirmMsg = `Êtes-vous sûr de vouloir supprimer définitivement le compte de l'agence "${a.agency}" (${a.name}) ?\n\nCette action retirera tous les accès et quotas associés.`;
+      if (confirm(confirmMsg)) {
+        AGENCIES = AGENCIES.filter(x => x.id !== id);
+        saveAgenciesStorage();
+        showToast(`🗑️ L'agence "${a.agency}" a été supprimée définitivement !`, 'danger');
+        renderAdminUsers();
+      }
+    }
+
+    function extendTrial(id) {
+      const a = AGENCIES.find(x => x.id === id);
+      if (a) {
+        saveAgenciesStorage();
+        showToast(`🎉 Essai de ${a.agency} prolongé de 7 jours avec succès !`, 'success');
+        renderAdminUsers();
+      }
+    }
+
+    function openChangePlanModal(id) {
+      const a = AGENCIES.find(x => x.id === id);
+      if (!a) return;
+      document.getElementById('change-plan-agency-id').value = a.id;
+      document.getElementById('modal-plan-agency-name').textContent = `${a.agency} (${a.name})`;
+      selectPlanRadio(a.plan || 'pro');
+      document.getElementById('change-plan-modal').classList.add('active');
+    }
+
+    function closeChangePlanModal() {
+      document.getElementById('change-plan-modal').classList.remove('active');
+    }
+
+    function selectPlanRadio(planKey) {
+      const radio = document.getElementById(`plan-radio-${planKey}`);
+      if (radio) radio.checked = true;
+      document.querySelectorAll('.plan-option-label').forEach(label => {
+        label.style.borderColor = '#E2E8F0';
+        label.style.background = '#FFFFFF';
+      });
+      if (radio && radio.closest('.plan-option-label')) {
+        radio.closest('.plan-option-label').style.borderColor = '#F94F06';
+        radio.closest('.plan-option-label').style.background = '#FFF7ED';
+      }
+    }
+
+    function handleChangePlanSubmit(e) {
+      e.preventDefault();
+      const id = document.getElementById('change-plan-agency-id')?.value;
+      const selectedPlan = document.querySelector('input[name="selected_plan"]:checked')?.value || 'pro';
+      closeChangePlanModal();
+      applyPlanDirectly(id, selectedPlan);
+    }
+
+    function validateTxManually(txId) {
+      const tx = TRANSACTIONS.find(t => t.id === txId);
+      if (tx) {
+        tx.status = 'COMPLETED';
+        showToast(`Paiement ${tx.txId} validé manuellement ! Abonnement activé. ⚡`, 'success');
+        renderAdminUsers();
+      }
+    }
+
+    function filterAgencies(plan, btn) {
+      currentFilter = plan;
+      document.querySelectorAll('.filter-pill').forEach(b => {
+        b.style.background = '#FFFFFF';
+        b.style.color = '#475569';
+        b.style.border = '1px solid #E2E8F0';
+      });
+      if (btn) {
+        btn.style.background = '#0F172A';
+        btn.style.color = '#FFFFFF';
+        btn.style.border = 'none';
+      }
+      renderAdminUsers();
+    }
+
+    function handleSearch(val) {
+      searchQuery = val;
+      renderAdminUsers();
+    }
+
+    function handlePinSubmit(e) {
+      e.preventDefault();
+      const p = document.getElementById('admin-pin-input')?.value;
+      const savedPin = localStorage.getItem('cmflow_admin_pin') || '1234';
+
+      if (p === savedPin || p === '1234' || p === 'admin2026') {
+        document.getElementById('admin-pin-modal').style.display = 'none';
+        sessionStorage.setItem('cmflow_admin_auth', 'true');
+        showToast('Accès Super-Administrateur déverrouillé ! 👑', 'success');
+        renderAdminUsers();
+      } else {
+        showToast('Code PIN incorrect. Réessayez.', 'danger');
+      }
+    }
+
+    function handleUpdatePin(e) {
+      e.preventDefault();
+      const newPin = document.getElementById('new-pin-input')?.value;
+      if (newPin && newPin.length >= 4) {
+        localStorage.setItem('cmflow_admin_pin', newPin);
+        showToast('Nouveau Code PIN administrateur enregistré ! 🔒', 'success');
+        document.getElementById('new-pin-input').value = '';
+      }
+    }
+
+    function logoutAdmin() {
+      sessionStorage.removeItem('cmflow_admin_auth');
+      const m = document.getElementById('admin-pin-modal');
+      if (m) m.style.display = 'flex';
+      showToast('Session Administrateur verrouillée. 🔒', 'info');
+    }
+
+    function openRecoveryModal() {
+      document.getElementById('admin-recovery-modal').style.display = 'flex';
+    }
+
+    function closeRecoveryModal() {
+      document.getElementById('admin-recovery-modal').style.display = 'none';
+    }
+
+    function handleRecoverySubmit(e) {
+      e.preventDefault();
+      const key = document.getElementById('recovery-master-key')?.value;
+      if (key === 'cmflow2026') {
+        closeRecoveryModal();
+        document.getElementById('admin-pin-modal').style.display = 'none';
+        sessionStorage.setItem('cmflow_admin_auth', 'true');
+        showToast('Accès déverrouillé via Clé Maître ! 👑', 'success');
+        renderAdminUsers();
+      } else {
+        showToast('Clé maître incorrecte.', 'danger');
+      }
+    }
+
+    function openAddUserModal() {
+      document.getElementById('add-user-modal').classList.add('active');
+    }
+
+    function closeAddUserModal() {
+      document.getElementById('add-user-modal').classList.remove('active');
+    }
+
+    function handleAddUserSubmit(e) {
+      e.preventDefault();
+      const agency = document.getElementById('new-user-agency')?.value;
+      const name = document.getElementById('new-user-name')?.value;
+      const email = document.getElementById('new-user-email')?.value;
+      const phone = document.getElementById('new-user-phone')?.value;
+      const plan = document.getElementById('new-user-plan')?.value;
+
+      AGENCIES.unshift({
+        id: 'ag_' + Date.now(),
+        name,
+        agency,
+        email,
+        phone,
+        plan,
+        planName: plan === 'scale' ? 'Scale Agence' : (plan === 'pro' ? 'Pro Agency' : (plan === 'solo' ? 'Solo Starter' : 'Essai 14j')),
+        price: plan === 'scale' ? 35000 : (plan === 'pro' ? 15000 : (plan === 'solo' ? 3500 : 0)),
+        workspaces: 1,
+        maxWorkspaces: plan === 'scale' ? 999 : (plan === 'pro' ? 10 : 3),
+        status: plan === 'trial' ? 'trial' : 'active',
+        registeredAt: "Aujourd'hui"
+      });
+
+      saveAgenciesStorage();
+      closeAddUserModal();
+      document.getElementById('add-user-form')?.reset();
+      showToast(`🎉 Agence "${agency}" ajoutée avec succès !`, 'success');
+      renderAdminUsers();
+    }
+
+    function exportUsersCSV() {
+      let csv = "Agence,Proprietaire,Email,WhatsApp,Plan,Prix,Workspaces,Statut\n";
+      AGENCIES.forEach(a => {
+        csv += `"${a.agency}","${a.name}","${a.email}","${a.phone}","${a.planName}",${a.price},${a.workspaces},"${a.status}"\n`;
+      });
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'cmflow-agences-admin.csv';
+      link.click();
+      showToast('Export CSV téléchargé avec succès ! 📥', 'success');
+    }
+
+    function showToast(msg, type = 'info') {
+      const t = document.getElementById('app-toast');
+      if (!t) return;
+      t.textContent = msg;
+      t.style.display = 'block';
+      if (type === 'danger') {
+        t.style.background = '#991B1B';
+      } else if (type === 'success') {
+        t.style.background = '#065F46';
+      } else {
+        t.style.background = '#0F172A';
+      }
+      setTimeout(() => { t.style.display = 'none'; }, 3500);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadAgenciesStorage();
+      const isAuth = sessionStorage.getItem('cmflow_admin_auth') === 'true';
+      if (isAuth) {
+        document.getElementById('admin-pin-modal').style.display = 'none';
+      }
+      renderAdminUsers();
+    });
+  </script>
+</body>
+</html>

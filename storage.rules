@@ -1,0 +1,90 @@
+// ===============================================================
+// CMFlow Firebase Storage Security Rules — Production Hardened
+// Quotas Médias (50 Mo) • Protection Multi-Tenant • Formats Réseaux
+// ===============================================================
+
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // ===============================================================
+    // 1. Fonctions d'Aide (Helper Functions)
+    // ===============================================================
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && (
+        request.auth.token.admin == true ||
+        request.auth.token.email == 'admin@cmflow.sn' ||
+        request.auth.token.email == 'sidiqq97@gmail.com'
+      );
+    }
+
+    function isUnderSizeLimit(maxSizeMb) {
+      return request.resource.size <= maxSizeMb * 1024 * 1024;
+    }
+
+    function isValidImage() {
+      return request.resource.contentType.matches('image/(jpeg|png|webp|gif|svg\\+xml)');
+    }
+
+    function isValidVideo() {
+      return request.resource.contentType.matches('video/(mp4|quicktime|webm|x-msvideo|mpeg)');
+    }
+
+    function isValidMedia() {
+      return isValidImage() || isValidVideo();
+    }
+
+    // ===============================================================
+    // 2. Médias des Publications (Posts Réseaux Sociaux & Carrousels)
+    // ===============================================================
+
+    match /posts/{workspaceId}/{fileName} {
+      // Lecture publique : Nécessaire pour les aperçus WhatsApp, Start Page, OpenGraph & Meta Graph API
+      allow read: if true;
+
+      // Écriture : Authentifié uniquement, max 50 Mo, images et vidéos HD valides
+      allow write: if isAuthenticated() &&
+                   isUnderSizeLimit(50) &&
+                   isValidMedia();
+    }
+
+    // ===============================================================
+    // 3. Logos & Brand Kits d'Agence (Marque Blanche)
+    // ===============================================================
+
+    match /logos/{agencyId}/{fileName} {
+      // Lecture publique : Affichage des logos sur les portails clients et Start Pages
+      allow read: if true;
+
+      // Écriture : Réservé à l'agence propriétaire ou Admin, max 5 Mo, images uniquement
+      allow write: if isAuthenticated() &&
+                   (request.auth.uid == agencyId || isAdmin()) &&
+                   isUnderSizeLimit(5) &&
+                   isValidImage();
+    }
+
+    // ===============================================================
+    // 4. Dossiers Généraux des Workspaces
+    // ===============================================================
+
+    match /workspaces/{workspaceId}/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAuthenticated() &&
+                   isUnderSizeLimit(50) &&
+                   isValidMedia();
+    }
+
+    // ===============================================================
+    // 5. Règle de Verrouillage par Défaut (Deny by Default)
+    // ===============================================================
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

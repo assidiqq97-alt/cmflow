@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="fr" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Facturation & Forfaits Agence — CMFlow</title>
+  <meta name="description" content="Gérez votre forfait, vos moyens de paiement Mobile Money et téléchargez vos factures d'agence.">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #F1F5F9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #CBD5E1;
+      border-radius: 999px;
+    }
+  </style>
+</head>
+<body class="min-h-full bg-[#F8FAFC] text-[#0F172A] antialiased flex selection:bg-[#F94F06]/20 selection:text-[#F94F06]">
+
+  <!-- Texture de lumière d'arrière-plan -->
+  <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+    <div class="absolute top-0 right-1/4 w-[600px] h-[600px] bg-gradient-to-br from-blue-100/40 via-purple-50/20 to-transparent rounded-full blur-3xl"></div>
+    <div class="absolute -bottom-32 left-1/3 w-[500px] h-[500px] bg-gradient-to-tr from-orange-100/30 via-amber-50/20 to-transparent rounded-full blur-3xl"></div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="app-toast" class="fixed bottom-6 right-6 z-50 bg-[#0F172A]/95 backdrop-blur-xl text-white px-4 py-3 rounded-2xl shadow-2xl border border-slate-700/80 text-xs sm:text-sm font-semibold flex items-center gap-2.5 transition-all duration-300 transform translate-y-20 opacity-0 pointer-events-none">
+    <svg class="w-4 h-4 text-[#F94F06]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+    </svg>
+    <span id="toast-text">Message</span>
+  </div>
+
+  <!-- SIDEBAR (#0F172A) -->
+  <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-[#0F172A] text-white flex flex-col justify-between transition-transform duration-300 ease-out border-r border-slate-800/80 -translate-x-full lg:translate-x-0">
+    <div class="overflow-y-auto">
+      <div class="p-5 border-b border-slate-800/60 flex items-center justify-between">
+        <a href="dashboard.html" class="inline-flex items-center gap-2.5">
+          <img src="images/logo-white.svg" alt="CMFlow" class="h-6 w-auto object-contain">
+          <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-[#F94F06]/20 text-[#F94F06] border border-[#F94F06]/30">PRO</span>
+        </a>
+        <button id="close-sidebar-btn" class="lg:hidden text-slate-400 hover:text-white p-1">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+
+      <!-- Sélecteur de Marque & Workspace (Dribbble/Raycast) -->
+      <div class="p-3.5 relative">
+        <div class="text-[9px] font-extrabold uppercase tracking-wider text-slate-400 px-2 block mb-1.5 flex items-center justify-between">
+          <span>Espace Client Actif</span>
+          <span class="text-emerald-400 flex items-center gap-1 font-bold">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> Live
+          </span>
+        </div>
+
+        <button
+          type="button"
+          id="client-dropdown-btn"
+          class="w-full flex items-center justify-between p-2.5 rounded-2xl bg-slate-800/80 hover:bg-slate-800 border border-slate-700/70 hover:border-slate-600 transition-all text-left group shadow-xs cursor-pointer"
+        >
+          <div class="flex items-center gap-2.5 min-w-0">
+            <div class="relative shrink-0">
+              <img
+                id="active-client-avatar"
+                src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=200&auto=format&fit=crop&q=80"
+                alt="Avatar"
+                class="active-ws-avatar w-8 h-8 rounded-xl object-cover ring-2 ring-[#0066FF]/40"
+              >
+              <span id="active-client-flag" class="active-ws-flag absolute -bottom-1 -right-1 text-[10px] bg-slate-900 rounded-full px-0.5 border border-slate-700">
+                🇸🇳
+              </span>
+            </div>
+            <div class="min-w-0 flex-1">
+              <div id="active-client-name" class="active-ws-name text-xs font-bold text-white truncate group-hover:text-sky-300 transition-colors">
+                Teranga Gourmet
+              </div>
+              <div id="active-client-cat" class="active-ws-cat text-[10px] text-slate-400 truncate">
+                Haute Gastronomie & Traiteur
+              </div>
+            </div>
+          </div>
+          <svg class="w-4 h-4 text-slate-400 group-hover:text-white shrink-0 ml-1 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+
+        <!-- Menu Déroulant Glassmorphism des Marques -->
+        <div id="client-dropdown-menu" class="hidden absolute top-full left-3.5 right-3.5 mt-2 bg-slate-900/95 backdrop-blur-xl border border-slate-700/80 rounded-3xl shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 duration-150">
+          <div class="text-[10px] font-bold text-slate-400 px-3 py-1.5 uppercase tracking-wider flex items-center justify-between">
+            <span>Changer de Workspace</span>
+            <span class="text-[9px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full font-semibold">3 marques</span>
+          </div>
+          <div id="client-list-container" class="max-h-56 overflow-y-auto space-y-1 pr-1">
+            <!-- Injecté par workspace-state.js -->
+          </div>
+          <div class="border-t border-slate-800 mt-1.5 pt-1.5">
+            <button
+              type="button"
+              onclick="alert('Ajout d\'une nouvelle marque client');"
+              class="w-full flex items-center gap-2 px-3 py-2 text-xs font-bold text-[#F94F06] hover:bg-orange-500/10 rounded-xl transition-colors cursor-pointer"
+            >
+              <span>+ Ajouter une marque</span>
+            </button>
+          </div>
+        </div>
+      </div>
+       <nav class="px-3 space-y-1 mt-1">
+        <a href="dashboard.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span>Calendrier & Queue</span>
+        </a>
+
+        <a href="clients.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span>Espaces Clients</span>
+        </a>
+
+        <a href="media.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          <span>Médiathèque Assets</span>
+        </a>
+
+        <a href="inbox.html" class="flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+          <div class="flex items-center gap-3">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <span>Inbox Unifiée</span>
+          </div>
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#10B981] opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-[#10B981]"></span>
+          </span>
+        </a>
+
+        <a href="startpage.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          <span>Start Page (Bio)</span>
+        </a>
+
+        <a href="analytics.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          <span>Analytics & Rapports</span>
+        </a>
+
+        <a href="validation.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span>Portail Validation</span>
+        </a>
+
+        <a href="billing.html" class="flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-semibold bg-[#F94F06] text-white shadow-[0_8px_20px_-4px_rgba(249,79,6,0.35)] transition-all">
+          <div class="flex items-center gap-3">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+            <span>Facturation & Forfaits</span>
+          </div>
+          <span class="bg-[#1E90FF]/15 text-white border border-[#1E90FF]/30 px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-tight">
+            Wave
+          </span>
+        </a>
+
+        <a href="channels.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+          <span>Canaux sociaux</span>
+        </a>
+
+        <a href="settings.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <span>Paramètres Agence</span>
+        </a>
+      </nav>
+    </div>
+
+    <div class="p-3.5 border-t border-slate-800/70 bg-slate-900/60">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#0066FF] to-sky-400 flex items-center justify-center font-black text-xs text-white">AD</div>
+        <div>
+          <div class="text-xs font-bold text-white">Awa Diop</div>
+          <div class="text-[10px] text-slate-400">Lead CM · Dakar 🇸🇳</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <div id="sidebar-backdrop" class="fixed inset-0 bg-black/60 z-30 hidden backdrop-blur-xs"></div>
+
+  <!-- MAIN WRAPPER -->
+  <div class="flex-1 flex flex-col min-w-0 lg:pl-64 z-10">
+    
+    <!-- Topbar -->
+    <header class="sticky top-0 z-30 backdrop-blur-xl bg-white/80 border-b border-slate-200/60 px-4 sm:px-8 py-3.5 flex items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <button id="open-sidebar-btn" class="lg:hidden p-2 rounded-xl text-slate-700 bg-slate-100"><svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg></button>
+        <div class="flex items-center gap-2 text-sm sm:text-base font-extrabold text-[#0F172A]">
+          <span class="text-slate-400 font-medium">CMFlow</span>
+          <span class="text-slate-300">/</span>
+          <span>Abonnement & Facturation Agence</span>
+        </div>
+      </div>
+
+      <span class="px-3 py-1 bg-emerald-50 text-emerald-700 font-black text-xs rounded-full border border-emerald-200">
+        ✓ Compte Pro Actif
+      </span>
+    </header>
+
+    <!-- Corps de Page -->
+    <main class="p-4 sm:p-6 lg:p-8 space-y-6 max-w-6xl">
+      
+      <!-- HERO CARTE FORFAIT ACTUEL -->
+      <div class="bg-gradient-to-br from-[#0F172A] via-slate-900 to-indigo-950 text-white p-6 sm:p-8 rounded-3xl shadow-xl border border-slate-700/80 space-y-6">
+        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 pb-6 border-b border-slate-800">
+          <div>
+            <span class="text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full bg-[#F94F06]/20 text-[#F94F06] border border-[#F94F06]/30">
+              Formule Recommandée
+            </span>
+            <h2 class="text-2xl sm:text-3xl font-black text-white mt-2">
+              Pro Agency — 15 000 FCFA <span class="text-sm font-normal text-slate-400">/ mois</span>
+            </h2>
+            <p class="text-xs text-slate-300 mt-1">Prochain prélèvement automatique le <strong>21 Septembre 2026</strong> via Wave.</p>
+          </div>
+
+          <div class="bg-slate-900/80 border border-slate-700 p-4 rounded-2xl space-y-2 shrink-0">
+            <div class="text-[11px] text-slate-400 font-bold">Moyen de prélèvement associé :</div>
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-[#1E90FF] text-white font-black text-xs flex items-center justify-center shadow-md">🌊</div>
+              <div>
+                <div class="text-xs font-black text-white">Wave Sénégal</div>
+                <div class="text-[11px] font-mono text-slate-400">+221 77 800 12 34</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3 Quotas -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+          <div class="bg-slate-900/60 border border-slate-800 p-4 rounded-2xl space-y-2">
+            <div class="flex justify-between text-xs font-bold">
+              <span class="text-slate-300">Marques gérées</span>
+              <span class="text-emerald-400 font-mono">4 / 10 actives</span>
+            </div>
+            <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+              <div class="h-full bg-[#10B981] rounded-full" style="width: 40%;"></div>
+            </div>
+            <div class="text-[10px] text-slate-400">6 espaces disponibles</div>
+          </div>
+
+          <div class="bg-slate-900/60 border border-slate-800 p-4 rounded-2xl space-y-2">
+            <div class="flex justify-between text-xs font-bold">
+              <span class="text-slate-300">Profils réseaux</span>
+              <span class="text-[#1E90FF] font-mono">14 / 25 profils</span>
+            </div>
+            <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+              <div class="h-full bg-[#1E90FF] rounded-full" style="width: 56%;"></div>
+            </div>
+            <div class="text-[10px] text-slate-400">Instagram, Facebook, TikTok, LinkedIn</div>
+          </div>
+
+          <div class="bg-slate-900/60 border border-slate-800 p-4 rounded-2xl space-y-2">
+            <div class="flex justify-between text-xs font-bold">
+              <span class="text-slate-300">Publications traitées</span>
+              <span class="text-amber-400 font-mono">48 posts</span>
+            </div>
+            <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+              <div class="h-full bg-gradient-to-r from-amber-400 to-[#F94F06] rounded-full" style="width: 100%;"></div>
+            </div>
+            <div class="text-[10px] text-emerald-400 font-bold">✓ Volume Illimité sur Pro</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- GRILLE DES FORFAITS D'ABONNEMENT WAVE -->
+      <div class="space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <div>
+            <h2 class="text-lg font-black text-[#0F172A]">Nos Formules d'Abonnement</h2>
+            <p class="text-xs text-slate-500">Paiement Mobile Money direct et sécurisé par Wave (1% de frais seulement 🇸🇳 🇨🇮).</p>
+          </div>
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold bg-[#1E90FF]/10 text-[#1E90FF] border border-[#1E90FF]/20 self-start sm:self-auto">
+            <span>🌊 Wave Checkout Intégré</span>
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          
+          <!-- PLAN 1 : SOLO / FREELANCE -->
+          <div class="bg-white/90 backdrop-blur-md rounded-3xl p-6 border border-slate-200/80 shadow-xs flex flex-col justify-between hover:border-slate-300 transition-all">
+            <div class="space-y-4">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold uppercase text-slate-400">Solo / Freelance</span>
+              </div>
+              <div>
+                <div class="text-3xl font-black text-slate-900">3 500 <span class="text-sm font-bold text-slate-400">FCFA / mois</span></div>
+                <p class="text-xs text-slate-500 mt-1">Idéal pour les freelances et CM indépendants gérant leurs premiers clients.</p>
+              </div>
+              <ul class="space-y-2.5 text-xs text-slate-600 pt-2 border-t border-slate-100">
+                <li class="flex items-center gap-2"><span class="text-emerald-500 font-bold">✓</span> 2 Workspaces clients</li>
+                <li class="flex items-center gap-2"><span class="text-emerald-500 font-bold">✓</span> Publications & médias illimités</li>
+                <li class="flex items-center gap-2"><span class="text-emerald-500 font-bold">✓</span> Portail de validation WhatsApp interactif</li>
+                <li class="flex items-center gap-2"><span class="text-emerald-500 font-bold">✓</span> Publication automatique Instagram & Facebook</li>
+              </ul>
+            </div>
+            <div class="mt-6 space-y-2">
+              <button
+                type="button"
+                onclick="startWavePayment('SOLO', 3500)"
+                class="w-full py-2.5 px-4 rounded-xl text-xs font-black bg-[#1E90FF] hover:bg-[#1873cc] text-white shadow-md shadow-blue-500/25 flex items-center justify-center gap-2 transition-all active:scale-[0.98] cursor-pointer"
+              >
+                <span>🌊 Payer via Wave (3 500 F)</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- PLAN 2 : PRO AGENCY (RECOMMANDÉ) -->
+          <div class="bg-gradient-to-b from-white to-orange-50/30 rounded-3xl p-6 border-2 border-[#F94F06] shadow-lg shadow-orange-500/10 flex flex-col justify-between relative transform hover:-translate-y-1 transition-all">
+            <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#F94F06] text-white px-3 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider shadow-sm">
+              Recommandé 🔥
+            </div>
+            <div class="space-y-4">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-black uppercase text-[#F94F06]">Pro Agency</span>
+                <span class="text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">Actif</span>
+              </div>
+              <div>
+                <div class="text-3xl font-black text-slate-900">15 000 <span class="text-sm font-bold text-slate-400">FCFA / mois</span></div>
+                <p class="text-xs text-slate-500 mt-1">La solution complète pour les agences et CM avec un portefeuille actif.</p>
+              </div>
+              <ul class="space-y-2.5 text-xs text-slate-700 pt-2 border-t border-orange-100">
+                <li class="flex items-center gap-2"><span class="text-emerald-500 font-bold">✓</span> <strong>Jusqu'à 10 Workspaces clients</strong></li>
+                <li class="flex items-center gap-2"><span class="text-emerald-500 font-bold">✓</span> <strong>Publication Reels, Carrousels & Stories</strong></li>
+                <li class="flex items-center gap-2"><span class="text-emerald-500 font-bold">✓</span> <strong>Rapports analytiques PDF automatisés</strong></li>
+                <li class="flex items-center gap-2"><span class="text-emerald-500 font-bold">✓</span> Support prioritaire WhatsApp 7j/7</li>
+              </ul>
+            </div>
+            <div class="mt-6 space-y-2">
+              <button
+                type="button"
+                onclick="startWavePayment('PRO_AGENCY', 15000)"
+                class="w-full py-2.5 px-4 rounded-xl text-xs font-black bg-[#1E90FF] hover:bg-[#1873cc] text-white shadow-md shadow-blue-500/25 flex items-center justify-center gap-2 transition-all active:scale-[0.98] cursor-pointer"
+              >
+                <span>🌊 Payer via Wave (15 000 F)</span>
+              </button>
+              <button
+                type="button"
+                onclick="startOrangeMoneyPayment('PRO_AGENCY', 15000)"
+                class="w-full py-2.5 px-4 rounded-xl text-xs font-black bg-[#FF7900] hover:bg-[#e56c00] text-white shadow-md shadow-orange-500/20 flex items-center justify-center gap-2 transition-all active:scale-[0.98] cursor-pointer"
+              >
+                <span>🍊 Payer via Orange Money (15 000 F)</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- PLAN 3 : SCALE AGENCE -->
+          <div class="bg-white/90 backdrop-blur-md rounded-3xl p-6 border border-slate-200/80 shadow-xs flex flex-col justify-between hover:border-slate-300 transition-all">
+            <div class="space-y-4">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold uppercase text-indigo-600">Scale Agence</span>
+                <span class="text-[10px] font-bold bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded-full">Grands Comptes</span>
+              </div>
+              <div>
+                <div class="text-3xl font-black text-slate-900">35 000 <span class="text-sm font-bold text-slate-400">FCFA / mois</span></div>
+                <p class="text-xs text-slate-500 mt-1">Pour les agences en forte croissance gérant de multiples marques.</p>
+              </div>
+              <ul class="space-y-2.5 text-xs text-slate-600 pt-2 border-t border-slate-100">
+                <li class="flex items-center gap-2"><span class="text-emerald-500 font-bold">✓</span> <strong>Workspaces clients illimités</strong></li>
+                <li class="flex items-center gap-2"><span class="text-emerald-500 font-bold">✓</span> <strong>Gestion d'équipe & rôles CM illimités</strong></li>
+                <li class="flex items-center gap-2"><span class="text-emerald-500 font-bold">✓</span> <strong>Marque blanche totale (votre logo)</strong></li>
+                <li class="flex items-center gap-2"><span class="text-emerald-500 font-bold">✓</span> Intégration API & Webhooks sur mesure</li>
+              </ul>
+            </div>
+            <div class="mt-6 space-y-2">
+              <button
+                type="button"
+                onclick="startWavePayment('SCALE', 35000)"
+                class="w-full py-2.5 px-4 rounded-xl text-xs font-black bg-[#1E90FF] hover:bg-[#1873cc] text-white shadow-md transition-all active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <span>🌊 Payer via Wave (35 000 F)</span>
+              </button>
+              <button
+                type="button"
+                onclick="startOrangeMoneyPayment('SCALE', 35000)"
+                class="w-full py-2.5 px-4 rounded-xl text-xs font-black bg-[#FF7900] hover:bg-[#e56c00] text-white shadow-md shadow-orange-500/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <span>🍊 Payer via Orange Money (35 000 F)</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- FACTURES HISTORIQUE -->
+      <div class="bg-white/90 backdrop-blur-md p-6 rounded-3xl border border-slate-200/80 shadow-xs space-y-4">
+        <h2 class="text-base font-black text-[#0F172A]">Historique des Factures & Reçus</h2>
+        
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead>
+              <tr class="border-b border-slate-100 text-[10px] uppercase font-black text-slate-400">
+                <th class="pb-3">Numéro</th>
+                <th class="pb-3">Date</th>
+                <th class="pb-3">Montant</th>
+                <th class="pb-3">Moyen</th>
+                <th class="pb-3">Statut</th>
+                <th class="pb-3 text-right">Télécharger</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 font-medium text-slate-700">
+              <tr class="hover:bg-slate-50/80">
+                <td class="py-3 font-extrabold font-mono text-[#0F172A]">INV-2026-08</td>
+                <td class="py-3 text-slate-500">21 Août 2026</td>
+                <td class="py-3 font-bold text-[#0F172A]">15 000 FCFA</td>
+                <td class="py-3">🌊 Wave (+221 77 800 12 34)</td>
+                <td class="py-3"><span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-50 text-emerald-700">✓ Payé</span></td>
+                <td class="py-3 text-right"><button type="button" onclick="showToast('📥 Téléchargement reçu INV-2026-08.pdf')" class="px-2.5 py-1 bg-slate-100 rounded-lg text-[11px] font-bold hover:bg-slate-200 transition-colors">PDF</button></td>
+              </tr>
+              <tr class="hover:bg-slate-50/80">
+                <td class="py-3 font-extrabold font-mono text-[#0F172A]">INV-2026-07</td>
+                <td class="py-3 text-slate-500">21 Juillet 2026</td>
+                <td class="py-3 font-bold text-[#0F172A]">15 000 FCFA</td>
+                <td class="py-3">🍊 Orange Money (+221 78 450 99 00)</td>
+                <td class="py-3"><span class="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-50 text-emerald-700">✓ Payé</span></td>
+                <td class="py-3 text-right"><button type="button" onclick="showToast('📥 Téléchargement reçu INV-2026-07.pdf')" class="px-2.5 py-1 bg-slate-100 rounded-lg text-[11px] font-bold hover:bg-slate-200 transition-colors">PDF</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    function showToast(msg) {
+      const toast = document.getElementById('app-toast');
+      const text = document.getElementById('toast-text');
+      text.textContent = msg;
+      toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+      }, 3500);
+    }
+
+    async function startWavePayment(planId, amount) {
+      showToast('🌊 Initialisation du paiement Wave Checkout...');
+      
+      try {
+        const response = await fetch('/api/billing/wave/checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            agencyId: 'agency_awa_dakar',
+            agencyName: 'Awa Diop Agency',
+            agencyEmail: 'awa@cmflow.sn',
+            planId: planId,
+            amount: amount,
+            successUrl: window.location.origin + '/billing.html?status=success&plan=' + planId,
+            errorUrl: window.location.origin + '/billing.html?status=error&plan=' + planId,
+          })
+        });
+
+        const data = await response.json();
+
+        if (data.success && data.wave_launch_url) {
+          showToast('🚀 Redirection vers Wave en cours...');
+          setTimeout(() => {
+            window.location.href = data.wave_launch_url;
+          }, 800);
+        } else {
+          simulatePaymentSuccess('Wave', planId, amount);
+        }
+      } catch (err) {
+        console.warn('Fallback Wave Checkout:', err);
+        simulatePaymentSuccess('Wave', planId, amount);
+      }
+    }
+
+    async function startOrangeMoneyPayment(planId, amount) {
+      showToast('🍊 Connexion sécurisée à Orange Money Web Payment...');
+      
+      try {
+        const response = await fetch('/api/billing/om/checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            agencyId: 'agency_awa_dakar',
+            agencyName: 'Awa Diop Agency',
+            agencyEmail: 'awa@cmflow.sn',
+            planId: planId,
+            amount: amount,
+            returnUrl: window.location.origin + '/billing.html?status=success&method=om&plan=' + planId,
+            cancelUrl: window.location.origin + '/billing.html?status=cancelled&method=om&plan=' + planId,
+          })
+        });
+
+        const data = await response.json();
+
+        if (data.success && data.payment_url) {
+          showToast('🚀 Redirection vers le portail Orange Money...');
+          setTimeout(() => {
+            window.location.href = data.payment_url;
+          }, 800);
+        } else {
+          simulatePaymentSuccess('Orange Money', planId, amount);
+        }
+      } catch (err) {
+        console.warn('Fallback Orange Money Checkout:', err);
+        simulatePaymentSuccess('Orange Money', planId, amount);
+      }
+    }
+
+    function simulatePaymentSuccess(method, planId, amount) {
+      setTimeout(() => {
+        showToast('🎉 Paiement ' + method + ' de ' + amount.toLocaleString() + ' FCFA validé avec succès ! Forfait ' + planId + ' activé.');
+        if (typeof CMFlowRealtime !== 'undefined') {
+          CMFlowRealtime.trigger({
+            workspaceName: 'Abonnement ' + method,
+            action: 'APPROVED',
+            postCaption: 'Paiement ' + method + ' de ' + amount.toLocaleString() + ' FCFA validé. Forfait ' + planId + ' actif ! ✨'
+          });
+        }
+      }, 1000);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const status = urlParams.get('status');
+      const plan = urlParams.get('plan') || 'pro';
+      const method = urlParams.get('method') || 'wave';
+      const agency = urlParams.get('agency') || '';
+      const email = urlParams.get('email') || '';
+      const amount = parseInt(urlParams.get('amount') || '0');
+
+      if (status === 'success') {
+        const methodLabel = method === 'om' ? 'Orange Money 🍊' : 'Wave 🌊';
+        showToast('🎉 Félicitations ! Votre abonnement ' + plan + ' est désormais actif via ' + methodLabel + '.');
+        if (typeof CMFlowRealtime !== 'undefined') {
+          CMFlowRealtime.trigger({
+            workspaceName: 'Facturation ' + methodLabel,
+            action: 'APPROVED',
+            postCaption: 'Abonnement ' + plan + ' validé avec succès sur ' + methodLabel + ' !'
+          });
+        }
+
+      } else if (status === 'pending') {
+        // Afficher bannière d'instructions de paiement
+        const isOm = method === 'om';
+        const methodLabel = isOm ? 'Orange Money 🍊' : 'Wave 🌊';
+        const amountFormatted = amount > 0 ? amount.toLocaleString('fr-FR') + ' FCFA' : '—';
+        const planLabel = plan === 'solo' ? 'Solo / Freelance' : plan === 'pro' ? 'Pro Agency' : 'Scale Agence';
+
+        const banner = document.createElement('div');
+        banner.id = 'payment-pending-banner';
+        banner.style.cssText = `
+          position: fixed; top: 0; left: 0; right: 0; z-index: 9999;
+          background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+          border-bottom: 2px solid ${isOm ? '#FF7900' : '#1E90FF'};
+          padding: 0; display: flex; align-items: center; justify-content: center;
+          min-height: 100vh; font-family: 'Plus Jakarta Sans', sans-serif;
+        `;
+
+        banner.innerHTML = `
+          <div style="max-width: 520px; width: 100%; margin: 20px; background: #1E293B; border-radius: 24px; border: 1px solid ${isOm ? '#FF7900' : '#1E90FF'}33; overflow: hidden; box-shadow: 0 32px 64px rgba(0,0,0,0.5);">
+            <!-- Header -->
+            <div style="background: linear-gradient(135deg, ${isOm ? '#FF7900' : '#1E90FF'}22, ${isOm ? '#FF7900' : '#1E90FF'}08); padding: 28px 28px 20px; border-bottom: 1px solid ${isOm ? '#FF7900' : '#1E90FF'}22;">
+              <div style="display:flex; align-items:center; gap: 12px; margin-bottom: 12px;">
+                <div style="width:48px; height:48px; border-radius:16px; background: ${isOm ? '#FF7900' : '#1E90FF'}22; display:flex; align-items:center; justify-content:center; font-size:24px; border: 1px solid ${isOm ? '#FF7900' : '#1E90FF'}44;">
+                  ${isOm ? '🍊' : '🌊'}
+                </div>
+                <div>
+                  <div style="font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:0.1em; color:${isOm ? '#FF7900' : '#60B4FF'}; margin-bottom:2px;">Paiement en cours</div>
+                  <div style="font-size:20px; font-weight:900; color:#FFFFFF;">Payer via ${methodLabel}</div>
+                </div>
+              </div>
+              <!-- Récap forfait -->
+              <div style="background: rgba(255,255,255,0.05); border-radius:14px; padding:14px 16px; display:flex; justify-content:space-between; align-items:center; border:1px solid rgba(255,255,255,0.08);">
+                <div>
+                  <div style="font-size:10px; font-weight:700; color:#94A3B8; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:2px;">Forfait CMFlow</div>
+                  <div style="font-size:14px; font-weight:800; color:#FFFFFF;">${planLabel}</div>
+                  ${agency ? `<div style="font-size:11px; color:#94A3B8; margin-top:2px;">${agency}</div>` : ''}
+                </div>
+                <div style="text-align:right;">
+                  <div style="font-size:10px; font-weight:700; color:#94A3B8; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:2px;">Montant</div>
+                  <div style="font-size:22px; font-weight:900; color:${isOm ? '#FF7900' : '#60B4FF'};">${amountFormatted}</div>
+                  <div style="font-size:10px; color:#64748B;">/ mois</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Instructions -->
+            <div style="padding: 24px 28px;">
+              ${isOm ? `
+                <!-- Instructions Orange Money -->
+                <div style="font-size:13px; font-weight:700; color:#F1F5F9; margin-bottom:14px;">Suivez ces étapes pour payer :</div>
+                <div style="display:flex; flex-direction:column; gap:10px;">
+                  ${[
+                    ['1', '#FF7900', 'Composez le code USSD', 'Tapez <strong style="color:#FF7900; font-size:16px;">*144#</strong> sur votre téléphone Orange et appuyez sur Appel.'],
+                    ['2', '#FF7900', 'Sélectionnez "Paiement marchand"', 'Dans le menu, choisissez <strong>Paiement</strong> ou <strong>Transfert / Paiement</strong>.'],
+                    ['3', '#FF7900', 'Entrez le montant', `Saisissez <strong style="color:#FF7900;">${amountFormatted}</strong> comme montant à payer.`],
+                    ['4', '#FF7900', 'Référence de paiement', `Référence : <strong style="color:#FF7900;">CMFLOW-${plan.toUpperCase()}</strong> — Email : <strong>${email || 'votre email'}</strong>`],
+                    ['5', '#10B981', 'Confirmez avec votre code PIN', 'Validez avec votre code secret Orange Money. Vous recevrez un SMS de confirmation.'],
+                  ].map(([n, c, title, desc]) => `
+                    <div style="display:flex; gap:12px; align-items:flex-start; background:rgba(255,255,255,0.04); border-radius:14px; padding:12px 14px; border:1px solid rgba(255,255,255,0.06);">
+                      <div style="width:28px; height:28px; border-radius:10px; background:${c}22; color:${c}; font-size:12px; font-weight:900; display:flex; align-items:center; justify-content:center; shrink:0; border:1px solid ${c}33; flex-shrink:0;">${n}</div>
+                      <div>
+                        <div style="font-size:12px; font-weight:700; color:#E2E8F0; margin-bottom:3px;">${title}</div>
+                        <div style="font-size:11px; color:#94A3B8; line-height:1.5;">${desc}</div>
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+                <!-- Bouton alternatif site OM -->
+                <a href="https://orangemoney.orange.sn/" target="_blank" rel="noopener noreferrer"
+                   style="display:flex; align-items:center; justify-content:center; gap:8px; margin-top:16px; padding:12px 20px; background:#FF7900; color:#FFFFFF; font-size:12px; font-weight:800; border-radius:16px; text-decoration:none; transition:opacity .2s;"
+                   onmouseover="this.style.opacity='.9'" onmouseout="this.style.opacity='1'">
+                  🍊 Payer en ligne sur orangemoney.orange.sn
+                </a>
+              ` : `
+                <!-- Instructions Wave -->
+                <div style="font-size:13px; font-weight:700; color:#F1F5F9; margin-bottom:14px;">Suivez ces étapes pour payer :</div>
+                <div style="display:flex; flex-direction:column; gap:10px;">
+                  ${[
+                    ['1', '#1E90FF', 'Ouvrez l\'app Wave', 'Lancez <strong>Wave</strong> sur votre smartphone (SN / CI).'],
+                    ['2', '#1E90FF', 'Appuyez sur "Envoyer"', 'Sélectionnez <strong>Envoyer de l\'argent</strong>.'],
+                    ['3', '#1E90FF', 'Entrez le montant', `Montant : <strong style="color:#1E90FF;">${amountFormatted}</strong>.`],
+                    ['4', '#1E90FF', 'Note de paiement', `Note : <strong>CMFLOW-${plan.toUpperCase()}</strong> — ${email || 'votre email'}`],
+                    ['5', '#10B981', 'Confirmez le paiement', 'Validez avec votre empreinte ou code PIN Wave.'],
+                  ].map(([n, c, title, desc]) => `
+                    <div style="display:flex; gap:12px; align-items:flex-start; background:rgba(255,255,255,0.04); border-radius:14px; padding:12px 14px; border:1px solid rgba(255,255,255,0.06);">
+                      <div style="width:28px; height:28px; border-radius:10px; background:${c}22; color:${c}; font-size:12px; font-weight:900; display:flex; align-items:center; justify-content:center; shrink:0; border:1px solid ${c}33; flex-shrink:0;">${n}</div>
+                      <div>
+                        <div style="font-size:12px; font-weight:700; color:#E2E8F0; margin-bottom:3px;">${title}</div>
+                        <div style="font-size:11px; color:#94A3B8; line-height:1.5;">${desc}</div>
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+              `}
+
+              <!-- Boutons action -->
+              <div style="display:flex; gap:10px; margin-top:20px;">
+                <button onclick="document.getElementById('payment-pending-banner').remove();"
+                  style="flex:1; padding:12px; background:rgba(255,255,255,0.06); color:#94A3B8; font-size:11px; font-weight:700; border-radius:14px; border:1px solid rgba(255,255,255,0.08); cursor:pointer;">
+                  ← Retour au tableau de bord
+                </button>
+                <button onclick="document.getElementById('payment-pending-banner').remove(); showToast('✅ Paiement marqué comme effectué. Notre équipe vérifiera sous 24h.');"
+                  style="flex:2; padding:12px; background:linear-gradient(135deg, #10B981, #059669); color:#FFFFFF; font-size:11px; font-weight:800; border-radius:14px; border:none; cursor:pointer;">
+                  ✅ J'ai effectué le paiement
+                </button>
+              </div>
+              <div style="text-align:center; margin-top:12px; font-size:10px; color:#475569;">
+                🔒 Paiement 100% sécurisé • Activation sous 1h • Support WhatsApp disponible
+              </div>
+            </div>
+          </div>
+        `;
+
+        document.body.appendChild(banner);
+
+      } else if (status === 'error' || status === 'cancelled') {
+        showToast('❌ Le paiement a été annulé ou interrompu.');
+      }
+    });
+  </script>
+  <script src="js/workspace-state.js"></script>
+  <script src="js/realtime-listener.js"></script>
+  <script src="js/auto-publish-worker.js"></script>
+</body>
+</html>

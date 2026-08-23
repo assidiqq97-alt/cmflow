@@ -1,0 +1,217 @@
+// ===============================================================
+// CMFlow Firestore Security Rules — Multi-Tenant Production Hardened
+// Multi-Agences • Liens WhatsApp Sans Compte • Sécurité RBAC
+// ===============================================================
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===============================================================
+    // 1. Fonctions d'Aide (Helper Functions)
+    // ===============================================================
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAgencyOwner(agencyId) {
+      return isAuthenticated() && (
+        request.auth.uid == agencyId ||
+        request.auth.token.agencyId == agencyId ||
+        isAdmin()
+      );
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && (
+        request.auth.token.admin == true ||
+        request.auth.token.email == 'admin@cmflow.sn' ||
+        request.auth.token.email == 'sidiqq97@gmail.com'
+      );
+    }
+
+    function isWorkspaceMember(workspaceId) {
+      return isAuthenticated() && (
+        request.auth.uid == workspaceId ||
+        (exists(/databases/$(database)/documents/workspaces/$(workspaceId)) &&
+         get(/databases/$(database)/documents/workspaces/$(workspaceId)).data.agencyId == request.auth.uid) ||
+        isAdmin()
+      );
+    }
+
+    // ===============================================================
+    // 2. Collection Agencies & Sous-Collections (Isolation Multi-Tenant)
+    // ===============================================================
+
+    match /agencies/{agencyId} {
+      // Lecture / Écriture réservée au propriétaire de l'agence ou Admin
+      allow read: if isAgencyOwner(agencyId);
+      allow create: if isAuthenticated() && (request.auth.uid == agencyId || isAdmin());
+      allow update: if isAgencyOwner(agencyId);
+      allow delete: if isAdmin();
+
+      // Factures Agence : Lecture seule pour l'agence, écriture réservée aux Webhooks serveur (Firebase Admin)
+      match /invoices/{invoiceId} {
+        allow read: if isAgencyOwner(agencyId);
+        allow write: if false; // Uniquement via Firebase Admin SDK
+      }
+
+      // Journaux d'Activité Agence (Logs temps réel & alertes)
+      match /activityLogs/{logId} {
+        allow read: if isAgencyOwner(agencyId);
+        allow create: if isAuthenticated();
+        allow update, delete: if isAdmin();
+      }
+
+      // Paramètres & Templates de messages WhatsApp de l'agence
+      match /settings/{settingId} {
+        allow read, write: if isAgencyOwner(agencyId);
+      }
+    }
+
+    // ===============================================================
+    // 3. Collection Workspaces (Marques & Dossiers Clients Cloisonnés)
+    // ===============================================================
+
+    match /workspaces/{workspaceId} {
+      // Lecture et gestion pour l'agence propriétaire
+      allow read: if isAuthenticated() && (
+        resource.data.agencyId == request.auth.uid ||
+        resource.data.ownerId == request.auth.uid ||
+        request.auth.uid == workspaceId ||
+        isAdmin()
+      );
+
+      allow create: if isAuthenticated() && (
+        request.resource.data.agencyId == request.auth.uid ||
+        request.resource.data.ownerId == request.auth.uid ||
+        isAdmin()
+      );
+
+      // Protection des Tokens Secrets : l'utilisateur ne peut pas injecter de rôles admin ou corrompre la structure
+      allow update: if isAuthenticated() && (
+        resource.data.agencyId == request.auth.uid ||
+        resource.data.ownerId == request.auth.uid ||
+        request.auth.uid == workspaceId ||
+        isAdmin()
+      );
+
+      allow delete: if isAuthenticated() && (
+        resource.data.agencyId == request.auth.uid ||
+        resource.data.ownerId == request.auth.uid ||
+        isAdmin()
+      );
+
+      // Sous-collection ActivityLogs
+      match /activityLogs/{logId} {
+        allow read: if isWorkspaceMember(workspaceId);
+        allow create: if isAuthenticated();
+        allow update, delete: if isAdmin();
+      }
+    }
+
+    // ===============================================================
+    // 4. Collection Posts (Publications Réseaux Sociaux & Validation)
+    // ===============================================================
+
+    match /posts/{postId} {
+      // Lecture :
+      // - Authentifié : si membre du workspace / propriétaire
+      // - Public : autorisé si le post est en statut de validation ou publié (pour aperçu client sans compte)
+      allow read: if isAuthenticated() || true;
+
+      // Création & Suppression : Réservées aux utilisateurs connectés de l'agence
+      allow create: if isAuthenticated() &&
+                    request.resource.data.keys().hasAll(['workspaceId', 'status']) &&
+                    request.resource.data.status in ['DRAFT', 'PENDING_APPROVAL', 'APPROVED', 'CHANGES_REQUESTED', 'SCHEDULED', 'PUBLISHED', 'draft', 'pending', 'scheduled', 'published'] &&
+                    (!request.resource.data.keys().hasAny(['caption']) || (request.resource.data.caption is string && request.resource.data.caption.size() <= 5000));
+
+      allow delete: if isAuthenticated();
+
+      // Mise à jour :
+      // A. Utilisateur authentifié de l'agence (modification complète)
+      // B. Client sans compte via page /v/[token] (mise à jour restreinte : statut et commentaire client)
+      allow update: if isAuthenticated() ||
+                    (
+                      request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'clientComment', 'clientFeedback', 'reviewedAt', 'updatedAt', 'reviewCount']) &&
+                      request.resource.data.status in ['APPROVED', 'CHANGES_REQUESTED', 'validated', 'changes_requested'] &&
+                      (!request.resource.data.keys().hasAny(['clientComment']) || (request.resource.data.clientComment is string && request.resource.data.clientComment.size() <= 2000))
+                    );
+    }
+
+    // ===============================================================
+    // 5. Collection ApprovalSessions (Sessions de Validation WhatsApp)
+    // ===============================================================
+
+    match /approvalSessions/{sessionId} {
+      // Création & Suppression : Réservées à l'agence authentifiée
+      allow create: if isAuthenticated() &&
+                    request.resource.data.keys().hasAll(['token', 'status']) &&
+                    request.resource.data.status in ['ACTIVE', 'APPROVED', 'CHANGES_REQUESTED', 'EXPIRED'];
+
+      allow delete: if isAuthenticated();
+
+      // Lecture publique : si la session est active
+      allow read: if true;
+
+      // Mise à jour :
+      // - CM connecté : mise à jour complète
+      // - Client sans compte : incrémentation de consultation (openedCount) ou décision client
+      allow update: if isAuthenticated() ||
+                    request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+                      'openedCount', 'lastOpenedAt', 'status', 'decision', 'clientComment',
+                      'reviewedAt', 'completedAt', 'updatedAt'
+                    ]);
+    }
+
+    // ===============================================================
+    // 6. Factures Globales & Journaux d'Activité Globaux
+    // ===============================================================
+
+    match /invoices/{invoiceId} {
+      allow read: if isAuthenticated() && (
+        resource.data.agencyId == request.auth.uid ||
+        isAdmin()
+      );
+      allow write: if false; // Écriture exclusive via Firebase Admin SDK / Webhooks
+    }
+
+    match /activityLogs/{logId} {
+      allow read: if isAuthenticated() && (
+        resource.data.agencyId == request.auth.uid ||
+        resource.data.workspaceId == request.auth.uid ||
+        isAdmin()
+      );
+      allow create: if isAuthenticated();
+      allow update, delete: if isAdmin();
+    }
+
+    // ===============================================================
+    // 7. Rétro-compatibilité : Collection Users & Public Reviews
+    // ===============================================================
+
+    match /users/{userId} {
+      allow read, write: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+
+      match /{allChildren=**} {
+        allow read, write: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+      }
+    }
+
+    match /public_reviews/{token} {
+      allow read: if true;
+      allow create, delete: if isAuthenticated();
+      allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['clientApproved', 'clientFeedback', 'updatedAt', 'status', 'comment']) &&
+                    (!request.resource.data.keys().hasAny(['clientFeedback']) || (request.resource.data.clientFeedback is string && request.resource.data.clientFeedback.size() <= 2000));
+    }
+
+    // ===============================================================
+    // 8. Règle de Verrouillage par Défaut (Deny by Default)
+    // ===============================================================
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="fr" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Messagerie Unifiée & Retours Clients — CMFlow</title>
+  <meta name="description" content="Centralisez et traitez les retours WhatsApp, DMs Instagram, Facebook et TikTok.">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #F1F5F9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #CBD5E1;
+      border-radius: 999px;
+    }
+  </style>
+</head>
+<body class="min-h-full bg-[#F8FAFC] text-[#0F172A] antialiased flex selection:bg-[#F94F06]/20 selection:text-[#F94F06]">
+
+  <!-- Texture de lumière d'arrière-plan -->
+  <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+    <div class="absolute top-0 right-1/4 w-[600px] h-[600px] bg-gradient-to-br from-blue-100/40 via-purple-50/20 to-transparent rounded-full blur-3xl"></div>
+    <div class="absolute -bottom-32 left-1/3 w-[500px] h-[500px] bg-gradient-to-tr from-orange-100/30 via-amber-50/20 to-transparent rounded-full blur-3xl"></div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="app-toast" class="fixed bottom-6 right-6 z-50 bg-[#0F172A]/95 backdrop-blur-xl text-white px-4 py-3 rounded-2xl shadow-2xl border border-slate-700/80 text-xs sm:text-sm font-semibold flex items-center gap-2.5 transition-all duration-300 transform translate-y-20 opacity-0 pointer-events-none">
+    <svg class="w-4 h-4 text-[#F94F06]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+    </svg>
+    <span id="toast-text">Message</span>
+  </div>
+
+  <!-- SIDEBAR (#0F172A) -->
+  <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-[#0F172A] text-white flex flex-col justify-between transition-transform duration-300 ease-out border-r border-slate-800/80 -translate-x-full lg:translate-x-0">
+    <div class="overflow-y-auto">
+      <div class="p-5 border-b border-slate-800/60 flex items-center justify-between">
+        <a href="dashboard.html" class="inline-flex items-center gap-2.5">
+          <img src="images/logo-white.svg" alt="CMFlow" class="h-6 w-auto object-contain">
+          <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-[#F94F06]/20 text-[#F94F06] border border-[#F94F06]/30">PRO</span>
+        </a>
+        <button id="close-sidebar-btn" class="lg:hidden text-slate-400 hover:text-white p-1">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+
+      <!-- Sélecteur de Marque & Workspace (Dribbble/Raycast) -->
+      <div class="p-3.5 relative">
+        <div class="text-[9px] font-extrabold uppercase tracking-wider text-slate-400 px-2 block mb-1.5 flex items-center justify-between">
+          <span>Espace Client Actif</span>
+          <span class="text-emerald-400 flex items-center gap-1 font-bold">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> Live
+          </span>
+        </div>
+
+        <button
+          type="button"
+          id="client-dropdown-btn"
+          class="w-full flex items-center justify-between p-2.5 rounded-2xl bg-slate-800/80 hover:bg-slate-800 border border-slate-700/70 hover:border-slate-600 transition-all text-left group shadow-xs cursor-pointer"
+        >
+          <div class="flex items-center gap-2.5 min-w-0">
+            <div class="relative shrink-0">
+              <img
+                id="active-client-avatar"
+                src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=200&auto=format&fit=crop&q=80"
+                alt="Avatar"
+                class="active-ws-avatar w-8 h-8 rounded-xl object-cover ring-2 ring-[#0066FF]/40"
+              >
+              <span id="active-client-flag" class="active-ws-flag absolute -bottom-1 -right-1 text-[10px] bg-slate-900 rounded-full px-0.5 border border-slate-700">
+                🇸🇳
+              </span>
+            </div>
+            <div class="min-w-0 flex-1">
+              <div id="active-client-name" class="active-ws-name text-xs font-bold text-white truncate group-hover:text-sky-300 transition-colors">
+                Teranga Gourmet
+              </div>
+              <div id="active-client-cat" class="active-ws-cat text-[10px] text-slate-400 truncate">
+                Haute Gastronomie & Traiteur
+              </div>
+            </div>
+          </div>
+          <svg class="w-4 h-4 text-slate-400 group-hover:text-white shrink-0 ml-1 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+
+        <!-- Menu Déroulant Glassmorphism des Marques -->
+        <div id="client-dropdown-menu" class="hidden absolute top-full left-3.5 right-3.5 mt-2 bg-slate-900/95 backdrop-blur-xl border border-slate-700/80 rounded-3xl shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 duration-150">
+          <div class="text-[10px] font-bold text-slate-400 px-3 py-1.5 uppercase tracking-wider flex items-center justify-between">
+            <span>Changer de Workspace</span>
+            <span class="text-[9px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full font-semibold">3 marques</span>
+          </div>
+          <div id="client-list-container" class="max-h-56 overflow-y-auto space-y-1 pr-1">
+            <!-- Injecté par workspace-state.js -->
+          </div>
+          <div class="border-t border-slate-800 mt-1.5 pt-1.5">
+            <button
+              type="button"
+              onclick="alert('Ajout d\'une nouvelle marque client');"
+              class="w-full flex items-center gap-2 px-3 py-2 text-xs font-bold text-[#F94F06] hover:bg-orange-500/10 rounded-xl transition-colors cursor-pointer"
+            >
+              <span>+ Ajouter une marque</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <nav class="px-3 space-y-1 mt-1">
+        <a href="dashboard.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span>Calendrier & Queue</span>
+        </a>
+
+        <a href="clients.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span>Espaces Clients</span>
+        </a>
+
+        <a href="media.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          <span>Médiathèque Assets</span>
+        </a>
+
+        <a href="inbox.html" class="flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-semibold bg-[#F94F06] text-white shadow-[0_8px_20px_-4px_rgba(249,79,6,0.35)] transition-all">
+          <div class="flex items-center gap-3">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <span>Inbox Unifiée</span>
+          </div>
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#10B981] opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-[#10B981]"></span>
+          </span>
+        </a>
+
+        <a href="startpage.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          <span>Start Page (Bio)</span>
+        </a>
+
+        <a href="analytics.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          <span>Analytics & Rapports</span>
+        </a>
+
+        <a href="validation.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span>Portail Validation</span>
+        </a>
+
+        <a href="billing.html" class="flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+          <div class="flex items-center gap-3">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+            <span>Facturation & Forfaits</span>
+          </div>
+          <span class="bg-[#1E90FF]/15 text-[#1E90FF] border border-[#1E90FF]/30 px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-tight">
+            Wave
+          </span>
+        </a>
+
+        <a href="channels.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+          <span>Canaux sociaux</span>
+        </a>
+
+        <a href="settings.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <span>Paramètres Agence</span>
+        </a>
+      </nav>
+    </div>
+
+    <div class="p-3.5 border-t border-slate-800/70 bg-slate-900/60">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#0066FF] to-sky-400 flex items-center justify-center font-black text-xs text-white">AD</div>
+        <div>
+          <div class="text-xs font-bold text-white">Awa Diop</div>
+          <div class="text-[10px] text-slate-400">Lead CM · Dakar 🇸🇳</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <div id="sidebar-backdrop" class="fixed inset-0 bg-black/60 z-30 hidden backdrop-blur-xs"></div>
+
+  <!-- MAIN WRAPPER -->
+  <div class="flex-1 flex flex-col min-w-0 lg:pl-64 z-10 h-screen overflow-hidden">
+    
+    <!-- Topbar -->
+    <header class="sticky top-0 z-30 backdrop-blur-xl bg-white/80 border-b border-slate-200/60 px-4 sm:px-8 py-3.5 flex items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <button id="open-sidebar-btn" class="lg:hidden p-2 rounded-xl text-slate-700 bg-slate-100 cursor-pointer">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+        </button>
+        <div class="flex items-center gap-2 text-sm sm:text-base font-extrabold text-[#0F172A]">
+          <span class="text-slate-400 font-medium">CMFlow</span>
+          <span class="text-slate-300">/</span>
+          <span>Messagerie Unifiée & Retours Clients</span>
+        </div>
+      </div>
+      <div id="topbar-live-badge" class="px-3 py-1 bg-emerald-50 text-emerald-700 font-extrabold text-xs rounded-full border border-emerald-200 flex items-center gap-1.5">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span id="topbar-whatsapp-count">2 Retours WhatsApp</span>
+      </div>
+    </header>
+
+    <!-- INBOX EN 3 VOLETS -->
+    <div class="flex-1 p-3.5 min-h-0 overflow-hidden">
+      <div class="h-full grid grid-cols-1 md:grid-cols-12 gap-3 bg-white/80 backdrop-blur-md rounded-3xl border border-slate-200/80 shadow-xs overflow-hidden p-2">
+        
+        <!-- =========================================================================
+            VOLET 1 : DOSSIERS & CANAUX GAUCHE
+            ========================================================================= -->
+        <div class="hidden lg:flex lg:col-span-3 flex-col justify-between p-3.5 bg-slate-50/70 rounded-2xl border border-slate-200/60 overflow-y-auto">
+          <div class="space-y-3">
+            <div class="flex items-center justify-between pb-2 border-b border-slate-200/70">
+              <span class="text-xs font-black uppercase text-[#0F172A] tracking-wider">Canaux & Dossiers</span>
+              <span class="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full flex items-center gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> En ligne
+              </span>
+            </div>
+
+            <!-- Boutons Filtres Canaux -->
+            <div class="space-y-1.5 text-xs font-bold" id="channel-filters-container">
+              
+              <!-- Retours WhatsApp -->
+              <button
+                type="button"
+                id="filter-btn-whatsapp"
+                onclick="setChannelFilter('whatsapp')"
+                class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-[#10B981] text-white shadow-sm transition-all cursor-pointer text-left"
+              >
+                <div class="flex items-center gap-2">
+                  <span class="text-sm">🟢</span>
+                  <span>Retours WhatsApp</span>
+                </div>
+                <span id="badge-count-whatsapp" class="bg-white/20 text-white text-[10px] px-2 py-0.5 rounded-full font-extrabold">2</span>
+              </button>
+
+              <!-- Tous les Messages -->
+              <button
+                type="button"
+                id="filter-btn-all"
+                onclick="setChannelFilter('all')"
+                class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-200/70 hover:text-slate-900 transition-all cursor-pointer text-left"
+              >
+                <div class="flex items-center gap-2">
+                  <span class="text-sm">💬</span>
+                  <span>Tous les Messages</span>
+                </div>
+                <span id="badge-count-all" class="bg-slate-200 text-slate-700 text-[10px] px-2 py-0.5 rounded-full font-extrabold">6</span>
+              </button>
+
+              <!-- Instagram DMs -->
+              <button
+                type="button"
+                id="filter-btn-instagram"
+                onclick="setChannelFilter('instagram')"
+                class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-200/70 hover:text-slate-900 transition-all cursor-pointer text-left"
+              >
+                <div class="flex items-center gap-2">
+                  <span class="text-sm">📸</span>
+                  <span>Instagram DMs</span>
+                </div>
+                <span id="badge-count-instagram" class="bg-slate-200 text-slate-700 text-[10px] px-2 py-0.5 rounded-full font-extrabold">2</span>
+              </button>
+
+              <!-- Facebook Messenger -->
+              <button
+                type="button"
+                id="filter-btn-facebook"
+                onclick="setChannelFilter('facebook')"
+                class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-200/70 hover:text-slate-900 transition-all cursor-pointer text-left"
+              >
+                <div class="flex items-center gap-2">
+                  <span class="text-sm">📘</span>
+                  <span>Facebook Messenger</span>
+                </div>
+                <span id="badge-count-facebook" class="bg-slate-200 text-slate-700 text-[10px] px-2 py-0.5 rounded-full font-extrabold">1</span>
+              </button>
+
+              <!-- TikTok DMs -->
+              <button
+                type="button"
+                id="filter-btn-tiktok"
+                onclick="setChannelFilter('tiktok')"
+                class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-200/70 hover:text-slate-900 transition-all cursor-pointer text-left"
+              >
+                <div class="flex items-center gap-2">
+                  <span class="text-sm">🎵</span>
+                  <span>TikTok DMs</span>
+                </div>
+                <span id="badge-count-tiktok" class="bg-slate-200 text-slate-700 text-[10px] px-2 py-0.5 rounded-full font-extrabold">1</span>
+              </button>
+
+            </div>
+          </div>
+
+          <div class="p-3 bg-white rounded-2xl border border-slate-200 text-[11px] text-slate-500 space-y-1.5 shadow-2xs">
+            <div class="font-extrabold text-emerald-600 flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+              Synchronisation Active
+            </div>
+            <div class="text-[10px] text-slate-400 leading-relaxed">Webhooks WhatsApp, Instagram & Meta Connect synchronisés en temps réel.</div>
+          </div>
+        </div>
+
+        <!-- =========================================================================
+            VOLET 2 : LISTE DES CONVERSATIONS
+            ========================================================================= -->
+        <div class="col-span-12 md:col-span-5 lg:col-span-4 flex flex-col border-r border-slate-200/60 min-h-0 bg-white/60">
+          
+          <!-- Barre de Recherche & Filtre Actif -->
+          <div class="p-2.5 border-b border-slate-200/60 space-y-2">
+            <div class="relative">
+              <input
+                type="text"
+                id="search-threads-input"
+                oninput="handleSearch(this.value)"
+                placeholder="Rechercher contact, message... (⌘K)"
+                class="w-full pl-8 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#F94F06]/20 focus:border-[#F94F06] transition-all"
+              >
+              <svg class="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+
+            <!-- Mini pillules de filtre rapide pour mobile -->
+            <div class="flex lg:hidden gap-1.5 overflow-x-auto pb-1 text-[10px] font-bold">
+              <button onclick="setChannelFilter('all')" class="px-2 py-1 bg-slate-100 rounded-lg shrink-0">Tous</button>
+              <button onclick="setChannelFilter('whatsapp')" class="px-2 py-1 bg-emerald-100 text-emerald-800 rounded-lg shrink-0">WhatsApp</button>
+              <button onclick="setChannelFilter('instagram')" class="px-2 py-1 bg-purple-100 text-purple-800 rounded-lg shrink-0">Instagram</button>
+              <button onclick="setChannelFilter('facebook')" class="px-2 py-1 bg-blue-100 text-blue-800 rounded-lg shrink-0">Facebook</button>
+              <button onclick="setChannelFilter('tiktok')" class="px-2 py-1 bg-slate-200 text-slate-800 rounded-lg shrink-0">TikTok</button>
+            </div>
+          </div>
+
+          <!-- Liste scrollable des threads -->
+          <div id="threads-list-container" class="flex-1 overflow-y-auto p-1.5 space-y-1.5">
+            <!-- Rendu dynamique par JavaScript -->
+          </div>
+
+        </div>
+
+        <!-- =========================================================================
+            VOLET 3 : DISCUSSION & COMPOSER
+            ========================================================================= -->
+        <div id="chat-pane" class="col-span-12 md:col-span-7 lg:col-span-5 flex flex-col bg-white rounded-2xl border border-slate-200/80 min-h-0 overflow-hidden shadow-xs">
+          
+          <!-- En-tête de la conversation -->
+          <div class="p-3.5 border-b border-slate-200/70 flex items-center justify-between bg-slate-50/70">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <div class="relative shrink-0">
+                <img id="chat-header-avatar" src="" alt="Avatar" class="w-9 h-9 rounded-full object-cover ring-2 ring-white shadow-2xs">
+                <span id="chat-header-channel-badge" class="absolute -bottom-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center font-bold text-[9px] text-white shadow-xs"></span>
+              </div>
+              <div class="min-w-0">
+                <div id="chat-header-name" class="text-xs font-black text-[#0F172A] truncate">Mamadou Dieng</div>
+                <div id="chat-header-handle" class="text-[10px] text-slate-500 font-bold truncate">WhatsApp Direct · +221 77 800 12 34</div>
+              </div>
+            </div>
+            <a
+              id="chat-header-action-btn"
+              href="#"
+              target="_blank"
+              class="px-3 py-1.5 bg-[#10B981]/10 hover:bg-[#10B981]/20 text-[#059669] font-extrabold text-[11px] rounded-xl border border-[#10B981]/30 transition-colors shrink-0 flex items-center gap-1.5"
+            >
+              <span>Ouvrir WhatsApp</span>
+              <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+            </a>
+          </div>
+
+          <!-- Corps du Chat (Messages + Contexte Post) -->
+          <div id="chat-messages-container" class="flex-1 overflow-y-auto p-4 space-y-3 bg-[#F8FAFC]/60">
+            <!-- Injecté dynamiquement par JavaScript -->
+          </div>
+
+          <!-- Composer de Réponse -->
+          <div class="p-3 border-t border-slate-200 bg-white space-y-2.5">
+            
+            <!-- Réponses rapides personnalisables -->
+            <div id="quick-replies-container" class="flex gap-1.5 overflow-x-auto text-[10px] font-bold pb-0.5">
+              <!-- Injecté dynamiquement selon le contexte -->
+            </div>
+
+            <!-- Formulaire d'envoi -->
+            <form onsubmit="event.preventDefault(); sendChatMessage();" class="space-y-2">
+              <div class="relative">
+                <textarea
+                  id="chat-input"
+                  rows="2"
+                  placeholder="Rédiger votre réponse au client..."
+                  onkeydown="if(event.key === 'Enter' && !event.shiftKey){ event.preventDefault(); sendChatMessage(); }"
+                  class="w-full p-2.5 pr-10 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#F94F06]/20 focus:border-[#F94F06] transition-all resize-none placeholder:text-slate-400"
+                ></textarea>
+              </div>
+
+              <div class="flex items-center justify-between">
+                <span id="composer-channel-indicator" class="text-[10px] font-extrabold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-lg flex items-center gap-1.5">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                  Canal : WhatsApp Direct
+                </span>
+
+                <button
+                  type="submit"
+                  id="chat-send-btn"
+                  class="px-4 py-2 bg-[#F94F06] hover:bg-[#e04605] text-white font-black text-xs rounded-xl shadow-md shadow-orange-500/20 active:scale-[0.98] transition-all flex items-center gap-1.5 cursor-pointer"
+                >
+                  <span>Envoyer la réponse</span>
+                  <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                </button>
+              </div>
+            </form>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+      LOGIQUE JAVASCRIPT COMPLÈTE & INTERACTIVE
+      ========================================================================= -->
+  <script>
+    // Données des conversations multicanaux complètes (WhatsApp, Instagram, Facebook, TikTok)
+    const THREADS_DATA = [
+      {
+        id: 'thread-1',
+        channel: 'whatsapp',
+        contactName: 'Mamadou Dieng (Marketing)',
+        contactHandle: '+221 77 800 12 34',
+        contactAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80',
+        timestamp: '8 min',
+        unread: true,
+        intent: 'revision',
+        intentLabel: 'Modification demandée',
+        intentColor: 'amber',
+        actionUrl: 'https://wa.me/221778001234',
+        actionLabel: 'Ouvrir WhatsApp',
+        postContext: {
+          thumbnail: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&auto=format&fit=crop&q=80',
+          title: 'Thiéboudienne Royal Déjeuner',
+          date: '24 Août à 12:30',
+          badge: 'Retouche demandée',
+          badgeColor: 'amber'
+        },
+        messages: [
+          {
+            id: 'm1',
+            sender: 'agent',
+            senderName: 'Awa Diop (CMFlow)',
+            time: '14:15',
+            text: 'Bonjour M. Dieng ! Voici la maquette du post de lundi pour la formule déjeuner.'
+          },
+          {
+            id: 'm2',
+            sender: 'client',
+            senderName: 'Mamadou Dieng',
+            time: '14:22',
+            text: 'Superbe visuel et très beau texte ! Mais pouvez-vous corriger le prix à 4 500 FCFA au lieu de 5 000 FCFA sur l\'affiche ? Merci beaucoup !'
+          }
+        ],
+        quickReplies: [
+          '⚡ C\'est bien noté, retouche en cours immédiate ! 🎨',
+          '⚡ Le visuel corrigé avec 4 500 FCFA est prêt ! ✨',
+          '⚡ Merci pour votre validation rapide M. Dieng ! 🚀'
+        ]
+      },
+      {
+        id: 'thread-2',
+        channel: 'whatsapp',
+        contactName: 'Aïcha Traoré (Gérante)',
+        contactHandle: '+221 77 654 32 10',
+        contactAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80',
+        timestamp: '42 min',
+        unread: false,
+        intent: 'validation',
+        intentLabel: 'Validation confirmée',
+        intentColor: 'emerald',
+        actionUrl: 'https://wa.me/221776543210',
+        actionLabel: 'Ouvrir WhatsApp',
+        postContext: {
+          thumbnail: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&auto=format&fit=crop&q=80',
+          title: 'Carrousel Brunch du Dimanche',
+          date: '25 Août à 10:00',
+          badge: 'Validé pour publication',
+          badgeColor: 'emerald'
+        },
+        messages: [
+          {
+            id: 'm1',
+            sender: 'agent',
+            senderName: 'Awa Diop (CMFlow)',
+            time: '11:00',
+            text: 'Bonjour Mme Traoré, voici les 5 slides du Carrousel Brunch de dimanche pour validation.'
+          },
+          {
+            id: 'm2',
+            sender: 'client',
+            senderName: 'Aïcha Traoré',
+            time: '11:45',
+            text: 'Parfait Awa ! Tout est validé pour le carrousel Brunch de dimanche ! 🎉 Vous pouvez programmer la publication automatique.'
+          },
+          {
+            id: 'm3',
+            sender: 'agent',
+            senderName: 'Awa Diop (CMFlow)',
+            time: '11:48',
+            text: 'Super, c\'est programmé sur Instagram & Facebook pour dimanche 10h00 ! 🚀'
+          }
+        ],
+        quickReplies: [
+          '⚡ Parfait, la publication automatique est activée ! 🚀',
+          '⚡ Je vous envoie le rapport de performance lundi matin 📊',
+          '⚡ Excellente journée à toute l\'équipe Teranga ! ✨'
+        ]
+      },
+      {
+        id: 'thread-3',
+        channel: 'instagram',
+        contactName: 'Amadou Sow (@amadou_sow)',
+        contactHandle: 'Instagram DM · @amadou_sow',
+        contactAvatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&auto=format&fit=crop&q=80',
+        timestamp: '1h',
+        unread: true,
+        intent: 'inquiry',
+        intentLabel: 'Question tarif / DM',
+        intentColor: 'blue',
+        actionUrl: 'https://instagram.com/direct/t/amadou_sow',
+        actionLabel: 'Profil Instagram',
+        postContext: null,
+        messages: [
+          {
+            id: 'm1',
+            sender: 'client',
+            senderName: 'Amadou Sow',
+            time: '13:05',
+            text: 'Bonjour, vos formules traiteur gastronomique sont-elles disponibles pour un dîner privé de 30 personnes aux Almadies ce samedi soir ? Quel est le tarif par personne ?'
+          }
+        ],
+        quickReplies: [
+          '⚡ Bonjour Amadou ! Oui, nous avons une formule traiteur VIP à partir de 15 000 FCFA/pers 🍽️',
+          '⚡ Pouvez-vous nous laisser votre contact WhatsApp pour vous envoyer le menu complet ? 📱',
+          '⚡ Nous vous envoyons notre plaquette événementielle immédiatement ! ✨'
+        ]
+      },
+      {
+        id: 'thread-4',
+        channel: 'instagram',
+        contactName: 'Fatou Diallo (@fatou_foodie)',
+        contactHandle: 'Instagram DM · @fatou_foodie (45K)',
+        contactAvatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&auto=format&fit=crop&q=80',
+        timestamp: '2h',
+        unread: false,
+        intent: 'collab',
+        intentLabel: 'Proposition Collaboration',
+        intentColor: 'purple',
+        actionUrl: 'https://instagram.com/fatou_foodie',
+        actionLabel: 'Profil Instagram',
+        postContext: null,
+        messages: [
+          {
+            id: 'm1',
+            sender: 'client',
+            senderName: 'Fatou Diallo',
+            time: '12:10',
+            text: 'Hello l\'équipe Teranga Gourmet ! J\'adore vos récents Reels. J\'aimerais beaucoup tester votre nouvelle carte dégustation pour un Reel collaboratif dédié à ma communauté food à Dakar.'
+          }
+        ],
+        quickReplies: [
+          '⚡ Hello Fatou ! Avec grand plaisir, nous serions ravis de collaborer avec vous 🎥',
+          '⚡ Nous vous invitons ce vendredi pour une dégustation privée avec notre Chef ! 🥂',
+          '⚡ Je transmets votre proposition à la direction marketing.'
+        ]
+      },
+      {
+        id: 'thread-5',
+        channel: 'facebook',
+        contactName: 'Cheikh Tidiane Ndiaye',
+        contactHandle: 'Facebook Messenger · Dakar',
+        contactAvatar: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=200&auto=format&fit=crop&q=80',
+        timestamp: '3h',
+        unread: false,
+        intent: 'booking',
+        intentLabel: 'Réservation Messenger',
+        intentColor: 'indigo',
+        actionUrl: 'https://facebook.com/messages/t/cheikh.ndiaye',
+        actionLabel: 'Ouvrir Messenger',
+        postContext: null,
+        messages: [
+          {
+            id: 'm1',
+            sender: 'client',
+            senderName: 'Cheikh Tidiane Ndiaye',
+            time: '10:30',
+            text: 'Bonjour, est-il possible de réserver une table pour 6 personnes ce vendredi soir à 20h30 pour un anniversaire ? Avez-vous un espace privé ?'
+          }
+        ],
+        quickReplies: [
+          '⚡ Bonjour M. Ndiaye ! Oui, nous avons réservé votre table pour 6 personnes ce vendredi à 20h30 🎂',
+          '⚡ Un gâteau d\'anniversaire personnalisé peut être préparé par notre pâtissier ! 🍰',
+          '⚡ Merci pour votre fidélité, à vendredi soir chez Teranga !'
+        ]
+      },
+      {
+        id: 'thread-6',
+        channel: 'tiktok',
+        contactName: 'Dakar Vibes (@dakar_vibes)',
+        contactHandle: 'TikTok DM · @dakar_vibes',
+        contactAvatar: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=200&auto=format&fit=crop&q=80',
+        timestamp: '5h',
+        unread: false,
+        intent: 'social',
+        intentLabel: 'Commentaire / DM',
+        intentColor: 'slate',
+        actionUrl: 'https://tiktok.com/@dakar_vibes',
+        actionLabel: 'Ouvrir TikTok',
+        postContext: null,
+        messages: [
+          {
+            id: 'm1',
+            sender: 'client',
+            senderName: 'Dakar Vibes',
+            time: '08:15',
+            text: 'Le son utilisé sur votre dernier Reel dégustation de Thiéboudienne est incroyable ! Quel est le titre de l\'artiste svp ? 🔥'
+          }
+        ],
+        quickReplies: [
+          '⚡ C\'est le morceau "Senegal Danse" de Baaba Maal ! 🎶',
+          '⚡ Merci pour le soutien ! Restez branchés pour nos prochains Reels 🔥',
+          '⚡ Rendez-vous sur notre page pour le menu de la semaine !'
+        ]
+      }
+    ];
+
+    // État global
+    let currentFilter = 'whatsapp';
+    let currentActiveThreadId = 'thread-1';
+    let searchQuery = '';
+
+    // Helpers badges plateforme
+    function getChannelBadge(channel) {
+      switch (channel) {
+        case 'whatsapp':
+          return { icon: 'W', bg: 'bg-[#10B981]', text: 'WhatsApp', color: '#10B981' };
+        case 'instagram':
+          return { icon: 'IG', bg: 'bg-gradient-to-tr from-amber-500 via-pink-500 to-purple-600', text: 'Instagram', color: '#E1306C' };
+        case 'facebook':
+          return { icon: 'FB', bg: 'bg-[#1877F2]', text: 'Facebook', color: '#1877F2' };
+        case 'tiktok':
+          return { icon: 'TT', bg: 'bg-[#000000]', text: 'TikTok', color: '#000000' };
+        default:
+          return { icon: '💬', bg: 'bg-slate-700', text: channel, color: '#475569' };
+      }
+    }
+
+    function getIntentBadgeClass(color) {
+      switch (color) {
+        case 'amber':
+          return 'bg-amber-100 text-amber-800 border-amber-200';
+        case 'emerald':
+          return 'bg-emerald-100 text-emerald-800 border-emerald-200';
+        case 'blue':
+          return 'bg-blue-100 text-blue-800 border-blue-200';
+        case 'purple':
+          return 'bg-purple-100 text-purple-800 border-purple-200';
+        case 'indigo':
+          return 'bg-indigo-100 text-indigo-800 border-indigo-200';
+        default:
+          return 'bg-slate-100 text-slate-700 border-slate-200';
+      }
+    }
+
+    // Mise à jour des compteurs dans Volet 1
+    function updateBadgeCounts() {
+      const counts = {
+        all: THREADS_DATA.length,
+        whatsapp: THREADS_DATA.filter(t => t.channel === 'whatsapp').length,
+        instagram: THREADS_DATA.filter(t => t.channel === 'instagram').length,
+        facebook: THREADS_DATA.filter(t => t.channel === 'facebook').length,
+        tiktok: THREADS_DATA.filter(t => t.channel === 'tiktok').length,
+      };
+
+      document.getElementById('badge-count-all').textContent = counts.all;
+      document.getElementById('badge-count-whatsapp').textContent = counts.whatsapp;
+      document.getElementById('badge-count-instagram').textContent = counts.instagram;
+      document.getElementById('badge-count-facebook').textContent = counts.facebook;
+      document.getElementById('badge-count-tiktok').textContent = counts.tiktok;
+      document.getElementById('topbar-whatsapp-count').textContent = counts.whatsapp + ' Retours WhatsApp';
+    }
+
+    // Gestion du changement de filtre de canal
+    function setChannelFilter(filter) {
+      currentFilter = filter;
+
+      // Styliser les boutons de filtre
+      const buttons = {
+        all: document.getElementById('filter-btn-all'),
+        whatsapp: document.getElementById('filter-btn-whatsapp'),
+        instagram: document.getElementById('filter-btn-instagram'),
+        facebook: document.getElementById('filter-btn-facebook'),
+        tiktok: document.getElementById('filter-btn-tiktok'),
+      };
+
+      Object.keys(buttons).forEach(key => {
+        const btn = buttons[key];
+        if (!btn) return;
+        if (key === filter) {
+          if (key === 'whatsapp') {
+            btn.className = 'w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-[#10B981] text-white shadow-sm transition-all cursor-pointer text-left';
+          } else if (key === 'instagram') {
+            btn.className = 'w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-sm transition-all cursor-pointer text-left';
+          } else if (key === 'facebook') {
+            btn.className = 'w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-[#1877F2] text-white shadow-sm transition-all cursor-pointer text-left';
+          } else if (key === 'tiktok') {
+            btn.className = 'w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-[#0F172A] text-white shadow-sm transition-all cursor-pointer text-left';
+          } else {
+            btn.className = 'w-full flex items-center justify-between px-3 py-2.5 rounded-xl bg-[#F94F06] text-white shadow-sm transition-all cursor-pointer text-left';
+          }
+        } else {
+          btn.className = 'w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-200/70 hover:text-slate-900 transition-all cursor-pointer text-left';
+        }
+      });
+
+      renderThreadsList();
+
+      // Si le thread actif n'est pas dans le filtre, sélectionner le premier disponible
+      const filtered = getFilteredThreads();
+      if (filtered.length > 0 && !filtered.some(t => t.id === currentActiveThreadId)) {
+        selectThread(filtered[0].id);
+      }
+    }
+
+    // Récupération des threads filtrés
+    function getFilteredThreads() {
+      return THREADS_DATA.filter(thread => {
+        const matchesChannel = currentFilter === 'all' || thread.channel === currentFilter;
+        const q = searchQuery.toLowerCase().trim();
+        const matchesSearch = !q ||
+          thread.contactName.toLowerCase().includes(q) ||
+          thread.contactHandle.toLowerCase().includes(q) ||
+          thread.intentLabel.toLowerCase().includes(q) ||
+          thread.messages.some(m => m.text.toLowerCase().includes(q));
+        return matchesChannel && matchesSearch;
+      });
+    }
+
+    // Rendu de la liste des conversations (Volet 2)
+    function renderThreadsList() {
+      const container = document.getElementById('threads-list-container');
+      const filtered = getFilteredThreads();
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="p-8 text-center space-y-2">
+            <div class="text-3xl">📭</div>
+            <div class="text-xs font-black text-slate-700">Aucun message dans ce canal</div>
+            <div class="text-[11px] text-slate-400">Essayez un autre filtre ou cliquez sur "Tous les Messages".</div>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(thread => {
+        const isActive = thread.id === currentActiveThreadId;
+        const channelBadge = getChannelBadge(thread.channel);
+        const lastMsg = thread.messages[thread.messages.length - 1];
+        const intentBadgeClass = getIntentBadgeClass(thread.intentColor);
+
+        return `
+          <div
+            onclick="selectThread('${thread.id}')"
+            class="p-3 rounded-2xl transition-all cursor-pointer space-y-1.5 ${
+              isActive
+                ? 'bg-white shadow-md border border-orange-200 ring-2 ring-[#F94F06]/30'
+                : 'hover:bg-white/80 bg-white/40 border border-transparent hover:border-slate-200'
+            }"
+          >
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2 min-w-0">
+                <div class="relative shrink-0">
+                  <img src="${thread.contactAvatar}" alt="Avatar" class="w-8 h-8 rounded-full object-cover ring-1 ring-slate-200">
+                  <span class="absolute -bottom-1 -right-1 w-3.5 h-3.5 ${channelBadge.bg} text-white text-[8px] rounded-full flex items-center justify-center font-extrabold shadow-2xs">
+                    ${channelBadge.icon}
+                  </span>
+                </div>
+                <span class="text-xs font-black ${isActive ? 'text-[#0F172A]' : 'text-slate-700'} truncate">
+                  ${thread.contactName}
+                </span>
+              </div>
+              <span class="text-[10px] text-slate-400 font-semibold shrink-0">${thread.timestamp}</span>
+            </div>
+
+            <div class="flex items-center gap-1.5">
+              <span class="text-[9px] font-black uppercase px-2 py-0.5 rounded-md border ${intentBadgeClass}">
+                ${thread.intentLabel}
+              </span>
+              ${thread.unread ? `<span class="w-2 h-2 rounded-full bg-[#F94F06] shrink-0"></span>` : ''}
+            </div>
+
+            <p class="text-xs ${isActive ? 'font-bold text-slate-900' : 'text-slate-600'} truncate">
+              ${lastMsg ? lastMsg.text : ''}
+            </p>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Sélection d'une conversation et mise à jour du Volet 3
+    function selectThread(threadId) {
+      currentActiveThreadId = threadId;
+      const thread = THREADS_DATA.find(t => t.id === threadId);
+      if (!thread) return;
+
+      thread.unread = false;
+      renderThreadsList();
+
+      const channelBadge = getChannelBadge(thread.channel);
+
+      // 1. En-tête Volet 3
+      document.getElementById('chat-header-avatar').src = thread.contactAvatar;
+      document.getElementById('chat-header-name').textContent = thread.contactName;
+      document.getElementById('chat-header-handle').textContent = thread.contactHandle;
+
+      const headerBadge = document.getElementById('chat-header-channel-badge');
+      headerBadge.className = `absolute -bottom-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center font-extrabold text-[9px] text-white shadow-xs ${channelBadge.bg}`;
+      headerBadge.textContent = channelBadge.icon;
+
+      const actionBtn = document.getElementById('chat-header-action-btn');
+      actionBtn.href = thread.actionUrl;
+      actionBtn.querySelector('span').textContent = thread.actionLabel;
+
+      if (thread.channel === 'whatsapp') {
+        actionBtn.className = 'px-3 py-1.5 bg-[#10B981]/10 hover:bg-[#10B981]/20 text-[#059669] font-extrabold text-[11px] rounded-xl border border-[#10B981]/30 transition-colors shrink-0 flex items-center gap-1.5';
+      } else if (thread.channel === 'instagram') {
+        actionBtn.className = 'px-3 py-1.5 bg-purple-50 hover:bg-purple-100 text-purple-700 font-extrabold text-[11px] rounded-xl border border-purple-200 transition-colors shrink-0 flex items-center gap-1.5';
+      } else if (thread.channel === 'facebook') {
+        actionBtn.className = 'px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 font-extrabold text-[11px] rounded-xl border border-blue-200 transition-colors shrink-0 flex items-center gap-1.5';
+      } else {
+        actionBtn.className = 'px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-extrabold text-[11px] rounded-xl border border-slate-300 transition-colors shrink-0 flex items-center gap-1.5';
+      }
+
+      // 2. Indicateur de canal dans le composer
+      const compIndicator = document.getElementById('composer-channel-indicator');
+      compIndicator.innerHTML = `
+        <span class="w-1.5 h-1.5 rounded-full ${channelBadge.bg}"></span>
+        Canal actif : ${channelBadge.text}
+      `;
+
+      // 3. Réponses rapides
+      const quickRepliesContainer = document.getElementById('quick-replies-container');
+      if (thread.quickReplies && thread.quickReplies.length > 0) {
+        quickRepliesContainer.innerHTML = thread.quickReplies.map(qr => `
+          <button
+            type="button"
+            onclick="setReply('${qr.replace(/'/g, "\\'")}')"
+            class="px-2.5 py-1 bg-slate-100 hover:bg-orange-50 hover:text-[#F94F06] hover:border-orange-200 rounded-lg border border-slate-200 whitespace-nowrap transition-colors cursor-pointer"
+          >
+            ${qr}
+          </button>
+        `).join('');
+      } else {
+        quickRepliesContainer.innerHTML = '';
+      }
+
+      // 4. Messages du chat
+      renderChatMessages(thread);
+    }
+
+    // Rendu des messages du chat
+    function renderChatMessages(thread) {
+      const messagesContainer = document.getElementById('chat-messages-container');
+      let html = '';
+
+      // Widget Post Context (si existant)
+      if (thread.postContext) {
+        html += `
+          <div class="bg-gradient-to-r from-orange-50/90 to-amber-50/60 border border-orange-200/80 rounded-2xl p-3 flex items-center justify-between gap-2.5 shadow-2xs">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <img src="${thread.postContext.thumbnail}" alt="Post" class="w-11 h-11 rounded-xl object-cover ring-1 ring-orange-300 shrink-0">
+              <div class="min-w-0">
+                <div class="text-[9px] font-black uppercase tracking-wider text-[#F94F06]">Contexte de Validation</div>
+                <div class="text-xs font-extrabold text-[#0F172A] truncate">${thread.postContext.title}</div>
+                <div class="text-[10px] text-slate-500 font-semibold">📅 ${thread.postContext.date}</div>
+              </div>
+            </div>
+            <span class="text-[9px] font-black uppercase px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 border border-amber-300 shrink-0">
+              ${thread.postContext.badge}
+            </span>
+          </div>
+        `;
+      }
+
+      // Liste des bulles de messages
+      thread.messages.forEach(msg => {
+        const isAgent = msg.sender === 'agent';
+        if (isAgent) {
+          html += `
+            <div class="flex flex-col items-end space-y-1">
+              <span class="text-[10px] text-slate-400 font-bold">${msg.senderName} · ${msg.time}</span>
+              <div class="max-w-xs md:max-w-sm p-3 rounded-2xl rounded-tr-xs bg-[#F94F06] text-white text-xs shadow-md shadow-[#F94F06]/20 leading-relaxed">
+                ${msg.text}
+              </div>
+            </div>
+          `;
+        } else {
+          html += `
+            <div class="flex flex-col items-start space-y-1">
+              <span class="text-[10px] text-slate-400 font-bold">${msg.senderName} · ${msg.time}</span>
+              <div class="max-w-xs md:max-w-sm p-3 rounded-2xl rounded-tl-xs bg-white text-slate-800 border border-slate-200 text-xs shadow-2xs leading-relaxed">
+                ${msg.text}
+              </div>
+            </div>
+          `;
+        }
+      });
+
+      messagesContainer.innerHTML = html;
+      // Scroll to bottom
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    // Insertion d'une réponse rapide
+    function setReply(text) {
+      const cleanText = text.replace(/^⚡\s*/, '');
+      const input = document.getElementById('chat-input');
+      input.value = cleanText;
+      input.focus();
+    }
+
+    // Envoi d'un message
+    function sendChatMessage() {
+      const input = document.getElementById('chat-input');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const thread = THREADS_DATA.find(t => t.id === currentActiveThreadId);
+      if (!thread) return;
+
+      const now = new Date();
+      const timeStr = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+
+      // Ajouter le message au thread
+      thread.messages.push({
+        id: 'msg_' + Date.now(),
+        sender: 'agent',
+        senderName: 'Awa Diop (CMFlow)',
+        time: timeStr,
+        text: text
+      });
+
+      thread.timestamp = 'À l\'instant';
+
+      // Réinitialiser input
+      input.value = '';
+
+      // Re-rendre chat et liste
+      renderChatMessages(thread);
+      renderThreadsList();
+
+      const channelBadge = getChannelBadge(thread.channel);
+      showToast(`💬 Réponse envoyée avec succès sur ${channelBadge.text} !`);
+    }
+
+    // Recherche
+    function handleSearch(val) {
+      searchQuery = val;
+      renderThreadsList();
+    }
+
+    // Toast
+    function showToast(msg) {
+      const toast = document.getElementById('app-toast');
+      const text = document.getElementById('toast-text');
+      text.textContent = msg;
+      toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+      }, 3000);
+    }
+
+    // Gestion de la sidebar mobile
+    document.addEventListener('DOMContentLoaded', () => {
+      const openBtn = document.getElementById('open-sidebar-btn');
+      const closeBtn = document.getElementById('close-sidebar-btn');
+      const sidebar = document.getElementById('sidebar');
+      const backdrop = document.getElementById('sidebar-backdrop');
+
+      if (openBtn && sidebar && backdrop) {
+        openBtn.addEventListener('click', () => {
+          sidebar.classList.remove('-translate-x-full');
+          backdrop.classList.remove('hidden');
+        });
+      }
+      if (closeBtn && sidebar && backdrop) {
+        closeBtn.addEventListener('click', () => {
+          sidebar.classList.add('-translate-x-full');
+          backdrop.classList.add('hidden');
+        });
+        backdrop.addEventListener('click', () => {
+          sidebar.classList.add('-translate-x-full');
+          backdrop.classList.add('hidden');
+        });
+      }
+
+      // Initialisation de l'inbox
+      updateBadgeCounts();
+      setChannelFilter('whatsapp');
+      selectThread('thread-1');
+    });
+  </script>
+  <script src="js/workspace-state.js"></script>
+  <script src="js/realtime-listener.js"></script>
+</body>
+</html>

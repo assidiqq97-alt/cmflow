@@ -1,0 +1,1460 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CMFlow — Gestion des réseaux sociaux pour Community Managers</title>
+  <meta name="description" content="CMFlow permet aux Community Managers de gérer leurs clients, programmer leurs contenus et suivre leurs performances depuis une seule plateforme.">
+  <meta name="keywords" content="Community Manager Sénégal, gestion réseaux sociaux Dakar, programmation publications, analytics social media FCFA, reporting client CM">
+  <meta name="author" content="CMFlow">
+  
+  <!-- Open Graph / Social Meta -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="CMFlow — Le cockpit des Community Managers">
+  <meta property="og:description" content="Tous vos réseaux sociaux. Un seul cockpit. Gérez vos clients, programmez vos publications et suivez vos performances.">
+  <meta property="og:url" content="https://cmflow.com">
+  <meta property="og:site_name" content="CMFlow">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="CMFlow — Gestion des réseaux sociaux pour Community Managers">
+  <meta name="twitter:description" content="Tous vos réseaux sociaux. Un seul cockpit. Pensé pour les Community Managers.">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Accessibilité: Lien d'évitement -->
+  <a href="#main-content" class="skip-link">Aller au contenu principal</a>
+
+  <!-- =========================================================================
+       NAVBAR
+       ========================================================================= -->
+  <header class="header" id="navbar">
+    <div class="container navbar-container">
+      <!-- Logo CMFlow Officiel -->
+      <a href="index.html" class="brand-logo" aria-label="CMFlow Accueil">
+        <img src="images/logo.svg" alt="CMFlow" style="height: 38px; width: auto; display: block;">
+      </a>
+
+      <!-- Navigation Desktop -->
+      <nav class="nav-menu" id="nav-menu" aria-label="Navigation principale">
+        <ul class="nav-list">
+          <li class="nav-item"><a href="#workflow" class="nav-link">Comment ça marche</a></li>
+          <li class="nav-item"><a href="#bento" class="nav-link">Fonctionnalités</a></li>
+          <li class="nav-item"><a href="#pricing" class="nav-link">Tarifs</a></li>
+          <li class="nav-item"><a href="#faq" class="nav-link">FAQ</a></li>
+        </ul>
+
+        <!-- Mobile Drawer Actions -->
+        <div class="nav-mobile-actions">
+          <a href="login.html" class="btn btn-ghost btn-login" style="text-decoration: none; text-align: center;">Se connecter</a>
+          <a href="register.html?plan=starter" class="btn btn-orange-glow" style="text-decoration: none; text-align: center;">Essai Gratuit</a>
+        </div>
+      </nav>
+
+      <!-- Desktop Action Buttons -->
+      <div class="navbar-actions">
+        <a href="login.html" class="btn btn-ghost btn-login" style="text-decoration: none;">Se connecter</a>
+        <a href="register.html?plan=starter" class="btn btn-orange-glow" style="text-decoration: none;">
+          <span>Essai Gratuit</span>
+          <svg class="btn-arrow" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3.333 8h9.334M8.667 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+
+      <!-- Hamburger Button (Mobile) -->
+      <button type="button" class="hamburger-btn" id="hamburger-btn" aria-label="Ouvrir le menu de navigation" aria-controls="nav-menu" aria-expanded="false">
+        <span class="hamburger-line line-1"></span>
+        <span class="hamburger-line line-2"></span>
+        <span class="hamburger-line line-3"></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer Backdrop -->
+  <div class="menu-backdrop" id="menu-backdrop" aria-hidden="true"></div>
+
+  <!-- Contenu Principal -->
+  <main id="main-content">
+
+    <!-- =========================================================================
+         SECTION 1 : HERO & PREUVE VISUELLE (Inspiration SaaS Clean & Dribbble)
+         ========================================================================= -->
+    <section class="hero-section" id="hero">
+      <div class="hero-glow-mesh" aria-hidden="true"></div>
+
+      <div class="container hero-container">
+        
+        <!-- Textes Hero -->
+        <div class="hero-content">
+          
+          <!-- Touche Humaine : Pastille Flottante Créateurs -->
+          <div class="hero-creator-pill">
+            <div class="creator-avatar-stack">
+              <div class="creator-avatar-circle" style="background-image: url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80');"></div>
+              <div class="creator-avatar-circle" style="background-image: url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80');"></div>
+              <div class="creator-avatar-circle" style="background-image: url('https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&auto=format&fit=crop&q=80');"></div>
+            </div>
+            <svg viewBox="0 0 20 20" width="16" height="16" fill="#F59E0B" aria-hidden="true" class="creator-star-icon">
+              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+            </svg>
+            <span class="creator-pill-text">Rejoint par +240 freelances et CMs actifs</span>
+          </div>
+
+          <h1 class="hero-title">
+            Gérez tous vos clients sans stress... <br class="hero-title-br">
+            <span class="text-gradient">depuis un cockpit unique.</span>
+          </h1>
+
+          <p class="hero-subtitle">
+            Tous vos réseaux sociaux réunis. Rédigez vos publications avec l'IA, organisez votre calendrier éditorial par client et partagez des aperçus directs sur WhatsApp en 1 clic sans friction.
+          </p>
+
+          <div class="hero-cta-group">
+            <a href="register.html?plan=starter" class="btn btn-orange-glow btn-lg" style="text-decoration: none;">
+              <span>Démarrer mon essai gratuit</span>
+              <svg class="btn-arrow" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M3.333 8h9.334M8.667 4l4 4-4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+            <a href="#bento" class="btn btn-secondary btn-lg btn-demo-link">
+              <span>Voir la démo interactive</span>
+              <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+            </a>
+          </div>
+
+          <p class="hero-reassurance">
+            <svg viewBox="0 0 16 16" fill="none" width="16" height="16" aria-hidden="true" class="reassurance-icon">
+              <circle cx="8" cy="8" r="7" stroke="#10B981" stroke-width="1.5"/>
+              <path d="M5 8l2 2 4-4" stroke="#10B981" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>Sans carte bancaire • Essai 14 jours • Compatible Wave & Orange Money</span>
+          </p>
+        </div>
+
+        <!-- Élément Visuel Central : Perspective Mockup PC + Mobile WhatsApp -->
+        <div class="hero-visual">
+          <div class="hero-mockup-perspective-wrapper">
+            
+            <!-- Fenêtre Desktop PC -->
+            <div class="hero-desktop-window">
+              <div class="hero-window-header">
+                <div class="window-controls-dots">
+                  <span style="background: #EF4444;"></span>
+                  <span style="background: #F59E0B;"></span>
+                  <span style="background: #10B981;"></span>
+                </div>
+                <div class="window-client-badge-pill">
+                  <span class="client-dot-blue"></span>
+                  <span class="client-badge-name">Espace Actif : <strong>Vision Large Shop</strong> (Mode)</span>
+                </div>
+                <span class="window-status-pill">
+                  <span class="status-dot-green"></span> 4 Comptes Liés
+                </span>
+              </div>
+
+              <!-- Contenu du Mockup Calendrier -->
+              <div class="hero-mock-body">
+                <!-- Post Card dans le mock -->
+                <div class="hero-mock-post-card">
+                  <div class="hero-mock-post-head">
+                    <span class="hero-mock-time">
+                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                      Aujourd'hui • 18:30
+                    </span>
+                    <span class="hero-mock-valid-tag">
+                      <svg viewBox="0 0 20 20" width="12" height="12" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                      Validé client
+                    </span>
+                  </div>
+                  <div class="hero-mock-post-content">
+                    <img id="hero-mock-img" src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=120&auto=format&fit=crop&q=80" class="hero-mock-post-img" alt="Aperçu">
+                    <div class="hero-mock-post-info">
+                      <p class="hero-mock-post-caption" id="hero-mock-caption">
+                        Nouvelle collection sneakers Dakar ! DM ou WhatsApp pour réserver...
+                      </p>
+                      <span class="hero-mock-post-tags" id="hero-mock-tags">#VisionLarge #DakarMode #Sneakers</span>
+                    </div>
+                    <a href="register.html?plan=starter" class="btn btn-primary hero-mock-publish-btn" title="Tester la publication" style="text-decoration: none;">
+                      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"></path><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"></path></svg>
+                      <span>Publier</span>
+                    </a>
+                  </div>
+                </div>
+
+                <!-- Deuxième Post Preview / IA Interactif -->
+                <div class="hero-mock-ai-card">
+                  <div class="hero-mock-ai-left">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.912 5.813a2 2 0 001.275 1.275L21 12l-5.813 1.912a2 2 0 00-1.275 1.275L12 21l-1.912-5.813a2 2 0 00-1.275-1.275L3 12l5.813-1.912a2 2 0 001.275-1.275L12 3z"/></svg>
+                    <span class="hero-mock-ai-text" id="hero-ai-status-text">Assistant IA : 3 idées de légendes prêtes</span>
+                  </div>
+                  <button type="button" class="hero-mock-ai-action" id="hero-ai-generate-btn" onclick="cycleHeroAiSuggestion()" title="Cliquer pour générer une nouvelle légende avec l'IA">
+                    <span>Générer</span>
+                    <svg viewBox="0 0 16 16" width="12" height="12" fill="currentColor"><path fill-rule="evenodd" d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Floating Badges Container -->
+            <div class="hero-floating-badges-container">
+              <!-- Floating Pill Wave Payment -->
+              <div class="hero-floating-pill-wave">
+                <div class="wave-icon-box">
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#2563EB" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2 12c2.5-3 5-3 7.5 0s5 3 7.5 0 5-3 5-3"></path>
+                    <path d="M2 17c2.5-3 5-3 7.5 0s5 3 7.5 0 5-3 5-3"></path>
+                  </svg>
+                </div>
+                <div class="wave-text-box">
+                  <span class="wave-title">Wave Sénégal</span>
+                  <span class="wave-amount">+3 500 FCFA reçu instantanément</span>
+                </div>
+              </div>
+
+              <!-- Floating Card Mobile WhatsApp -->
+              <div class="hero-floating-phone-card">
+                <div class="wa-card-header">
+                  <div class="wa-avatar-box">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="white">
+                      <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm0 18.15c-1.5 0-2.97-.39-4.27-1.14l-.31-.18-3.17.83.85-3.09-.2-.32a8.188 8.188 0 0 1-1.25-4.34c0-4.54 3.7-8.24 8.24-8.24 2.2 0 4.27.86 5.82 2.42a8.18 8.18 0 0 1 2.41 5.83c.01 4.54-3.68 8.23-8.12 8.23zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.12-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.12-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.22.25-.86.84-.86 2.06 0 1.21.89 2.39 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.14-1.18-.06-.11-.22-.18-.47-.3z"/>
+                    </svg>
+                  </div>
+                  <div class="wa-author-box">
+                    <strong class="wa-author-name">Vision Large (Directeur)</strong>
+                    <span class="wa-status-online">
+                      <span class="wa-dot-green"></span> En ligne
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Message WhatsApp -->
+                <div class="wa-bubble-msg">
+                  "Parfait pour la publication de ce soir Aminata ! C'est validé à 100% 🚀"
+                </div>
+                <div class="wa-time-row">
+                  <span>18:14</span>
+                  <svg viewBox="0 0 16 16" width="12" height="12" fill="#3B82F6"><path d="M12.354 4.354a.5.5 0 0 0-.708-.708L5 10.293 1.854 7.146a.5.5 0 1 0-.708.708l3.5 3.5a.5.5 0 0 0 .708 0l7-7zm-3 0a.5.5 0 0 0-.708-.708L5 7.293 3.854 6.146a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0l4-4z"/></svg>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SECTION 2 : SOCIAL PROOF & LOGOS DU QUOTIDIEN (FORMAT SVG)
+         ========================================================================= -->
+    <section class="social-proof-bar" id="platforms">
+      <div class="container">
+        <p class="social-proof-title">Compatible avec vos réseaux sociaux et vos outils du quotidien</p>
+        
+        <div class="social-logos-flex">
+          
+          <!-- Instagram SVG -->
+          <div class="social-logo-item">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#E1306C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+            </svg>
+            <span>Instagram</span>
+          </div>
+
+          <!-- Facebook SVG -->
+          <div class="social-logo-item">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="#1877F2">
+              <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+            </svg>
+            <span>Facebook</span>
+          </div>
+
+          <!-- TikTok SVG -->
+          <div class="social-logo-item">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="#000000">
+              <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1v-3.5a6.37 6.37 0 0 0-.79-.05A6.34 6.34 0 0 0 3 15.25a6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.34-6.34V8.71a8.18 8.18 0 0 0 4.79 1.52V6.78a4.85 4.85 0 0 1-.88-.09z"/>
+            </svg>
+            <span>TikTok</span>
+          </div>
+
+          <!-- LinkedIn SVG -->
+          <div class="social-logo-item">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="#0A66C2">
+              <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
+            </svg>
+            <span>LinkedIn</span>
+          </div>
+
+          <!-- WhatsApp SVG -->
+          <div class="social-logo-item" style="border-color: #86EFAC; background: #F0FDF4; color: #166534;">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="#25D366">
+              <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm0 18.15c-1.5 0-2.97-.39-4.27-1.14l-.31-.18-3.17.83.85-3.09-.2-.32a8.188 8.188 0 0 1-1.25-4.34c0-4.54 3.7-8.24 8.24-8.24 2.2 0 4.27.86 5.82 2.42a8.18 8.18 0 0 1 2.41 5.83c.01 4.54-3.68 8.23-8.12 8.23zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.12-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.12-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.22.25-.86.84-.86 2.06 0 1.21.89 2.39 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.14-1.18-.06-.11-.22-.18-.47-.3z"/>
+            </svg>
+            <span>WhatsApp Direct</span>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SECTION 3 : COMMENT ÇA MARCHE (Workflow 1-2-3 Storytelling avec SVGs)
+         ========================================================================= -->
+    <section class="section-compact" id="workflow">
+      <div class="container">
+        
+        <div class="section-header text-center">
+          <span class="section-tag">Workflow en 3 étapes</span>
+          <h2 class="section-title">Comment ça marche au quotidien ?</h2>
+          <p class="section-description">
+            Un flux de travail fluide pensé pour vous faire gagner plus de 2 heures chaque jour.
+          </p>
+        </div>
+
+        <div class="workflow-grid-3">
+          
+          <!-- Étape 1 -->
+          <div class="workflow-step-card">
+            <div class="workflow-step-badge">01</div>
+            <h3 class="workflow-step-title">1. Rédigez & Planifiez avec l'IA</h3>
+            <p class="workflow-step-desc">
+              L'IA génère en 30 secondes des légendes captivantes et les hashtags adaptés à votre secteur. Vous choisissez la date dans votre calendrier.
+            </p>
+            <div class="workflow-mockup-snippet">
+              <div style="display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 6px; align-items: center;">
+                <span style="color: #2563EB; display: inline-flex; align-items: center; gap: 5px;">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.912 5.813a2 2 0 001.275 1.275L21 12l-5.813 1.912a2 2 0 00-1.275 1.275L12 21l-1.912-5.813a2 2 0 00-1.275-1.275L3 12l5.813-1.912a2 2 0 001.275-1.275L12 3z"/></svg>
+                  Assistant IA Gemini
+                </span>
+                <span style="color: #059669; font-size: 0.74rem;">Statut : Prêt</span>
+              </div>
+              <p style="color: #64748B; margin: 0; font-style: italic;">
+                "Nouveau menu du chef ce week-end ! Saveurs authentiques et teranga assurée..."
+              </p>
+            </div>
+          </div>
+
+          <!-- Étape 2 -->
+          <div class="workflow-step-card">
+            <div class="workflow-step-badge orange">02</div>
+            <h3 class="workflow-step-title">2. Partagez sur WhatsApp direct</h3>
+            <p class="workflow-step-desc">
+              Copiez le texte en 1 clic ou envoyez un lien d'aperçu propre directement dans votre discussion WhatsApp avec le client. Zéro compte requis pour lui.
+            </p>
+            <div class="workflow-mockup-snippet">
+              <div style="display: flex; gap: 8px; align-items: center; color: #0F172A; font-weight: 700;">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="#25D366">
+                  <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm0 18.15c-1.5 0-2.97-.39-4.27-1.14l-.31-.18-3.17.83.85-3.09-.2-.32a8.188 8.188 0 0 1-1.25-4.34c0-4.54 3.7-8.24 8.24-8.24 2.2 0 4.27.86 5.82 2.42a8.18 8.18 0 0 1 2.41 5.83c.01 4.54-3.68 8.23-8.12 8.23zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.12-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.12-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.22.25-.86.84-.86 2.06 0 1.21.89 2.39 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.14-1.18-.06-.11-.22-.18-.47-.3z"/>
+                </svg>
+                <span>Bouton WhatsApp en 1 clic</span>
+              </div>
+              <div style="margin-top: 6px; font-size: 0.74rem; color: #15803D; font-weight: 600; display: flex; align-items: center; gap: 4px;">
+                <svg viewBox="0 0 16 16" width="12" height="12" fill="#15803D"><path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022z"/></svg>
+                Message formaté et prêt à l'envoi
+              </div>
+            </div>
+          </div>
+
+          <!-- Étape 3 -->
+          <div class="workflow-step-card">
+            <div class="workflow-step-badge green">03</div>
+            <h3 class="workflow-step-title">3. Validé en 1 clic & Diffusé</h3>
+            <p class="workflow-step-desc">
+              Le client donne son accord sur WhatsApp ou via son portail. Vous cliquez sur « 🚀 Publier » : votre publication est en direct sur les réseaux officiels !
+            </p>
+            <div class="workflow-mockup-snippet" style="background: #ECFDF5; border-color: #A7F3D0;">
+              <div style="display: flex; align-items: center; justify-content: space-between;">
+                <span style="color: #065F46; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;">
+                  <svg viewBox="0 0 20 20" width="14" height="14" fill="#059669"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                  En direct sur Instagram
+                </span>
+                <span style="font-size: 0.75rem; color: #059669; font-weight: 800;">100% Synchronisé</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SECTION 4 : BENTO GRID (Inspiration Dribbble avec SVGs)
+         ========================================================================= -->
+    <section class="section-compact bg-surface-alt" id="bento">
+      <div class="container">
+        
+        <div class="section-header text-center">
+          <span class="section-tag">Bento Grid Innovation</span>
+          <h2 class="section-title">Tout ce dont un Community Manager a besoin.</h2>
+          <p class="section-description">
+            Une architecture moderne pensée pour le terrain, sans fonctionnalités superflues.
+          </p>
+        </div>
+
+        <div class="bento-grid-wrapper">
+          
+          <!-- BLOC 1 (Large - Col 7) : Espaces Clients Cloisonnés -->
+          <div class="bento-card col-large">
+            <span class="bento-card-badge">Étanchéité Totale</span>
+            <h3 class="bento-card-title">Espaces Clients 100% Cloisonnés</h3>
+            <p class="bento-card-desc">
+              Gérez 5, 10 ou 20 marques sans jamais mélanger les photos, les textes ou les plannings. Basculez d'un client à l'autre en un seul clic.
+            </p>
+
+            <!-- Simulateur Switcher de Marque avec SVGs -->
+            <div class="bento-client-tabs-nav">
+              <button type="button" class="bento-client-tab-btn active" onclick="simulateBentoBrand('shop', this)">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                Vision Large Shop
+              </button>
+              <button type="button" class="bento-client-tab-btn" onclick="simulateBentoBrand('resto', this)">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2v6a3 3 0 0 1-3 3 3 3 0 0 1-3-3V2"></path><path d="M15 11v11"></path><path d="M5 2v20"></path></svg>
+                Teranga Gourmet
+              </button>
+              <button type="button" class="bento-client-tab-btn" onclick="simulateBentoBrand('school', this)">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
+                Lycée Mahmady
+              </button>
+            </div>
+
+            <div class="bento-simulator-preview" id="bento-sim-box">
+              <img id="bento-sim-img" src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=200&auto=format&fit=crop&q=80" style="width: 64px; height: 64px; border-radius: 12px; object-fit: cover;" alt="Aperçu marque">
+              <div style="flex: 1; min-width: 0;">
+                <strong id="bento-sim-title" style="font-size: 0.9rem; color: #0F172A; display: block;">Vision Large Shop • Boutique Mode</strong>
+                <span id="bento-sim-meta" style="font-size: 0.78rem; color: #64748B; display: block; margin: 2px 0 6px;">4 comptes connectés • Calendrier dédié</span>
+                <span style="font-size: 0.72rem; color: #2563EB; font-weight: 700; background: #EFF6FF; padding: 2px 8px; border-radius: 9999px; display: inline-flex; align-items: center; gap: 4px;">
+                  <span style="width: 6px; height: 6px; border-radius: 50%; background: #2563EB;"></span> Sélecteur d'espace actif
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- BLOC 2 (Moyen - Col 5) : Wave & Orange Money avec SVGs -->
+          <div class="bento-card col-medium" style="background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);">
+            <span class="bento-card-badge" style="background: #FEF3C7; color: #92400E;">Mobile Money Local</span>
+            <h3 class="bento-card-title">Wave & Orange Money</h3>
+            <p class="bento-card-desc">
+              0 carte bancaire internationale requise. Payez vos forfaits en FCFA directement avec vos comptes Mobile Money.
+            </p>
+
+            <div style="background: #FFFFFF; border: 1.5px solid #E2E8F0; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 10px; margin-top: auto;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <div style="width: 28px; height: 28px; border-radius: 6px; background: #EFF6FF; display: flex; align-items: center; justify-content: center;">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#2563EB" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M2 12c2.5-3 5-3 7.5 0s5 3 7.5 0 5-3 5-3"></path>
+                      <path d="M2 17c2.5-3 5-3 7.5 0s5 3 7.5 0 5-3 5-3"></path>
+                    </svg>
+                  </div>
+                  <strong style="font-size: 0.88rem; color: #0F172A;">Wave Sénégal</strong>
+                </div>
+                <span style="color: #16A34A; font-weight: 700; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 4px;">
+                  <svg viewBox="0 0 16 16" width="12" height="12" fill="#16A34A"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/></svg>
+                  0% de frais
+                </span>
+              </div>
+              <div style="height: 1px; background: #F1F5F9;"></div>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <div style="width: 28px; height: 28px; border-radius: 6px; background: #FFF7ED; display: flex; align-items: center; justify-content: center;">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none">
+                      <rect width="24" height="24" rx="6" fill="#FF7900" />
+                      <circle cx="12" cy="12" r="6" stroke="white" stroke-width="2" />
+                    </svg>
+                  </div>
+                  <strong style="font-size: 0.88rem; color: #0F172A;">Orange Money</strong>
+                </div>
+                <span style="color: #16A34A; font-weight: 700; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 4px;">
+                  <svg viewBox="0 0 16 16" width="12" height="12" fill="#16A34A"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/></svg>
+                  Instantané
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- BLOC 3 (Moyen - Col 5) : Conçu pour connexions 4G avec SVG -->
+          <div class="bento-card col-medium">
+            <span class="bento-card-badge" style="background: #DCFCE7; color: #166534;">Ultra-Léger & Rapide</span>
+            <h3 class="bento-card-title">Optimisé pour la 4G</h3>
+            <p class="bento-card-desc">
+              Consomme jusqu'à 5x moins de data internet. Sauvegarde automatique en cache local pour travailler même avec une connexion instable.
+            </p>
+
+            <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 16px; padding: 16px; display: flex; align-items: center; gap: 14px; margin-top: auto;">
+              <div style="width: 44px; height: 44px; border-radius: 12px; background: #DCFCE7; color: #15803D; display: flex; align-items: center; justify-content: center;">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                </svg>
+              </div>
+              <div>
+                <strong style="font-size: 0.88rem; color: #0F172A; display: block;">Data-Saver Engine</strong>
+                <span style="font-size: 0.78rem; color: #64748B;">Temps de chargement < 0.4s</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- BLOC 4 (Large - Col 7) : Témoignage Humain CM Freelance avec SVGs Stars -->
+          <div class="bento-card col-large" style="background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%); color: #FFFFFF; border-color: #334155;">
+            <span class="bento-card-badge" style="background: rgba(255,255,255,0.1); color: #93C5FD;">Témoignage Vérifié</span>
+            <h3 class="bento-card-title" style="color: #FFFFFF;">« J'ai gagné 2 heures par jour sur la gestion de mes 7 clients »</h3>
+            <p class="bento-card-desc" style="color: #CBD5E1; font-size: 0.95rem; font-style: italic;">
+              "Avant CMFlow, je passais mes dimanches soirs à envoyer des captures d'écran sur WhatsApp et à attendre les retours. Aujourd'hui, tout est clair, organisé et mes clients adorent. C'est l'outil indispensable pour tout CM."
+            </p>
+
+            <div style="display: flex; align-items: center; gap: 14px; margin-top: auto; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.1);">
+              <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=100&auto=format&fit=crop&q=80" style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid #3B82F6;" alt="Fatou Ndiaye">
+              <div>
+                <strong style="font-size: 0.9rem; color: #FFFFFF; display: block;">Fatou Ndiaye</strong>
+                <span style="font-size: 0.78rem; color: #94A3B8;">Community Manager Freelance (Dakar) • 7 clients</span>
+              </div>
+              <div style="margin-left: auto; display: flex; gap: 2px;">
+                <svg viewBox="0 0 20 20" width="14" height="14" fill="#F59E0B"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                <svg viewBox="0 0 20 20" width="14" height="14" fill="#F59E0B"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                <svg viewBox="0 0 20 20" width="14" height="14" fill="#F59E0B"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                <svg viewBox="0 0 20 20" width="14" height="14" fill="#F59E0B"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                <svg viewBox="0 0 20 20" width="14" height="14" fill="#F59E0B"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SECTION 5 : GRILLE TARIFAIRE ACCESSIBLE (En FCFA avec SVGs)
+         ========================================================================= -->
+    <section class="section-compact" id="pricing">
+      <div class="container">
+        
+        <div class="section-header text-center">
+          <span class="section-tag">Tarification accessible</span>
+          <h2 class="section-title">Des tarifs pensés pour les créateurs locaux.</h2>
+          <p class="section-description">
+            Paiement direct Wave et Orange Money en FCFA. Sans engagement.
+          </p>
+        </div>
+
+        <div class="pricing-cards-grid">
+          
+          <!-- Plan 1 : Solo / Freelance -->
+          <div class="pricing-card-modern">
+            <h3 class="pricing-plan-title">Solo / Freelance</h3>
+            <p class="pricing-plan-desc">Tout le nécessaire pour gérer vos premiers clients et automatiser vos validations.</p>
+            
+            <div class="pricing-price-box">
+              3 500 <span class="pricing-price-period">FCFA / mois</span>
+            </div>
+
+            <div class="pricing-features-list">
+              <div class="pricing-feature-row">
+                <svg viewBox="0 0 16 16" width="16" height="16" fill="#10B981" class="pricing-feature-check"><path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022z"/></svg>
+                <span><strong>3 Workspaces clients inclus</strong></span>
+              </div>
+              <div class="pricing-feature-row">
+                <svg viewBox="0 0 16 16" width="16" height="16" fill="#10B981" class="pricing-feature-check"><path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022z"/></svg>
+                <span>Publications illimitées (Reels, Carrousels, Posts)</span>
+              </div>
+              <div class="pricing-feature-row">
+                <svg viewBox="0 0 16 16" width="16" height="16" fill="#10B981" class="pricing-feature-check"><path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022z"/></svg>
+                <span>Portail de validation WhatsApp interactif</span>
+              </div>
+              <div class="pricing-feature-row">
+                <svg viewBox="0 0 16 16" width="16" height="16" fill="#10B981" class="pricing-feature-check"><path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022z"/></svg>
+                <span>Publication automatique Instagram & Facebook</span>
+              </div>
+              <div class="pricing-feature-row">
+                <svg viewBox="0 0 16 16" width="16" height="16" fill="#10B981" class="pricing-feature-check"><path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022z"/></svg>
+                <span>Rapports d'analyse PDF mensuels automatiques</span>
+              </div>
+              <div class="pricing-feature-row">
+                <svg viewBox="0 0 16 16" width="16" height="16" fill="#10B981" class="pricing-feature-check"><path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022z"/></svg>
+                <span>Support réactif par WhatsApp</span>
+              </div>
+            </div>
+
+            <button type="button" onclick="openPricingCheckoutModal('solo', 'Solo / Freelance', 3500, 'Offre Populaire ⚡')" class="btn btn-secondary btn-block">
+              Démarrer avec l'offre Solo →
+            </button>
+          </div>
+
+          <!-- Plan 2 : Pro Agency (Recommandé) -->
+          <div class="pricing-card-modern popular">
+            <div class="pricing-popular-badge" style="display: inline-flex; align-items: center; gap: 6px;">
+              <svg viewBox="0 0 20 20" width="13" height="13" fill="#FFFFFF"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+              Recommandé 🔥
+            </div>
+            
+            <h3 class="pricing-plan-title">Pro Agency</h3>
+            <p class="pricing-plan-desc">La formule clé en main pour les agences et CM gérant un portefeuille actif de marques.</p>
+            
+            <div class="pricing-price-box" style="color: #F94F06;">
+              15 000 <span class="pricing-price-period">FCFA / mois</span>
+            </div>
+
+            <div class="pricing-features-list">
+              <div class="pricing-feature-row">
+                <svg viewBox="0 0 16 16" width="16" height="16" fill="#10B981" class="pricing-feature-check"><path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022z"/></svg>
+                <span><strong>10 Workspaces clients inclus</strong></span>
+              </div>
+              <div class="pricing-feature-row">
+                <svg viewBox="0 0 16 16" width="16" height="16" fill="#10B981" class="pricing-feature-check"><path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022z"/></svg>
+                <span><strong>Tout ce qui est dans Solo</strong></span>
+              </div>
+              <div class="pricing-feature-row">
+                <svg viewBox="0 0 16 16" width="16" height="16" fill="#10B981" class="pricing-feature-check"><path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022z"/></svg>
+                <span>Publication TikTok & LinkedIn</span>
+              </div>
+              <div class="pricing-feature-row">
+                <svg viewBox="0 0 16 16" width="16" height="16" fill="#10B981" class="pricing-feature-check"><path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022z"/></svg>
+                <span>3 Comptes collaborateurs / CM inclus</span>
+              </div>
+              <div class="pricing-feature-row">
+                <svg viewBox="0 0 16 16" width="16" height="16" fill="#10B981" class="pricing-feature-check"><path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022z"/></svg>
+                <span>Rapports PDF personnalisés avec stats avancées</span>
+              </div>
+              <div class="pricing-feature-row">
+                <svg viewBox="0 0 16 16" width="16" height="16" fill="#10B981" class="pricing-feature-check"><path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022z"/></svg>
+                <span>Support prioritaire 7j/7</span>
+              </div>
+            </div>
+
+            <button type="button" onclick="openPricingCheckoutModal('pro', 'Pro Agency', 15000, 'Recommandé 🔥')" class="btn btn-orange-glow btn-block">
+              Choisir la Formule Pro →
+            </button>
+          </div>
+
+          <!-- Plan 3 : Scale Agence -->
+          <div class="pricing-card-modern">
+            <h3 class="pricing-plan-title">Scale Agence</h3>
+            <p class="pricing-plan-desc">Pour les structures et agences en pleine expansion avec besoins multi-équipes.</p>
+            
+            <div class="pricing-price-box">
+              35 000 <span class="pricing-price-period">FCFA / mois</span>
+            </div>
+
+            <div class="pricing-features-list">
+              <div class="pricing-feature-row">
+                <svg viewBox="0 0 16 16" width="16" height="16" fill="#10B981" class="pricing-feature-check"><path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022z"/></svg>
+                <span><strong>Workspaces clients illimités</strong></span>
+              </div>
+              <div class="pricing-feature-row">
+                <svg viewBox="0 0 16 16" width="16" height="16" fill="#10B981" class="pricing-feature-check"><path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022z"/></svg>
+                <span><strong>Tout ce qui est dans Pro</strong></span>
+              </div>
+              <div class="pricing-feature-row">
+                <svg viewBox="0 0 16 16" width="16" height="16" fill="#10B981" class="pricing-feature-check"><path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022z"/></svg>
+                <span>Marque Blanche Totale (votre logo sur le portail client)</span>
+              </div>
+              <div class="pricing-feature-row">
+                <svg viewBox="0 0 16 16" width="16" height="16" fill="#10B981" class="pricing-feature-check"><path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022z"/></svg>
+                <span>Équipe & rôles CM illimités</span>
+              </div>
+              <div class="pricing-feature-row">
+                <svg viewBox="0 0 16 16" width="16" height="16" fill="#10B981" class="pricing-feature-check"><path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022z"/></svg>
+                <span>Intégration API & Webhooks sur mesure</span>
+              </div>
+              <div class="pricing-feature-row">
+                <svg viewBox="0 0 16 16" width="16" height="16" fill="#10B981" class="pricing-feature-check"><path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022z"/></svg>
+                <span>Onboarding VIP & Responsable de compte dédié</span>
+              </div>
+            </div>
+
+            <button type="button" onclick="openPricingCheckoutModal('scale', 'Scale Agence', 35000, 'Grands Comptes 🚀')" class="btn btn-primary btn-block">
+              Passer à Scale →
+            </button>
+          </div>
+
+        </div>
+
+        <div style="text-align: center; margin-top: 24px; font-size: 0.85rem; color: #64748B; display: flex; align-items: center; justify-content: center; gap: 6px;">
+          <svg viewBox="0 0 20 20" width="16" height="16" fill="#64748B"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/></svg>
+          <span>Tous les forfaits incluent 14 jours d'essai • Paiement sécurisé par <strong>Wave 🌊</strong> & <strong>Orange Money 🍊</strong></span>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =========================================================================
+         SECTION 6 : FAQ ACCORDÉON & BANNIÈRE SOMBRE FINALE (CTA)
+         ========================================================================= -->
+    <section class="section-compact bg-surface-alt" id="faq">
+      <div class="container">
+        
+        <div class="section-header text-center">
+          <span class="section-tag">Questions fréquentes</span>
+          <h2 class="section-title">Tout ce que vous devez savoir</h2>
+        </div>
+
+        <div class="faq-accordion-container">
+          
+          <div class="faq-accordion-item active">
+            <div class="faq-accordion-header" onclick="toggleFaqItem(this)">
+              <span>Mes clients doivent-ils créer un compte sur CMFlow ?</span>
+              <span class="faq-accordion-icon">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              </span>
+            </div>
+            <div class="faq-accordion-body">
+              Non, absolument pas ! Vos clients reçoivent un simple message WhatsApp pré-formaté par vous ou un lien d'aperçu sécurisé. Votre tableau de bord et vos outils restent 100% privés et réservés à vous seul.
+            </div>
+          </div>
+
+          <div class="faq-accordion-item">
+            <div class="faq-accordion-header" onclick="toggleFaqItem(this)">
+              <span>Comment fonctionne le règlement Wave ou Orange Money ?</span>
+              <span class="faq-accordion-icon">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              </span>
+            </div>
+            <div class="faq-accordion-body">
+              Le paiement se fait directement en FCFA avec votre numéro de téléphone via Wave ou Orange Money. Aucune carte bancaire internationale n'est nécessaire et votre compte est activé instantanément.
+            </div>
+          </div>
+
+          <div class="faq-accordion-item">
+            <div class="faq-accordion-header" onclick="toggleFaqItem(this)">
+              <span>Comment mes différents clients sont-ils séparés ?</span>
+              <span class="faq-accordion-icon">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              </span>
+            </div>
+            <div class="faq-accordion-body">
+              Chaque client dispose de son propre dossier étanche (calendrier, médias, hashtags, rapports). En haut de votre écran, un sélecteur vous permet de basculer d'un client à l'autre en un clic sans aucun risque de mélange.
+            </div>
+          </div>
+
+          <div class="faq-accordion-item">
+            <div class="faq-accordion-header" onclick="toggleFaqItem(this)">
+              <span>Puis-je tester CMFlow gratuitement ?</span>
+              <span class="faq-accordion-icon">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              </span>
+            </div>
+            <div class="faq-accordion-body">
+              Oui ! Vous bénéficiez de 14 jours d'essai 100% gratuit sans renseigner de carte bancaire pour tester toutes les fonctionnalités avec votre premier client.
+            </div>
+          </div>
+
+        </div>
+
+        <!-- BANNIÈRE SOMBRE FINALE (Dark CTA Card) -->
+        <div class="dark-cta-banner-card">
+          <div class="dark-cta-glow" aria-hidden="true"></div>
+          
+          <h2 style="font-size: clamp(1.8rem, 3.5vw, 2.6rem); font-weight: 800; margin-bottom: 12px; color: #FFFFFF; position: relative; z-index: 1;">
+            Prêt à libérer votre temps et développer votre agence ?
+          </h2>
+          <p style="font-size: 1.05rem; color: #94A3B8; max-width: 540px; margin: 0 auto 24px; position: relative; z-index: 1;">
+            Rejoignez plus de 240 Community Managers qui gèrent leurs marques en toute sérénité.
+          </p>
+
+          <a href="register.html?plan=starter" class="btn btn-orange-glow btn-lg" style="font-size: 1.05rem; padding: 14px 28px; position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 8px; text-decoration: none;">
+            <span>Créer mon compte gratuit</span>
+            <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/></svg>
+          </a>
+
+          <p style="font-size: 0.8rem; color: #64748B; margin-top: 14px; position: relative; z-index: 1;">
+            Configuration en 2 minutes • Essai gratuit sans carte bancaire
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =========================================================================
+       FOOTER SAAS B2B OFFICIEL (4 COLONNES)
+       ========================================================================= -->
+  <footer class="footer-modern-b2b" id="contact">
+    <div class="container footer-b2b-grid">
+      
+      <!-- Colonne 1 : Identité & Paiements -->
+      <div class="footer-b2b-col identity-col">
+        <a href="index.html" class="brand-logo footer-logo" aria-label="CMFlow Accueil">
+          <img src="images/logo-white.svg" alt="CMFlow" style="height: 38px; width: auto; display: block;">
+        </a>
+        <p class="footer-slogan">
+          La plateforme de gestion de réseaux sociaux pensée pour les Community Managers et agences d'Afrique francophone.
+        </p>
+
+        <!-- Trust badges paiements locaux -->
+        <div class="footer-trust-payment-block">
+          <div class="trust-payment-label">
+            <svg viewBox="0 0 20 20" width="13" height="13" fill="#10B981"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/></svg>
+            <span>Paiements locaux sécurisés</span>
+          </div>
+          <div class="trust-payment-badges">
+            <div class="payment-badge-pill wave" title="Paiement instantané Wave">
+              <svg viewBox="0 0 100 32" width="55" height="18" fill="none">
+                <rect width="100" height="32" rx="6" fill="#1DA1F2"/>
+                <path d="M22 20C17 20 15 13 24 13C33 13 31 20 26 20C24 20 23.5 19 23.5 19" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+                <text x="36" y="21" fill="white" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="14" letter-spacing="-0.5">wave</text>
+              </svg>
+            </div>
+            <div class="payment-badge-pill om" title="Paiement instantané Orange Money">
+              <svg viewBox="0 0 100 32" width="70" height="18" fill="none">
+                <rect width="100" height="32" rx="6" fill="#FF7900"/>
+                <text x="8" y="21" fill="white" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="12">Orange Money</text>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Colonne 2 : Produit -->
+      <div class="footer-b2b-col">
+        <h4 class="footer-col-title">Produit</h4>
+        <ul class="footer-col-list">
+          <li><a href="#workflow">Calendrier interactif</a></li>
+          <li><a href="#workflow">Validation client WhatsApp</a></li>
+          <li><a href="#bento">Espaces multi-clients isolés</a></li>
+          <li><a href="#bento">Statistiques & Rapports</a></li>
+          <li><a href="#bento">Publication directe Meta</a></li>
+        </ul>
+      </div>
+
+      <!-- Colonne 3 : Ressources & Aides -->
+      <div class="footer-b2b-col">
+        <h4 class="footer-col-title">Ressources</h4>
+        <ul class="footer-col-list">
+          <li><a href="#pricing">Tarifs en FCFA</a></li>
+          <li><a href="#faq">Foire aux questions (FAQ)</a></li>
+          <li><a href="javascript:void(0)" onclick="openTimeSavingsCalculator()">Calculateur de gain de temps</a></li>
+          <li><a href="#bento">Guide du CM Freelance</a></li>
+        </ul>
+      </div>
+
+      <!-- Colonne 4 : Légal & Contact -->
+      <div class="footer-b2b-col">
+        <h4 class="footer-col-title">Légal & Contact</h4>
+        <ul class="footer-col-list">
+          <li><a href="legal.html#cgu">Conditions d'utilisation (CGU)</a></li>
+          <li><a href="legal.html#privacy">Politique de Confidentialité</a></li>
+        </ul>
+
+        <div class="footer-support-block">
+          <a href="https://wa.me/221770000000?text=Bonjour%20CMFlow%2C%20j%27aimerais%20en%20savoir%20plus%20sur%20la%20plateforme" target="_blank" class="footer-whatsapp-btn" title="Discuter directement avec un conseiller CMFlow">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="#FFFFFF"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm0 18.15c-1.5 0-2.97-.39-4.27-1.14l-.31-.18-3.17.83.85-3.09-.2-.32a8.188 8.188 0 0 1-1.25-4.34c0-4.54 3.7-8.24 8.24-8.24 2.2 0 4.27.86 5.82 2.42a8.18 8.18 0 0 1 2.41 5.83c.01 4.54-3.68 8.23-8.12 8.23zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.12-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.12-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.22.25-.86.84-.86 2.06 0 1.21.89 2.39 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.14-1.18-.06-.11-.22-.18-.47-.3z"/></svg>
+            <span>Discuter sur WhatsApp</span>
+          </a>
+          <a href="mailto:hello@cmflow.sn" class="footer-email-link">
+            <svg viewBox="0 0 20 20" fill="currentColor" width="14" height="14"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/></svg>
+            <span>hello@cmflow.sn</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Barre Inférieure -->
+    <div class="footer-b2b-bottom">
+      <div class="container footer-bottom-flex">
+        <p class="footer-copy-text">
+          © 2026 CMFlow. Tous droits réservés. <a href="admin.html" style="color: #64748B; font-size: 0.72rem; text-decoration: none; margin-left: 10px; opacity: 0.5;" title="Accès Fondateur">🔒 Admin</a>
+        </p>
+        <p class="footer-local-touch">
+          Conçu avec passion pour les créateurs et agences d'Afrique francophone · <strong>Dakar, Sénégal</strong> 🇸🇳
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- =========================================================================
+       MODAL CALCULATEUR GAIN DE TEMPS CM
+       ========================================================================= -->
+  <div class="auth-modal-backdrop" id="calc-savings-modal" aria-hidden="true" role="dialog" aria-modal="true" style="display: none;">
+    <div class="calc-modal-card">
+      <button type="button" class="modal-close-btn" onclick="closeTimeSavingsCalculator()" aria-label="Fermer">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+
+      <div style="text-align: center; margin-bottom: 20px;">
+        <span class="section-tag">Calculateur ROI Freelance</span>
+        <h3 style="font-size: 1.4rem; font-weight: 800; color: #0F172A; margin: 8px 0 4px;">Estimez votre gain de temps & argent</h3>
+        <p style="font-size: 0.88rem; color: #64748B; margin: 0;">Combien de clients ou marques gérez-vous chaque mois ?</p>
+      </div>
+
+      <div class="calc-slider-wrapper">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <span style="font-size: 0.9rem; font-weight: 700; color: #334155;">Nombre de marques :</span>
+          <span class="calc-slider-val-badge" id="calc-client-count">3 clients</span>
+        </div>
+        <input type="range" id="calc-slider-input" min="1" max="15" value="3" style="width: 100%; cursor: pointer;" oninput="updateSavingsCalculation(this.value)">
+      </div>
+
+      <div class="calc-results-box">
+        <div class="calc-metric-row">
+          <span style="font-size: 0.9rem; color: #475569; font-weight: 600;">Temps économisé par semaine :</span>
+          <span class="calc-metric-val" id="calc-hours-saved">~12h / sem</span>
+        </div>
+        <div class="calc-metric-row">
+          <span style="font-size: 0.9rem; color: #475569; font-weight: 600;">Temps libéré par mois :</span>
+          <span class="calc-metric-val" id="calc-monthly-hours">~48 heures</span>
+        </div>
+        <div class="calc-metric-row">
+          <span style="font-size: 0.92rem; color: #0F172A; font-weight: 800;">Valeur de temps récupérée :</span>
+          <span class="calc-metric-val" style="color: #2563EB;" id="calc-money-saved">+150 000 FCFA</span>
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-primary btn-block btn-lg" onclick="closeTimeSavingsCalculator(); openAuthModal('register');">
+        Commencer mon essai gratuit 14 jours →
+      </button>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MODAL AUTHENTIFICATION (Connexion / Inscription Moderne 2 Colonnes)
+       ========================================================================= -->
+  <div class="auth-modal-backdrop" id="auth-modal" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="auth-modal-card">
+      
+      <button type="button" class="modal-close-btn" id="modal-close-btn" aria-label="Fermer la fenêtre">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+
+      <!-- COLONNE GAUCHE : FORMULAIRE -->
+      <div class="auth-modal-form-col">
+        <div>
+          <!-- Header Logo & Badge Pro -->
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem;">
+            <img src="images/logo-full.svg" alt="CMFlow" style="height: 28px; width: auto;">
+            <span style="font-size: 0.72rem; font-weight: 700; background: #F1F5F9; color: #475569; padding: 3px 10px; border-radius: 999px; border: 1px solid #E2E8F0; display: inline-flex; align-items: center; gap: 5px;">
+              <span style="width: 6px; height: 6px; border-radius: 50%; background: #10B981;"></span>
+              Espace Pro
+            </span>
+          </div>
+
+          <!-- Onglets Connexion / Inscription -->
+          <div class="auth-tabs" role="tablist">
+            <button type="button" class="auth-tab active" id="modal-tab-login" role="tab" aria-selected="true" aria-controls="pane-login">Connexion</button>
+            <button type="button" class="auth-tab" id="modal-tab-register" role="tab" aria-selected="false" aria-controls="pane-register">Essai Gratuit (14 jours)</button>
+          </div>
+
+          <!-- PANE CONNEXION -->
+          <div class="auth-pane active" id="pane-login" role="tabpanel" aria-labelledby="modal-tab-login">
+            <div class="auth-pane-header">
+              <h3 class="auth-title">Bon retour parmi nous 👋</h3>
+              <p class="auth-subtitle">Connectez-vous pour gérer vos calendriers et validations clients.</p>
+            </div>
+
+            <form class="auth-form" id="form-login" novalidate>
+              <div class="form-group">
+                <label for="login-email" class="form-label">Email Professionnel</label>
+                <div class="input-wrapper">
+                  <svg class="input-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/></svg>
+                  <input type="email" id="login-email" class="form-input" placeholder="ex: awa.diop@agence.com" required autocomplete="email">
+                </div>
+                <span class="field-error-msg" id="login-email-error"></span>
+              </div>
+
+              <div class="form-group">
+                <div class="label-row">
+                  <label for="login-password" class="form-label">Mot de passe</label>
+                  <a href="#" class="forgot-pass-link" id="forgot-pass-link">Mot de passe oublié ?</a>
+                </div>
+                <div class="input-wrapper">
+                  <svg class="input-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/></svg>
+                  <input type="password" id="login-password" class="form-input" placeholder="••••••••••••" required autocomplete="current-password">
+                </div>
+                <span class="field-error-msg" id="login-password-error"></span>
+              </div>
+
+              <!-- Bouton CTA Orange Électrique (#F94F06) -->
+              <button type="submit" class="btn-auth-orange" id="btn-login-submit">
+                <span>Se connecter</span>
+                <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+              </button>
+
+              <div class="auth-divider"><span>ou</span></div>
+
+              <button type="button" class="btn-google" id="btn-google-login">
+                <svg viewBox="0 0 24 24" width="18" height="18">
+                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                  <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                </svg>
+                <span>Continuer avec Google</span>
+              </button>
+
+              <p class="auth-switch-text" style="margin-top: 6px;">
+                Pas encore de compte ? <button type="button" class="link-btn switch-to-register">Créer un compte gratuitement</button>
+              </p>
+            </form>
+          </div>
+
+          <!-- PANE INSCRIPTION -->
+          <div class="auth-pane" id="pane-register" role="tabpanel" aria-labelledby="modal-tab-register">
+            <div class="auth-pane-header">
+              <h3 class="auth-title">Créez votre compte CMFlow</h3>
+              <p class="auth-subtitle">14 jours d'essai gratuit. Sans carte bancaire requise.</p>
+            </div>
+
+            <form class="auth-form" id="form-register" novalidate>
+              <div class="form-group">
+                <label for="reg-name" class="form-label">Nom complet</label>
+                <div class="input-wrapper">
+                  <svg class="input-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/></svg>
+                  <input type="text" id="reg-name" class="form-input" placeholder="ex: Aminata Diallo" required autocomplete="name">
+                </div>
+                <span class="field-error-msg" id="reg-name-error"></span>
+              </div>
+
+              <div class="form-group">
+                <label for="reg-email" class="form-label">Adresse email professionnelle</label>
+                <div class="input-wrapper">
+                  <svg class="input-icon" viewBox="0 0 20 20" fill="currentColor"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/></svg>
+                  <input type="email" id="reg-email" class="form-input" placeholder="aminata@monagence.sn" required autocomplete="email">
+                </div>
+                <span class="field-error-msg" id="reg-email-error"></span>
+              </div>
+
+              <div class="form-group">
+                <label for="reg-activity" class="form-label">Activité / Agence</label>
+                <div class="input-wrapper">
+                  <svg class="input-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-2a1 1 0 00-1-1H9a1 1 0 00-1 1v2a1 1 0 01-1 1H4a1 1 0 110-2V4zm3 1h2v2H7V5zm4 0h2v2h-2V5zm-4 4h2v2H7V9zm4 0h2v2h-2V9z" clip-rule="evenodd"/></svg>
+                  <input type="text" id="reg-activity" class="form-input" placeholder="ex: Dakar Digital CM" required>
+                </div>
+                <span class="field-error-msg" id="reg-activity-error"></span>
+              </div>
+
+              <div class="form-group">
+                <label for="reg-password" class="form-label">Mot de passe (8 car. min)</label>
+                <div class="input-wrapper">
+                  <svg class="input-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/></svg>
+                  <input type="password" id="reg-password" class="form-input" placeholder="••••••••••••" required minlength="8" autocomplete="new-password">
+                </div>
+                <span class="field-error-msg" id="reg-password-error"></span>
+              </div>
+
+              <button type="submit" class="btn-auth-orange" id="btn-register-submit">
+                <span>Démarrer l'essai gratuit</span>
+                <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+              </button>
+
+              <p class="auth-switch-text" style="margin-top: 6px;">
+                Déjà un compte ? <button type="button" class="link-btn switch-to-login">Se connecter</button>
+              </p>
+            </form>
+          </div>
+        </div>
+
+        <div style="margin-top: 14px; text-align: center; font-size: 0.72rem; color: #94A3B8;">
+          🔒 Chiffrement 256-bit SSL · En continuant, vous acceptez nos <a href="legal.html" style="color: #64748B; text-decoration: underline;">CGU</a>
+        </div>
+      </div>
+
+      <!-- COLONNE DROITE : BANNIÈRE VISUELLE (Desktop) -->
+      <div class="auth-modal-banner-col">
+        <div>
+          <div style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); border-radius: 999px; font-size: 0.72rem; font-weight: 700; color: #7DD3FC; margin-bottom: 1rem;">
+            <span style="width: 6px; height: 6px; border-radius: 50%; background: #F94F06;"></span>
+            SaaS pensé pour les CMs d'Afrique
+          </div>
+
+          <h4 style="font-size: 1.15rem; font-weight: 800; line-height: 1.35; color: #FFFFFF; margin-bottom: 8px;">
+            « Gagnez 10 heures par semaine sur vos allers-retours clients. »
+          </h4>
+          <p style="font-size: 0.78rem; color: #CBD5E1; line-height: 1.45;">
+            Fini les validations perdues sur WhatsApp. Envoyez un lien unique et publiez sans stress.
+          </p>
+        </div>
+
+        <!-- Miniature Validation WhatsApp -->
+        <div style="background: rgba(255,255,255,0.08); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.12); border-radius: 14px; padding: 14px; margin: 16px 0;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <div style="width: 26px; height: 26px; border-radius: 50%; background: rgba(37, 211, 102, 0.2); border: 1px solid rgba(37, 211, 102, 0.4); display: flex; align-items: center; justify-content: center; color: #25D366; font-size: 0.8rem;">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm0 18.15c-1.5 0-2.97-.39-4.27-1.14l-.31-.18-3.17.83.85-3.09-.2-.32a8.188 8.188 0 0 1-1.25-4.34c0-4.54 3.7-8.24 8.24-8.24 2.2 0 4.27.86 5.82 2.42a8.18 8.18 0 0 1 2.41 5.83c.01 4.54-3.68 8.23-8.12 8.23z"/></svg>
+              </div>
+              <div>
+                <div style="font-size: 0.76rem; font-weight: 800; color: #FFFFFF;">Notification Client</div>
+                <div style="font-size: 0.65rem; color: #94A3B8;">Il y a 2 min · Teranga Gourmet</div>
+              </div>
+            </div>
+            <span style="font-size: 0.68rem; font-weight: 800; background: rgba(16, 185, 129, 0.2); color: #6EE7B7; border: 1px solid rgba(16, 185, 129, 0.4); padding: 2px 8px; border-radius: 999px;">
+              ✓ Validé
+            </span>
+          </div>
+
+          <div style="font-size: 0.74rem; color: #E2E8F0; line-height: 1.4; background: rgba(0,0,0,0.25); padding: 8px 10px; border-radius: 8px;">
+            « Planning validé ! Les 8 visuels sont parfaits. » 🎉
+          </div>
+        </div>
+
+        <!-- Social Proof -->
+        <div style="display: flex; align-items: center; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 12px; font-size: 0.72rem; color: #94A3B8;">
+          <span style="color: #F8FAFC; font-weight: 700;">+240 CMs actifs</span>
+          <span>Dakar 🇸🇳 · Abidjan 🇨🇮</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Modal Vérification Email Obligatoire -->
+  <div class="auth-modal-backdrop" id="modal-verify-email" aria-hidden="true" role="dialog" aria-modal="true" style="display: none; align-items: center; justify-content: center;">
+    <div class="auth-modal-card" style="text-align: center; max-width: 460px; padding: 36px 28px;">
+      <div style="width: 72px; height: 72px; border-radius: 50%; background: #EFF6FF; color: #2563EB; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 20px; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.15);">
+        📩
+      </div>
+      <h3 style="font-size: 1.35rem; font-weight: 800; color: var(--text-main); margin-bottom: 8px;">Confirmez votre adresse email</h3>
+      <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 20px;">
+        Un lien d'activation sécurisé a été envoyé à :<br>
+        <strong id="verify-email-target" style="color: var(--color-primary); font-weight: 700; word-break: break-all;">vous@exemple.com</strong>
+      </p>
+
+      <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 12px; padding: 14px; font-size: 0.82rem; color: #64748B; margin-bottom: 24px; text-align: left;">
+        👉 <strong>Étape obligatoire :</strong> Ouvrez votre boîte mail et cliquez sur le lien d'activation reçu. (Vérifiez également votre dossier Spam/Courrier indésirable).
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <button type="button" class="btn btn-primary btn-block" id="btn-check-email-verified" style="font-weight: 700; padding: 12px;">
+          ✓ J'ai cliqué sur le lien (Activer mon compte)
+        </button>
+        <button type="button" class="btn btn-secondary-app btn-block" id="btn-resend-verification-email" style="font-size: 0.85rem; padding: 10px;">
+          🔄 Renvoyer l'e-mail de confirmation
+        </button>
+        <button type="button" class="link-btn" id="btn-cancel-verify" style="margin-top: 10px; font-size: 0.82rem; color: var(--text-muted); text-decoration: underline; background: none; border: none; cursor: pointer;">
+          ← Retour à l'accueil
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MODALE DE CHECKOUT TARIFAIRE INTERACTIVE (WAVE & ORANGE MONEY)
+       ========================================================================= -->
+  <div id="pricing-checkout-modal" class="auth-modal-backdrop" aria-hidden="true" role="dialog" aria-modal="true" onclick="if(event.target === this) closePricingCheckoutModal()">
+    <div style="background: #FFFFFF; border: 1px solid #E2E8F0; border-radius: 28px; box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.25); max-width: 440px; width: 90%; padding: 24px; position: relative; font-family: inherit; transform: scale(1); transition: transform 0.2s ease;">
+      
+      <button type="button" onclick="closePricingCheckoutModal()" aria-label="Fermer" style="position: absolute; top: 16px; right: 16px; background: #F1F5F9; border: none; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #64748B; font-weight: bold; font-size: 1rem;">
+        ✕
+      </button>
+
+      <!-- En-tête du Forfait -->
+      <div style="border-bottom: 1px solid #F1F5F9; padding-bottom: 14px; margin-bottom: 16px;">
+        <span id="pcm-plan-badge" style="display: inline-block; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; background: #FFF7ED; color: #F94F06; border: 1px solid #FFEDD5; padding: 2px 10px; border-radius: 999px; margin-bottom: 6px;">
+          Le Plus Populaire 🔥
+        </span>
+        <div style="display: flex; align-items: baseline; justify-content: space-between;">
+          <h3 id="pcm-plan-name" style="font-size: 1.35rem; font-weight: 900; color: #0F172A; margin: 0;">Pro Agency</h3>
+          <div style="text-align: right;">
+            <span id="pcm-plan-price" style="font-size: 1.35rem; font-weight: 900; color: #0F172A;">15 000 FCFA</span>
+            <span id="pcm-plan-period" style="font-size: 0.75rem; color: #94A3B8; font-weight: 600;"> / mois</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Formulaire Express -->
+      <form id="pcm-checkout-form" onsubmit="submitPricingCheckout(event)" style="display: flex; flex-direction: column; gap: 12px;">
+        <div>
+          <label style="display: block; font-size: 0.75rem; font-weight: 700; color: #334155; margin-bottom: 4px;">Nom de votre Agence / Studio <span style="color: #F94F06;">*</span></label>
+          <input type="text" id="pcm-agency-name" required placeholder="Ex: Teranga Digital" style="width: 100%; box-sizing: border-box; padding: 10px 12px; font-size: 0.8rem; background: #F8FAFC; border: 1px solid #CBD5E1; border-radius: 12px; outline: none;">
+        </div>
+
+        <div>
+          <label style="display: block; font-size: 0.75rem; font-weight: 700; color: #334155; margin-bottom: 4px;">Email Professionnel <span style="color: #F94F06;">*</span></label>
+          <input type="email" id="pcm-email" required placeholder="contact@votre-agence.sn" style="width: 100%; box-sizing: border-box; padding: 10px 12px; font-size: 0.8rem; background: #F8FAFC; border: 1px solid #CBD5E1; border-radius: 12px; outline: none;">
+        </div>
+
+        <div>
+          <label style="display: block; font-size: 0.75rem; font-weight: 700; color: #334155; margin-bottom: 4px;">Numéro WhatsApp (pour alertes & liens)</label>
+          <input type="tel" id="pcm-phone" placeholder="+221 77 000 00 00" style="width: 100%; box-sizing: border-box; padding: 10px 12px; font-size: 0.8rem; background: #F8FAFC; border: 1px solid #CBD5E1; border-radius: 12px; outline: none;">
+        </div>
+
+        <!-- Sélecteur Mobile Money -->
+        <div id="pcm-payment-method-container" style="margin-top: 4px;">
+          <label style="display: block; font-size: 0.75rem; font-weight: 700; color: #334155; margin-bottom: 6px;">Moyen de Paiement Mobile Money 🇸🇳 🇨🇮</label>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <button type="button" id="pcm-btn-wave" onclick="setPcmMethod('WAVE')" style="padding: 10px; border-radius: 12px; border: 2px solid #1E90FF; background: #EFF6FF; color: #1E90FF; font-weight: 800; font-size: 0.85rem; cursor: pointer;">
+              🌊 Wave<br><span style="font-size: 0.65rem; color: #64748B; font-weight: 600;">1% frais • 1-clic</span>
+            </button>
+            <button type="button" id="pcm-btn-om" onclick="setPcmMethod('ORANGE_MONEY')" style="padding: 10px; border-radius: 12px; border: 1px solid #CBD5E1; background: #FFFFFF; color: #64748B; font-weight: 800; font-size: 0.85rem; cursor: pointer;">
+              🍊 Orange Money<br><span style="font-size: 0.65rem; color: #64748B; font-weight: 600;">UEMOA • Code OTP</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Bouton CTA -->
+        <button type="submit" id="pcm-submit-btn" style="margin-top: 8px; width: 100%; padding: 13px; background: #F94F06; color: #FFFFFF; font-weight: 800; font-size: 0.85rem; border: none; border-radius: 14px; cursor: pointer; box-shadow: 0 10px 20px -5px rgba(249, 79, 6, 0.35);">
+          Confirmer et Payer 15 000 FCFA →
+        </button>
+
+        <div style="text-align: center; font-size: 0.68rem; color: #94A3B8; margin-top: 4px;">
+          🔒 Paiement 100% sécurisé • Sans engagement • Annulation en 1 clic
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- Floating WhatsApp Quick Button on Mobile -->
+  <a href="https://wa.me/221770000000?text=Bonjour%20CMFlow%2C%20j%27aimerais%20des%20informations%20sur%20la%20plateforme" target="_blank" class="mobile-floating-whatsapp-btn" aria-label="Contacter sur WhatsApp" title="Poser une question sur WhatsApp">
+    <svg viewBox="0 0 24 24" width="28" height="28" fill="#FFFFFF"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm0 18.15c-1.5 0-2.97-.39-4.27-1.14l-.31-.18-3.17.83.85-3.09-.2-.32a8.188 8.188 0 0 1-1.25-4.34c0-4.54 3.7-8.24 8.24-8.24 2.2 0 4.27.86 5.82 2.42a8.18 8.18 0 0 1 2.41 5.83c.01 4.54-3.68 8.23-8.12 8.23zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.12-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.12-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.22.25-.86.84-.86 2.06 0 1.21.89 2.39 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.14-1.18-.06-.11-.22-.18-.47-.3z"/></svg>
+  </a>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Firebase SDK (CDN compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+
+  <!-- Scripts -->
+  <script src="js/app.js"></script>
+  <script src="js/backend.js"></script>
+  <script src="js/script.js"></script>
+  <script>
+    let currentPcmPlanId = 'pro';
+    let currentPcmAmount = 15000;
+    let currentPcmMethod = 'WAVE';
+
+    function openPricingCheckoutModal(planId, planName, amount, badge) {
+      currentPcmPlanId = planId || 'pro';
+      currentPcmAmount = amount || 0;
+      
+      const badgeEl = document.getElementById('pcm-plan-badge');
+      const nameEl = document.getElementById('pcm-plan-name');
+      const priceEl = document.getElementById('pcm-plan-price');
+      const periodEl = document.getElementById('pcm-plan-period');
+      const payContainer = document.getElementById('pcm-payment-method-container');
+      const submitBtn = document.getElementById('pcm-submit-btn');
+
+      if (badgeEl) badgeEl.textContent = badge || 'Formule Choisie';
+      if (nameEl) nameEl.textContent = planName || 'Pro Agency';
+      if (priceEl) priceEl.textContent = amount === 0 ? '0 FCFA' : (amount.toLocaleString('fr-FR') + ' FCFA');
+      if (periodEl) periodEl.textContent = amount === 0 ? ' / 14 jours' : ' / mois';
+      
+      if (amount === 0) {
+        if (payContainer) payContainer.style.display = 'none';
+        if (submitBtn) submitBtn.textContent = "Créer mon compte & Démarrer l'essai →";
+      } else {
+        if (payContainer) payContainer.style.display = 'block';
+        // Texte initial calé sur Wave (sélectionné par défaut)
+        if (submitBtn) submitBtn.textContent = 'Payer ' + amount.toLocaleString('fr-FR') + ' FCFA via Wave 🌊 →';
+        // Réinitialiser la sélection visuelle de Wave
+        setPcmMethod('WAVE');
+      }
+
+      const modal = document.getElementById('pricing-checkout-modal');
+      if (modal) {
+        modal.style.display = 'flex';
+        modal.classList.add('active');
+        modal.removeAttribute('aria-hidden');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function closePricingCheckoutModal() {
+      const modal = document.getElementById('pricing-checkout-modal');
+      if (modal) {
+        modal.style.display = 'none';
+        modal.classList.remove('active');
+        modal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+      }
+    }
+
+    // Fermeture avec la touche Échap
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closePricingCheckoutModal();
+      }
+    });
+
+    function setPcmMethod(method) {
+      currentPcmMethod = method;
+      const btnWave = document.getElementById('pcm-btn-wave');
+      const btnOm = document.getElementById('pcm-btn-om');
+      const submitBtn = document.getElementById('pcm-submit-btn');
+      if (!btnWave || !btnOm) return;
+
+      if (method === 'WAVE') {
+        btnWave.style.border = '2px solid #1E90FF';
+        btnWave.style.background = '#EFF6FF';
+        btnWave.style.color = '#1E90FF';
+        btnOm.style.border = '1px solid #CBD5E1';
+        btnOm.style.background = '#FFFFFF';
+        btnOm.style.color = '#64748B';
+        if (submitBtn && !submitBtn.disabled) {
+          submitBtn.textContent = 'Payer ' + (currentPcmAmount || 0).toLocaleString('fr-FR') + ' FCFA via Wave 🌊 →';
+        }
+      } else {
+        btnOm.style.border = '2px solid #FF7900';
+        btnOm.style.background = '#FFF7ED';
+        btnOm.style.color = '#FF7900';
+        btnWave.style.border = '1px solid #CBD5E1';
+        btnWave.style.background = '#FFFFFF';
+        btnWave.style.color = '#64748B';
+        if (submitBtn && !submitBtn.disabled) {
+          submitBtn.textContent = 'Payer ' + (currentPcmAmount || 0).toLocaleString('fr-FR') + ' FCFA via Orange Money 🍊 →';
+        }
+      }
+    }
+
+    async function submitPricingCheckout(e) {
+      e.preventDefault();
+      const agencyName = document.getElementById('pcm-agency-name').value.trim();
+      const email = document.getElementById('pcm-email').value.trim();
+      const phone = document.getElementById('pcm-phone').value.trim();
+      const submitBtn = document.getElementById('pcm-submit-btn');
+
+      // Validation basique
+      if (!agencyName || !email) {
+        alert('Merci de renseigner le nom de votre agence et votre email.');
+        return;
+      }
+
+      // --- Essai gratuit ---
+      if (currentPcmAmount === 0) {
+        submitBtn.textContent = 'Création du compte en cours...';
+        submitBtn.disabled = true;
+        setTimeout(() => {
+          window.location.href = 'register.html?plan=' + currentPcmPlanId + '&welcome=true';
+        }, 800);
+        return;
+      }
+
+      // Sauvegarde de la session locale avant paiement
+      const agencyId = 'agency_' + Date.now();
+      const sessionData = {
+        agencyId,
+        agencyName,
+        email,
+        phone,
+        plan: currentPcmPlanId,
+        amount: currentPcmAmount,
+        method: currentPcmMethod,
+        status: 'pending',
+        createdAt: new Date().toISOString()
+      };
+      localStorage.setItem('cmflow_pending_payment', JSON.stringify(sessionData));
+      localStorage.setItem('cmflow_active_plan', currentPcmPlanId);
+
+      // ——————————————————————————————————————————————
+      // WAVE — Deep link direct (Sénégal / Côte d'Ivoire)
+      // ——————————————————————————————————————————————
+      if (currentPcmMethod === 'WAVE') {
+        submitBtn.textContent = 'Ouverture de Wave 🌊...';
+        submitBtn.disabled = true;
+
+        // Tentative API Wave
+        try {
+          const res = await fetch('/api/billing/wave/checkout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              agencyId, agencyName, agencyEmail: email, phone,
+              planId: currentPcmPlanId.toUpperCase(),
+              amount: currentPcmAmount,
+              returnUrl: window.location.origin + '/billing.html?status=success&plan=' + currentPcmPlanId + '&method=wave',
+              cancelUrl: window.location.origin + '/#pricing',
+            })
+          });
+          const data = await res.json();
+          if (data && data.success && data.wave_launch_url) {
+            window.location.href = data.wave_launch_url;
+            return;
+          }
+        } catch (_) { /* fallback ci-dessous */ }
+
+        // Fallback : deep link Wave universel
+        // wave://send?phone=&amount=&note=
+        const waveNote = encodeURIComponent('CMFlow - Forfait ' + currentPcmPlanId.toUpperCase() + ' - ' + agencyName);
+        const waveDeepLink = 'wave://send?amount=' + currentPcmAmount + '&note=' + waveNote;
+        // Sur mobile ouvre l'app Wave; sur desktop redirige vers billing avec instructions
+        const isMobile = /Android|iPhone|iPad/i.test(navigator.userAgent);
+        if (isMobile) {
+          window.location.href = waveDeepLink;
+          // Fallback après 2s si l'app ne s'ouvre pas
+          setTimeout(() => {
+            window.location.href = 'billing.html?status=pending&plan=' + currentPcmPlanId + '&method=wave&agency=' + encodeURIComponent(agencyName) + '&email=' + encodeURIComponent(email);
+          }, 2000);
+        } else {
+          // Desktop : page de confirmation avec instructions Wave
+          window.location.href = 'billing.html?status=pending&plan=' + currentPcmPlanId + '&method=wave&agency=' + encodeURIComponent(agencyName) + '&email=' + encodeURIComponent(email) + '&amount=' + currentPcmAmount;
+        }
+        return;
+      }
+
+      // ——————————————————————————————————————————————
+      // ORANGE MONEY — Lien de paiement Orange Money CI / SN
+      // ——————————————————————————————————————————————
+      if (currentPcmMethod === 'ORANGE_MONEY') {
+        submitBtn.textContent = 'Redirection vers Orange Money 🍊...';
+        submitBtn.disabled = true;
+
+        // Tentative API Orange Money
+        try {
+          const res = await fetch('/api/billing/om/checkout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              agencyId, agencyName, agencyEmail: email, phone,
+              planId: currentPcmPlanId.toUpperCase(),
+              amount: currentPcmAmount,
+              returnUrl: window.location.origin + '/billing.html?status=success&plan=' + currentPcmPlanId + '&method=om',
+              cancelUrl: window.location.origin + '/#pricing',
+            })
+          });
+          const data = await res.json();
+          if (data && data.success && data.payment_url) {
+            window.location.href = data.payment_url;
+            return;
+          }
+        } catch (_) { /* fallback ci-dessous */ }
+
+        // Fallback : portail Orange Money Business UEMOA
+        // Sur mobile : USSD code *144# puis saisie manuelle
+        const isMobile = /Android|iPhone|iPad/i.test(navigator.userAgent);
+        const omNote = 'CMFlow ' + currentPcmPlanId.toUpperCase() + ' - ' + agencyName;
+
+        if (isMobile) {
+          // USSD Orange Money direct (SN / CI) — ouvre le dialer
+          const ussdCode = encodeURIComponent('*144#');
+          window.location.href = 'tel:' + ussdCode;
+          setTimeout(() => {
+            window.location.href = 'billing.html?status=pending&plan=' + currentPcmPlanId + '&method=om&agency=' + encodeURIComponent(agencyName) + '&email=' + encodeURIComponent(email) + '&amount=' + currentPcmAmount;
+          }, 1500);
+        } else {
+          // Desktop : portail Orange Money Business (UEMOA)
+          // Ouvre dans un nouvel onglet + affiche la page d'instructions
+          window.open(
+            'https://orangemoney.orange.sn/',
+            '_blank',
+            'noopener,noreferrer'
+          );
+          setTimeout(() => {
+            window.location.href = 'billing.html?status=pending&plan=' + currentPcmPlanId + '&method=om&agency=' + encodeURIComponent(agencyName) + '&email=' + encodeURIComponent(email) + '&amount=' + currentPcmAmount;
+          }, 800);
+        }
+        return;
+      }
+    }
+  </script>
+</body>
+</html>

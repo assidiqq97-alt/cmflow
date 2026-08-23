@@ -1,0 +1,18 @@
+name: CMFlow Auto-Publish Worker Cron
+
+on:
+  schedule:
+    # Exécution toutes les 5 minutes (UTC)
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+jobs:
+  auto-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Auto-Publish Cron Endpoint
+        run: |
+          echo "🚀 Exécution du Cron Auto-Publish..."
+          curl -s -X POST "https://cmflow.sn/api/cron/publish" \
+            -H "Authorization: Bearer cmflow_cron_default_secret" \
+            -H "Content-Type: application/json" || echo "Worker cron trigger executed."
