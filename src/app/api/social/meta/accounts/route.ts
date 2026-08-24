@@ -4,6 +4,8 @@ import { adminDb } from '@/lib/firebaseAdmin';
 import { collection, getDocs } from 'firebase/firestore';
 import { SocialAccount } from '@/types/social';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * Route de Récupération des Comptes Sociaux Connectés
  * Endpoint : GET /api/social/meta/accounts?workspaceId=[workspaceId]

@@ -5,6 +5,8 @@ import { adminDb } from '@/lib/firebaseAdmin';
 import { doc, setDoc } from 'firebase/firestore';
 import { SocialAccount } from '@/types/social';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * Route de Callback & Échange de Tokens OAuth2 Meta Graph API
  * Endpoint : GET /api/social/meta/callback?code=[code]&state=[state]

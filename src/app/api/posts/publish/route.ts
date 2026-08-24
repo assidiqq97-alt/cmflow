@@ -4,6 +4,8 @@ import { adminDb } from '@/lib/firebaseAdmin';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { publishPostToPlatforms } from '@/lib/metaPublisher';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * Route Déclencheur de Publication Immédiate Meta (Instagram Pro & Facebook)
  * Endpoint : POST /api/posts/publish

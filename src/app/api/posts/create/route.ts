@@ -3,6 +3,8 @@ import { collection, doc, setDoc, serverTimestamp, Timestamp } from 'firebase/fi
 import { db } from '@/lib/firebase';
 import { adminDb } from '@/lib/firebaseAdmin';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * Générateur de Token Aléatoire Sécurisé Court (8 caractères alphanumériques)
  * Format : v_9f2k8a1d

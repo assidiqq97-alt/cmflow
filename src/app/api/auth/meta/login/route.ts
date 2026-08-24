@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * Route d'Initialisation OAuth 2.0 pour Meta Graph API (Instagram Pro & Facebook Pages)
  * Endpoint : GET /api/auth/meta/login?workspaceId=[workspaceId]

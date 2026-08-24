@@ -4,6 +4,8 @@ import { db } from '../../../../../lib/firebase';
 import { adminDb } from '../../../../../lib/firebaseAdmin';
 import { createWaveCheckoutSession, CMFlowPlans } from '../../../../../lib/waveCheckout';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json().catch(() => ({}));

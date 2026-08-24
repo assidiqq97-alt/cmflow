@@ -4,6 +4,8 @@ import { db } from '../../../../../lib/firebase';
 import { adminDb } from '../../../../../lib/firebaseAdmin';
 import { verifyWaveWebhookSignature } from '../../../../../lib/waveCheckout';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: NextRequest) {
   try {
     const rawBody = await request.text();

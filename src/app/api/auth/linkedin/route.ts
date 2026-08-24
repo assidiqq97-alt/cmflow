@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * CMFlow — Initialisation du flux OAuth 2.0 LinkedIn
  * Route : GET /api/auth/linkedin?workspaceId=...&redirectPath=...

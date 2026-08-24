@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/firebaseAdmin';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * CMFlow — Callback OAuth 2.0 LinkedIn
  * Route : GET /api/auth/callback/linkedin?code=...&state=...

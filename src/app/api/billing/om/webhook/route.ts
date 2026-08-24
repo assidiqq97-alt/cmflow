@@ -3,6 +3,8 @@ import { doc, setDoc } from 'firebase/firestore';
 import { db } from '../../../../../lib/firebase';
 import { adminDb } from '../../../../../lib/firebaseAdmin';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: NextRequest) {
   try {
     let body: any = {};

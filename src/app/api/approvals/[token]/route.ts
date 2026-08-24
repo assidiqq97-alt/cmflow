@@ -3,6 +3,8 @@ import { doc, getDoc, updateDoc, increment, serverTimestamp } from 'firebase/fir
 import { db } from '../../../../lib/firebase';
 import { initialWorkspaces } from '../../../../context/WorkspaceContext';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * Route API : Résolution et Vérification Sécurisée du Lien Magique WhatsApp
  * Endpoint : GET /api/approvals/[token]

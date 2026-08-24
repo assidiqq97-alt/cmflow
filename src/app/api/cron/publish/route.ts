@@ -5,6 +5,8 @@ import { collection, query, where, getDocs } from 'firebase/firestore';
 import { InstagramPublisher } from '@/lib/services/instagramPublisher';
 import { FacebookPublisher } from '@/lib/services/facebookPublisher';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * Validation de la clé secrète du Cron Job
  */

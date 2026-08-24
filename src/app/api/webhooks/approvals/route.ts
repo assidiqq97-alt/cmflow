@@ -12,6 +12,8 @@ import { adminDb } from '@/lib/firebaseAdmin';
 import { notifyCMOnDecision } from '@/lib/notifyAgency';
 import { initialWorkspaces } from '@/context/WorkspaceContext';
 
+export const dynamic = 'force-dynamic';
+
 export interface ApprovalWebhookPayload {
   token: string;
   postId: string;

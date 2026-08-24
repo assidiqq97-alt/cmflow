@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import MetaOAuthService from '@/lib/metaOAuth';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * Route d'Initiation OAuth2 Officielle Meta (Instagram Business & Facebook Pages)
  * Endpoint : GET /api/social/meta/login?workspaceId=[workspaceId]&redirectPath=[path]

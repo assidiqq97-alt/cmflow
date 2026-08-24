@@ -4,6 +4,8 @@ import { db } from '@/lib/firebase';
 import { collection, getDocs } from 'firebase/firestore';
 import { MetaAnalyticsService } from '@/lib/services/metaAnalyticsService';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * Route de Synchronisation Directe des Analytics Meta Graph API
  * Endpoint : GET /api/analytics/sync?workspaceId=[workspaceId]

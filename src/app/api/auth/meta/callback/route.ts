@@ -3,6 +3,8 @@ import { doc, getDoc, updateDoc, setDoc, serverTimestamp } from 'firebase/firest
 import { db } from '@/lib/firebase';
 import { adminDb } from '@/lib/firebaseAdmin';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * Route de Callback & Échange de Tokens OAuth 2.0 pour Meta Graph API v19.0
  * Endpoint : GET /api/auth/meta/callback?code=[code]&state=[state]

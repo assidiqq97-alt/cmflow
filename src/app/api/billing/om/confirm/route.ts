@@ -3,6 +3,8 @@ import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../../../../lib/firebase';
 import { adminDb } from '../../../../../lib/firebaseAdmin';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * POST /api/billing/om/confirm
  * Valide le code secret d'autorisation Orange Money (OTP généré via #144#391#),

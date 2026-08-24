@@ -3,6 +3,8 @@ import { db } from '@/lib/firebase';
 import { adminDb } from '@/lib/firebaseAdmin';
 import { doc, deleteDoc } from 'firebase/firestore';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * Route de Déconnexion de Compte Réseau Social (Meta, etc.)
  * Endpoint : POST /api/social/meta/disconnect

@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { validateEnvironment } from '../../../../lib/envCheck';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   const result = validateEnvironment();
   return NextResponse.json(result, {

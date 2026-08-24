@@ -5,6 +5,8 @@ import { adminDb } from '@/lib/firebaseAdmin';
 import { doc, setDoc } from 'firebase/firestore';
 import { SocialAccount } from '@/types/social';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * Route de Callback Officielle Meta OAuth 2.0 (Facebook Pages & Instagram Pro)
  * Endpoint : GET /api/auth/callback/facebook?code=[code]&state=[state]
