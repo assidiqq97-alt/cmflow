@@ -194,9 +194,39 @@ const CMFlowWorkspaceManager = {
         }
       });
     }
+
+    // Gestion Universelle de la Sidebar Mobile (sur toutes les pages du dashboard)
+    const side = document.getElementById('sidebar');
+    const sideBack = document.getElementById('sidebar-backdrop');
+    const openSide = document.getElementById('open-sidebar-btn');
+    const closeSide = document.getElementById('close-sidebar-btn');
+
+    if (openSide && side) {
+      openSide.addEventListener('click', (e) => {
+        e.stopPropagation();
+        side.classList.remove('-translate-x-full');
+        if (sideBack) sideBack.classList.remove('hidden');
+      });
+    }
+
+    if (closeSide && side) {
+      closeSide.addEventListener('click', (e) => {
+        e.stopPropagation();
+        side.classList.add('-translate-x-full');
+        if (sideBack) sideBack.classList.add('hidden');
+      });
+    }
+
+    if (sideBack && side) {
+      sideBack.addEventListener('click', () => {
+        side.classList.add('-translate-x-full');
+        sideBack.classList.add('hidden');
+      });
+    }
   }
 };
 
 document.addEventListener('DOMContentLoaded', () => {
   CMFlowWorkspaceManager.init();
 });
+
