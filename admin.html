@@ -56,8 +56,35 @@
       top: 0;
       height: 100vh;
       flex-shrink: 0;
-      z-index: 40;
+      z-index: 50;
       user-select: none;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @media (max-width: 991px) {
+      .admin-sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        transform: translateX(-100%);
+        box-shadow: 10px 0 30px rgba(0, 0, 0, 0.4);
+      }
+
+      .admin-sidebar.open {
+        transform: translateX(0);
+      }
+
+      .admin-header {
+        padding: 12px 16px !important;
+      }
+
+      #admin-hamburger-btn {
+        display: inline-flex !important;
+      }
+
+      .admin-search-wrapper {
+        display: none !important;
+      }
     }
 
     .admin-sidebar-header {
@@ -460,6 +487,9 @@
 
   </aside>
 
+  <!-- Backdrop sombre pour mobile -->
+  <div id="admin-sidebar-backdrop" onclick="toggleAdminSidebar(false)" style="position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 45; display: none;"></div>
+
   <!-- =======================================================================
        2. CONTENU PRINCIPAL
        ======================================================================= -->
@@ -467,14 +497,24 @@
     
     <!-- En-tête (Header) Épuré -->
     <header class="admin-header">
-      <div>
-        <h1 id="page-title" style="font-size: 1.15rem; font-weight: 900; color: #0F172A; letter-spacing: -0.02em;">Cockpit Financier & Métriques Clés</h1>
-        <p style="font-size: 0.78rem; color: #64748B; font-weight: 500;">Supervision en temps réel des abonnements Wave, Orange Money et agences</p>
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <button
+          type="button"
+          id="admin-hamburger-btn"
+          onclick="toggleAdminSidebar(true)"
+          style="display: none; background: #F1F5F9; border: 1px solid #E2E8F0; padding: 8px 10px; border-radius: 10px; cursor: pointer; font-size: 1.1rem; color: #0F172A;"
+        >
+          ☰
+        </button>
+        <div>
+          <h1 id="page-title" style="font-size: 1.1rem; font-weight: 900; color: #0F172A; letter-spacing: -0.02em;">Cockpit Financier & Métriques Clés</h1>
+          <p style="font-size: 0.75rem; color: #64748B; font-weight: 500;">Supervision en temps réel des abonnements</p>
+        </div>
       </div>
 
       <div style="display: flex; align-items: center; gap: 12px;">
         <!-- Barre de recherche -->
-        <div style="position: relative; width: 240px;">
+        <div class="admin-search-wrapper" style="position: relative; width: 220px;">
           <input
             type="text"
             id="admin-search-input"
@@ -1593,6 +1633,18 @@
         t.style.background = '#0F172A';
       }
       setTimeout(() => { t.style.display = 'none'; }, 3500);
+    }
+
+    function toggleAdminSidebar(show) {
+      const side = document.querySelector('.admin-sidebar');
+      const back = document.getElementById('admin-sidebar-backdrop');
+      if (side) {
+        if (show) side.classList.add('open');
+        else side.classList.remove('open');
+      }
+      if (back) {
+        back.style.display = show ? 'block' : 'none';
+      }
     }
 
     document.addEventListener('DOMContentLoaded', () => {
