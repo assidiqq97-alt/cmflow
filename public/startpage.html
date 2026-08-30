@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="fr" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Start Page • Lien en Bio — CMFlow</title>
+  <meta name="description" content="Créez et personnalisez le microsite de redirection pour vos bios Instagram, TikTok et WhatsApp.">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #F1F5F9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #CBD5E1;
+      border-radius: 999px;
+    }
+  </style>
+</head>
+<body class="min-h-full bg-[#F8FAFC] text-[#0F172A] antialiased flex selection:bg-[#F94F06]/20 selection:text-[#F94F06]">
+
+  <!-- Texture de lumière d'arrière-plan -->
+  <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+    <div class="absolute top-0 right-1/4 w-[600px] h-[600px] bg-gradient-to-br from-blue-100/40 via-purple-50/20 to-transparent rounded-full blur-3xl"></div>
+    <div class="absolute -bottom-32 left-1/3 w-[500px] h-[500px] bg-gradient-to-tr from-orange-100/30 via-amber-50/20 to-transparent rounded-full blur-3xl"></div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="app-toast" class="fixed bottom-6 right-6 z-50 bg-[#0F172A]/95 backdrop-blur-xl text-white px-4 py-3 rounded-2xl shadow-2xl border border-slate-700/80 text-xs sm:text-sm font-semibold flex items-center gap-2.5 transition-all duration-300 transform translate-y-20 opacity-0 pointer-events-none">
+    <svg class="w-4 h-4 text-[#F94F06]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+    </svg>
+    <span id="toast-text">Message</span>
+  </div>
+
+  <!-- SIDEBAR (#0F172A) -->
+  <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-[#0F172A] text-white flex flex-col justify-between transition-transform duration-300 ease-out border-r border-slate-800/80 -translate-x-full lg:translate-x-0">
+    <div class="overflow-y-auto">
+      <div class="p-5 border-b border-slate-800/60 flex items-center justify-between">
+        <a href="dashboard.html" class="inline-flex items-center gap-2.5">
+          <img src="images/logo-white.svg" alt="CMFlow" class="h-6 w-auto object-contain">
+          <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-[#F94F06]/20 text-[#F94F06] border border-[#F94F06]/30">PRO</span>
+        </a>
+        <button id="close-sidebar-btn" class="lg:hidden text-slate-400 hover:text-white p-1 cursor-pointer">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+
+      <!-- Sélecteur de Marque & Workspace (Dribbble/Raycast) -->
+      <div class="p-3.5 relative">
+        <div class="text-[9px] font-extrabold uppercase tracking-wider text-slate-400 px-2 block mb-1.5 flex items-center justify-between">
+          <span>Espace Client Actif</span>
+          <span class="text-emerald-400 flex items-center gap-1 font-bold">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> Live
+          </span>
+        </div>
+
+        <button
+          type="button"
+          id="client-dropdown-btn"
+          class="w-full flex items-center justify-between p-2.5 rounded-2xl bg-slate-800/80 hover:bg-slate-800 border border-slate-700/70 hover:border-slate-600 transition-all text-left group shadow-xs cursor-pointer"
+        >
+          <div class="flex items-center gap-2.5 min-w-0">
+            <div class="relative shrink-0">
+              <img
+                id="active-client-avatar"
+                src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=200&auto=format&fit=crop&q=80"
+                alt="Avatar"
+                class="active-ws-avatar w-8 h-8 rounded-xl object-cover ring-2 ring-[#0066FF]/40"
+              >
+              <span id="active-client-flag" class="active-ws-flag absolute -bottom-1 -right-1 text-[10px] bg-slate-900 rounded-full px-0.5 border border-slate-700">
+                🇸🇳
+              </span>
+            </div>
+            <div class="min-w-0 flex-1">
+              <div id="active-client-name" class="active-ws-name text-xs font-bold text-white truncate group-hover:text-sky-300 transition-colors">
+                Teranga Gourmet
+              </div>
+              <div id="active-client-cat" class="active-ws-cat text-[10px] text-slate-400 truncate">
+                Haute Gastronomie & Traiteur
+              </div>
+            </div>
+          </div>
+          <svg class="w-4 h-4 text-slate-400 group-hover:text-white shrink-0 ml-1 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+
+        <!-- Menu Déroulant Glassmorphism des Marques -->
+        <div id="client-dropdown-menu" class="hidden absolute top-full left-3.5 right-3.5 mt-2 bg-slate-900/95 backdrop-blur-xl border border-slate-700/80 rounded-3xl shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 duration-150">
+          <div class="text-[10px] font-bold text-slate-400 px-3 py-1.5 uppercase tracking-wider flex items-center justify-between">
+            <span>Changer de Workspace</span>
+            <span class="text-[9px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full font-semibold">3 marques</span>
+          </div>
+          <div id="client-list-container" class="max-h-56 overflow-y-auto space-y-1 pr-1">
+            <!-- Injecté par workspace-state.js -->
+          </div>
+          <div class="border-t border-slate-800 mt-1.5 pt-1.5">
+            <button
+              type="button"
+              onclick="alert('Ajout d\'une nouvelle marque client');"
+              class="w-full flex items-center gap-2 px-3 py-2 text-xs font-bold text-[#F94F06] hover:bg-orange-500/10 rounded-xl transition-colors cursor-pointer"
+            >
+              <span>+ Ajouter une marque</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <nav class="px-3 space-y-1 mt-1">
+        <a href="dashboard.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span>Calendrier & Queue</span>
+        </a>
+
+        <a href="clients.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span>Espaces Clients</span>
+        </a>
+
+        <a href="media.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          <span>Médiathèque Assets</span>
+        </a>
+
+        <a href="inbox.html" class="flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+          <div class="flex items-center gap-3">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <span>Inbox Unifiée</span>
+          </div>
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#10B981] opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-[#10B981]"></span>
+          </span>
+        </a>
+
+        <a href="startpage.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold bg-[#F94F06] text-white shadow-[0_8px_20px_-4px_rgba(249,79,6,0.35)] transition-all">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          <span>Start Page (Bio)</span>
+        </a>
+
+        <a href="analytics.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          <span>Analytics & Rapports</span>
+        </a>
+
+        <a href="validation.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span>Portail Validation</span>
+        </a>
+
+        <a href="billing.html" class="flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+          <div class="flex items-center gap-3">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+            <span>Facturation & Forfaits</span>
+          </div>
+          <span class="bg-[#1E90FF]/15 text-[#1E90FF] border border-[#1E90FF]/30 px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-tight">
+            Wave
+          </span>
+        </a>
+
+        <a href="channels.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+          <span>Canaux sociaux</span>
+        </a>
+
+        <a href="settings.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <span>Paramètres Agence</span>
+        </a>
+      </nav>
+    </div>
+
+    <div class="p-3.5 border-t border-slate-800/70 bg-slate-900/60">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#0066FF] to-sky-400 flex items-center justify-center font-black text-xs text-white">AD</div>
+        <div>
+          <div class="text-xs font-bold text-white">Awa Diop</div>
+          <div class="text-[10px] text-slate-400">Lead CM · Dakar 🇸🇳</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <div id="sidebar-backdrop" class="fixed inset-0 bg-black/60 z-30 hidden backdrop-blur-xs"></div>
+
+  <!-- MAIN WRAPPER -->
+  <div class="flex-1 flex flex-col min-w-0 lg:pl-64 z-10 min-h-screen overflow-y-auto">
+    
+    <!-- Topbar -->
+    <header class="sticky top-0 z-30 backdrop-blur-xl bg-white/80 border-b border-slate-200/60 px-4 sm:px-8 py-3.5 flex items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <button id="open-sidebar-btn" class="lg:hidden p-2 rounded-xl text-slate-700 bg-slate-100 cursor-pointer">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+        </button>
+        <div class="flex items-center gap-2 text-sm sm:text-base font-extrabold text-[#0F172A]">
+          <span class="text-slate-400 font-medium">CMFlow</span>
+          <span class="text-slate-300">/</span>
+          <span>Start Page • Lien en Bio</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2.5">
+        <button type="button" onclick="copyBioLink()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-extrabold rounded-xl border border-slate-200 flex items-center gap-1.5 cursor-pointer">
+          <span id="topbar-url-preview">cmflow.sn/bio/teranga-gourmet</span>
+          <svg class="w-3.5 h-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        </button>
+        <button type="button" onclick="saveAndPublishBio()" class="px-4 py-2 bg-[#F94F06] hover:bg-[#e04605] text-white text-xs font-black rounded-xl shadow-lg shadow-[#F94F06]/25 active:scale-[0.98] transition-all cursor-pointer flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          <span>Publier les modifications</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Corps 2 Volets -->
+    <main class="p-4 sm:p-6 lg:p-8 space-y-6 max-w-6xl">
+      
+      <!-- En-tête -->
+      <div class="bg-white/90 backdrop-blur-md p-5 sm:p-6 rounded-3xl border border-slate-200/70 shadow-xs flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2.5">
+            <h1 class="text-xl sm:text-2xl font-black text-[#0F172A]">Start Page &amp; Mini-Site Bio</h1>
+            <span class="px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200">🟢 Page Active en Ligne</span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-500 mt-1">Éditez vos boutons WhatsApp, cartes menus et liens en temps réel. L&apos;aperçu iPhone s&apos;actualise à chaque frappe.</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        
+        <!-- ÉDITEUR GAUCHE (7 Cols) -->
+        <div class="lg:col-span-7 space-y-4">
+          
+          <!-- 1. Identité du Profil -->
+          <div class="bg-white/90 backdrop-blur-md p-6 rounded-3xl border border-slate-200/80 shadow-xs space-y-4">
+            <h2 class="text-sm font-black text-[#0F172A] pb-2 border-b border-slate-100">1. Identité du Profil</h2>
+
+            <div>
+              <label class="block text-[10px] font-black uppercase tracking-wider text-slate-600 mb-1">Nom Affiché sur la page *</label>
+              <input type="text" id="input-name" value="Teranga Gourmet Dakar 🇸🇳" oninput="updateProfileLive()" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#F94F06]/20 focus:border-[#F94F06] transition-all">
+            </div>
+
+            <div>
+              <label class="block text-[10px] font-black uppercase tracking-wider text-slate-600 mb-1">Bio Courte &amp; Description</label>
+              <textarea id="input-bio" rows="2" oninput="updateProfileLive()" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#F94F06]/20 focus:border-[#F94F06] transition-all">Haute Gastronomie sénégalaise aux Almadies. Ouvert 7j/7 midi & soir.</textarea>
+            </div>
+          </div>
+
+          <!-- 2. Blocs de Liens Interactifs -->
+          <div class="bg-white/90 backdrop-blur-md p-6 rounded-3xl border border-slate-200/80 shadow-xs space-y-4">
+            <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+              <div>
+                <h2 class="text-sm font-black text-[#0F172A]">2. Blocs de Liens &amp; Redirections</h2>
+                <p class="text-[11px] text-slate-500">Chaque carte est modifiable directement avec son icône, son titre et son URL.</p>
+              </div>
+              <button
+                type="button"
+                onclick="addNewLink()"
+                class="px-3 py-1.5 bg-[#F94F06] hover:bg-[#e04605] text-white font-extrabold text-xs rounded-xl shadow-md shadow-orange-500/20 active:scale-[0.98] transition-all cursor-pointer flex items-center gap-1"
+              >
+                <span>+ Ajouter un lien</span>
+              </button>
+            </div>
+
+            <!-- Liste des formulaires de liens -->
+            <div id="links-editor-list" class="space-y-3">
+              <!-- Injecté dynamiquement par JavaScript -->
+            </div>
+
+            <!-- Bouton d'ajout bordé de pointillés -->
+            <button
+              type="button"
+              onclick="addNewLink()"
+              class="w-full py-3.5 rounded-2xl border-2 border-dashed border-slate-300 hover:border-[#F94F06] hover:bg-orange-50/20 text-slate-600 hover:text-[#F94F06] font-extrabold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer"
+            >
+              <span>+ Ajouter un nouveau bloc de lien</span>
+            </button>
+          </div>
+
+        </div>
+
+        <!-- MOCKUP IPHONE DROITE (5 Cols) -->
+        <div class="lg:col-span-5 flex justify-center sticky top-24">
+          <div class="w-[310px] bg-[#0F172A] p-3.5 rounded-[46px] shadow-2xl border-4 border-slate-700 ring-1 ring-white/10">
+            <div class="bg-gradient-to-b from-slate-900 to-slate-950 rounded-[36px] p-5 text-white flex flex-col justify-between min-h-[560px]">
+              
+              <!-- Dynamic Island -->
+              <div class="w-20 h-4 bg-black rounded-full mx-auto mb-4"></div>
+
+              <div class="text-center space-y-3.5">
+                <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=200&auto=format&fit=crop&q=80" alt="Avatar" class="w-16 h-16 rounded-full mx-auto object-cover ring-2 ring-[#F94F06] shadow-md">
+                <div>
+                  <div class="text-xs font-extrabold" id="preview-name">Teranga Gourmet Dakar 🇸🇳</div>
+                  <div class="text-[10px] text-slate-400 mt-1 leading-relaxed px-1" id="preview-bio">Haute Gastronomie sénégalaise aux Almadies. Ouvert 7j/7 midi & soir.</div>
+                </div>
+
+                <!-- Pastilles réseaux sociaux -->
+                <div class="flex justify-center gap-2 pt-1">
+                  <span class="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-xs">📸</span>
+                  <span class="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-xs">🎵</span>
+                  <span class="w-7 h-7 rounded-full bg-[#10B981] text-white flex items-center justify-center text-xs">💬</span>
+                </div>
+
+                <!-- Liste des boutons en direct -->
+                <div id="preview-links-container" class="space-y-2 pt-2 text-xs font-bold">
+                  <!-- Injecté dynamiquement par JavaScript -->
+                </div>
+              </div>
+
+              <div class="text-center pt-3 text-[9px] text-slate-500 font-semibold">
+                Propulsé par <span class="font-bold text-[#F94F06]">CMFlow ⚡</span>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- =========================================================================
+      LOGIQUE JAVASCRIPT : GESTION INTERACTIVE DES LIENS
+      ========================================================================= -->
+  <script>
+    const ICONS_CONFIG = {
+      whatsapp: { emoji: '💬', label: 'WhatsApp (Commande / Message)' },
+      website: { emoji: '🌐', label: 'Site Web / URL (Globe)' },
+      instagram: { emoji: '📸', label: 'Instagram (Profil / Reel)' },
+      phone: { emoji: '📞', label: 'Téléphone (Appel direct)' },
+      maps: { emoji: '📍', label: 'Maps / Localisation (Google Maps)' },
+      pdf: { emoji: '📋', label: 'Menu / Carte PDF' },
+      tiktok: { emoji: '🎵', label: 'TikTok (Vidéos)' },
+    };
+
+    // Tableau d'état des liens
+    let bioLinks = [
+      {
+        id: 'link-1',
+        label: 'Commander sur WhatsApp (+221 77 800 12 34)',
+        url: 'https://wa.me/221778001234?text=Bonjour,%20je%20souhaite%20commander',
+        icon: 'whatsapp',
+        isActive: true,
+      },
+      {
+        id: 'link-2',
+        label: 'Découvrir la Carte & Menu du Soir (PDF)',
+        url: 'https://teranga-gourmet.sn/menu-degustation.pdf',
+        icon: 'pdf',
+        isActive: true,
+      },
+      {
+        id: 'link-3',
+        label: 'Nous Trouver & Réserver aux Almadies',
+        url: 'https://maps.google.com/?q=Teranga+Gourmet+Dakar',
+        icon: 'maps',
+        isActive: true,
+      },
+      {
+        id: 'link-4',
+        label: 'Voir nos Coulisses sur TikTok',
+        url: 'https://tiktok.com/@teranga_gourmet',
+        icon: 'tiktok',
+        isActive: true,
+      }
+    ];
+
+    // Chargement depuis localStorage
+    try {
+      const cached = localStorage.getItem('cmflow_bio_links_local');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          bioLinks = parsed;
+        }
+      }
+    } catch (e) {}
+
+    // Rendu de l'éditeur et de l'aperçu mobile
+    function renderEditor() {
+      const listEl = document.getElementById('links-editor-list');
+      if (!listEl) return;
+
+      if (bioLinks.length === 0) {
+        listEl.innerHTML = `
+          <div class="p-6 text-center border-2 border-dashed border-slate-200 rounded-2xl space-y-1">
+            <div class="text-2xl">🔗</div>
+            <div class="text-xs font-bold text-slate-700">Aucun lien enregistré</div>
+            <div class="text-[11px] text-slate-400">Cliquez sur &quot;+ Ajouter un lien&quot; ci-dessus pour commencer.</div>
+          </div>
+        `;
+      } else {
+        listEl.innerHTML = bioLinks.map((link) => {
+          const iconInfo = ICONS_CONFIG[link.icon] || ICONS_CONFIG.website;
+          return `
+            <div class="p-3.5 rounded-2xl border transition-all space-y-3 ${
+              link.isActive
+                ? 'bg-white border-slate-200 shadow-2xs hover:border-slate-300'
+                : 'bg-slate-50/70 border-slate-200/60 opacity-60'
+            }">
+              <!-- Header de la carte -->
+              <div class="flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2 min-w-0 flex-1">
+                  <span class="text-base">${iconInfo.emoji}</span>
+                  <div class="min-w-0 flex-1">
+                    <span class="text-xs font-black text-slate-800 truncate block">${link.label || 'Sans titre'}</span>
+                    <span class="text-[10px] font-mono text-slate-400 truncate block">${link.url || 'https://...'}</span>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-2 shrink-0">
+                  <span class="text-[9px] font-black uppercase px-2 py-0.5 rounded-full border ${
+                    link.isActive
+                      ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                      : 'bg-slate-100 text-slate-500 border-slate-200'
+                  }">
+                    ${link.isActive ? 'Actif' : 'Masqué'}
+                  </span>
+
+                  <!-- Toggle Switch -->
+                  <button
+                    type="button"
+                    onclick="toggleLinkActive('${link.id}')"
+                    class="w-9 h-5 rounded-full p-0.5 transition-colors cursor-pointer ${
+                      link.isActive ? 'bg-[#10B981]' : 'bg-slate-300'
+                    }"
+                    title="${link.isActive ? 'Désactiver' : 'Activer'}"
+                  >
+                    <div class="w-4 h-4 rounded-full bg-white transition-transform ${
+                      link.isActive ? 'translate-x-4' : 'translate-x-0'
+                    }"></div>
+                  </button>
+
+                  <!-- Bouton Corbeille -->
+                  <button
+                    type="button"
+                    onclick="deleteLink('${link.id}')"
+                    class="p-1.5 text-slate-400 hover:text-rose-600 rounded-xl hover:bg-rose-50 transition-colors cursor-pointer"
+                    title="Supprimer ce lien"
+                  >
+                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Formulaire de modification -->
+              <div class="pt-2 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-12 gap-2.5 text-xs">
+                <div class="sm:col-span-6">
+                  <label class="block text-[10px] font-black uppercase tracking-wider text-slate-600 mb-1">Titre du Bouton *</label>
+                  <input
+                    type="text"
+                    value="${link.label.replace(/"/g, '&quot;')}"
+                    oninput="updateLinkField('${link.id}', 'label', this.value)"
+                    placeholder="Ex: Commander sur WhatsApp"
+                    class="w-full px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#F94F06]/20 focus:border-[#F94F06] transition-all"
+                  >
+                </div>
+
+                <div class="sm:col-span-6">
+                  <label class="block text-[10px] font-black uppercase tracking-wider text-slate-600 mb-1">Icône</label>
+                  <select
+                    onchange="updateLinkField('${link.id}', 'icon', this.value)"
+                    class="w-full px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#F94F06]/20 focus:border-[#F94F06] transition-all cursor-pointer"
+                  >
+                    ${Object.keys(ICONS_CONFIG).map((k) => `
+                      <option value="${k}" ${link.icon === k ? 'selected' : ''}>
+                        ${ICONS_CONFIG[k].emoji} ${ICONS_CONFIG[k].label}
+                      </option>
+                    `).join('')}
+                  </select>
+                </div>
+
+                <div class="sm:col-span-12">
+                  <label class="block text-[10px] font-black uppercase tracking-wider text-slate-600 mb-1">URL de Destination *</label>
+                  <input
+                    type="url"
+                    value="${link.url.replace(/"/g, '&quot;')}"
+                    oninput="updateLinkField('${link.id}', 'url', this.value)"
+                    placeholder="https://..."
+                    class="w-full px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl font-mono text-xs text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0066FF]/20 focus:border-[#0066FF] transition-all"
+                  >
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      renderLivePreview();
+    }
+
+    // Rendu en direct dans l'iPhone
+    function renderLivePreview() {
+      const previewContainer = document.getElementById('preview-links-container');
+      if (!previewContainer) return;
+
+      const activeLinks = bioLinks.filter((l) => l.isActive);
+
+      if (activeLinks.length === 0) {
+        previewContainer.innerHTML = `
+          <div class="p-3 rounded-2xl bg-white/5 border border-white/10 text-[10px] opacity-60 text-center">
+            Aucun bouton actif affiché
+          </div>
+        `;
+        return;
+      }
+
+      previewContainer.innerHTML = activeLinks.map((l) => {
+        const iconInfo = ICONS_CONFIG[l.icon] || ICONS_CONFIG.website;
+        const isWhatsapp = l.icon === 'whatsapp';
+        return `
+          <a
+            href="${l.url || '#'}"
+            target="_blank"
+            class="block w-full py-2.5 px-3 rounded-2xl transition-all text-white font-bold flex items-center justify-between text-xs shadow-xs ${
+              isWhatsapp
+                ? 'bg-[#10B981] hover:bg-[#059669]'
+                : 'bg-white/15 hover:bg-white/25 border border-white/20 backdrop-blur-xs'
+            }"
+          >
+            <div class="flex items-center gap-2 min-w-0">
+              <span class="text-sm">${iconInfo.emoji}</span>
+              <span class="truncate">${l.label || 'Bouton d\'action'}</span>
+            </div>
+            <span class="text-white/60 text-xs">↗</span>
+          </a>
+        `;
+      }).join('');
+    }
+
+    // 1. Ajouter un lien
+    function addNewLink() {
+      const newId = 'link-' + Date.now();
+      bioLinks.unshift({
+        id: newId,
+        label: 'Nouveau bouton d\'action',
+        url: 'https://',
+        icon: 'website',
+        isActive: true,
+      });
+      renderEditor();
+      showToast('✨ Nouveau bloc de lien ajouté avec succès !');
+    }
+
+    // 2. Supprimer un lien
+    function deleteLink(id) {
+      bioLinks = bioLinks.filter((l) => l.id !== id);
+      renderEditor();
+      showToast('🗑️ Bloc de lien supprimé.');
+    }
+
+    // 3. Basculer actif/inactif
+    function toggleLinkActive(id) {
+      bioLinks = bioLinks.map((l) => (l.id === id ? { ...l, isActive: !l.isActive } : l));
+      renderEditor();
+    }
+
+    // 4. Mettre à jour un champ en direct
+    function updateLinkField(id, field, value) {
+      bioLinks = bioLinks.map((l) => (l.id === id ? { ...l, [field]: value } : l));
+      renderLivePreview();
+    }
+
+    // Mise à jour live du profil
+    function updateProfileLive() {
+      const nameVal = document.getElementById('input-name').value;
+      const bioVal = document.getElementById('input-bio').value;
+      document.getElementById('preview-name').textContent = nameVal || 'Nom de la marque';
+      document.getElementById('preview-bio').textContent = bioVal || 'Description courte...';
+    }
+
+    // 5. Sauvegarde & Publication
+    function saveAndPublishBio() {
+      try {
+        localStorage.setItem('cmflow_bio_links_local', JSON.stringify(bioLinks));
+        localStorage.setItem('cmflow_bio_name', document.getElementById('input-name').value);
+        localStorage.setItem('cmflow_bio_desc', document.getElementById('input-bio').value);
+      } catch (e) {}
+      showToast('🚀 Start Page enregistrée et publiée en direct avec succès !');
+    }
+
+    function copyBioLink() {
+      navigator.clipboard.writeText('https://cmflow.sn/bio/teranga-gourmet');
+      showToast('🔗 Lien Bio public copié dans le presse-papiers !');
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('app-toast');
+      const text = document.getElementById('toast-text');
+      text.textContent = msg;
+      toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+      }, 3500);
+    }
+
+    // Initialisation
+    document.addEventListener('DOMContentLoaded', () => {
+      renderEditor();
+      updateProfileLive();
+
+      const openBtn = document.getElementById('open-sidebar-btn');
+      const closeBtn = document.getElementById('close-sidebar-btn');
+      const sidebar = document.getElementById('sidebar');
+      const backdrop = document.getElementById('sidebar-backdrop');
+
+      if (openBtn && sidebar && backdrop) {
+        openBtn.addEventListener('click', () => {
+          sidebar.classList.remove('-translate-x-full');
+          backdrop.classList.remove('hidden');
+        });
+      }
+      if (closeBtn && sidebar && backdrop) {
+        closeBtn.addEventListener('click', () => {
+          sidebar.classList.add('-translate-x-full');
+          backdrop.classList.add('hidden');
+        });
+        backdrop.addEventListener('click', () => {
+          sidebar.classList.add('-translate-x-full');
+          backdrop.classList.add('hidden');
+        });
+      }
+    });
+  </script>
+  <script src="js/workspace-state.js"></script>
+  <script src="js/realtime-listener.js"></script>
+</body>
+</html>

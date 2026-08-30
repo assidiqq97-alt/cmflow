@@ -109,6 +109,10 @@
     {
       "source": "/settings",
       "destination": "/settings.html"
+    },
+    {
+      "source": "/",
+      "destination": "/index.html"
     }
   ]
 }

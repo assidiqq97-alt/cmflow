@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="fr" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Espaces Clients & Marques — CMFlow</title>
+  <meta name="description" content="Gérez vos différents workspaces clients de manière étanche et sécurisée sur CMFlow.">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #F1F5F9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #CBD5E1;
+      border-radius: 999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94A3B8;
+    }
+  </style>
+</head>
+<body class="min-h-full bg-[#F8FAFC] text-[#0F172A] antialiased flex selection:bg-[#F94F06]/20 selection:text-[#F94F06]">
+
+  <!-- Texture de lumière d'arrière-plan (Vercel / Linear Glow) -->
+  <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+    <div class="absolute top-0 right-1/4 w-[600px] h-[600px] bg-gradient-to-br from-blue-100/40 via-purple-50/20 to-transparent rounded-full blur-3xl"></div>
+    <div class="absolute -bottom-32 left-1/3 w-[500px] h-[500px] bg-gradient-to-tr from-orange-100/30 via-amber-50/20 to-transparent rounded-full blur-3xl"></div>
+  </div>
+
+  <!-- Toast Notification Flottante -->
+  <div id="app-toast" class="fixed bottom-6 right-6 z-50 bg-[#0F172A]/95 backdrop-blur-xl text-white px-4 py-3 rounded-2xl shadow-2xl border border-slate-700/80 text-xs sm:text-sm font-semibold flex items-center gap-2.5 transition-all duration-300 transform translate-y-20 opacity-0 pointer-events-none">
+    <svg class="w-4 h-4 text-[#F94F06]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+    </svg>
+    <span id="toast-text">Message</span>
+  </div>
+
+  <!-- =========================================================================
+      A. SIDEBAR ÉLÉGANTE (#0F172A - Style Linear / Raycast)
+      ========================================================================= -->
+  <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-[#0F172A] text-white flex flex-col justify-between transition-transform duration-300 ease-out border-r border-slate-800/80 -translate-x-full lg:translate-x-0">
+    <div class="overflow-y-auto">
+      
+      <!-- En-tête : Logo & Badge Pro -->
+      <div class="p-5 border-b border-slate-800/60 flex items-center justify-between">
+        <a href="dashboard.html" class="inline-flex items-center gap-2.5 transition-opacity hover:opacity-90">
+          <img src="images/logo-white.svg" alt="CMFlow" class="h-6 w-auto object-contain">
+          <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-[#F94F06]/20 text-[#F94F06] border border-[#F94F06]/30 tracking-wider">
+            PRO
+          </span>
+        </a>
+        <button id="close-sidebar-btn" class="lg:hidden text-slate-400 hover:text-white p-1">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+
+      <!-- Sélecteur de Marque & Workspace (Mini-carte Premium) -->
+      <div class="p-3.5 relative">
+        <div class="text-[9px] font-extrabold uppercase tracking-wider text-slate-400 px-2 block mb-1.5 flex items-center justify-between">
+          <span>Espace Client</span>
+          <span class="text-emerald-400 flex items-center gap-1 font-bold">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+            Actif
+          </span>
+        </div>
+
+        <button
+          type="button"
+          id="client-dropdown-btn"
+          class="w-full flex items-center justify-between p-2.5 rounded-2xl bg-gradient-to-b from-slate-800/90 to-slate-800/50 hover:from-slate-800 hover:to-slate-800/80 border border-slate-700/70 hover:border-slate-600 transition-all text-left group shadow-sm"
+        >
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="relative shrink-0">
+              <img
+                id="active-client-avatar"
+                src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=200&auto=format&fit=crop&q=80"
+                alt="Client Avatar"
+                class="w-8 h-8 rounded-xl object-cover ring-2 ring-[#0066FF]/40"
+              >
+              <span id="active-client-flag" class="absolute -bottom-1 -right-1 text-[10px] bg-slate-900 rounded-full px-0.5">
+                🇸🇳
+              </span>
+            </div>
+            <div class="min-w-0 flex-1">
+              <div id="active-client-name" class="text-xs font-bold text-white truncate group-hover:text-sky-300 transition-colors">
+                Teranga Gourmet
+              </div>
+              <div id="active-client-cat" class="text-[10px] text-slate-400 truncate">
+                Haute Gastronomie & Traiteur
+              </div>
+            </div>
+          </div>
+          <svg class="w-4 h-4 text-slate-400 group-hover:text-white shrink-0 ml-1 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+
+        <!-- Menu Déroulant des Clients -->
+        <div id="client-dropdown-menu" class="hidden absolute top-full left-3.5 right-3.5 mt-2 bg-slate-900/95 backdrop-blur-xl border border-slate-700/80 rounded-2xl shadow-2xl py-2 z-50 max-h-64 overflow-y-auto">
+          <div class="text-[9px] font-bold text-slate-400 px-3 py-1 uppercase tracking-wider">
+            Changer de marque
+          </div>
+          <div id="client-list-container"></div>
+        </div>
+      </div>
+
+      <!-- Navigation Latérale (9 Modules) -->
+      <nav class="px-3 space-y-1 mt-1">
+        <a href="dashboard.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span>Calendrier & Queue</span>
+        </a>
+
+        <a href="clients.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold bg-[#F94F06] text-white shadow-[0_8px_20px_-4px_rgba(249,79,6,0.35)] transition-all">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span>Espaces Clients</span>
+        </a>
+
+        <a href="media.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          <span>Médiathèque Assets</span>
+        </a>
+
+        <a href="inbox.html" class="flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+          <div class="flex items-center gap-3">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <span>Inbox Unifiée</span>
+          </div>
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#10B981] opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-[#10B981]"></span>
+          </span>
+        </a>
+
+        <a href="startpage.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          <span>Start Page (Bio)</span>
+        </a>
+
+        <a href="analytics.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          <span>Analytics & Rapports</span>
+        </a>
+
+        <a href="validation.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span>Portail Validation</span>
+        </a>
+
+        <a href="billing.html" class="flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+          <div class="flex items-center gap-3">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+            <span>Facturation & Forfaits</span>
+          </div>
+          <span class="bg-[#1E90FF]/15 text-[#1E90FF] border border-[#1E90FF]/30 px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-tight">
+            Wave
+          </span>
+        </a>
+
+        <a href="channels.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+          <span>Canaux sociaux</span>
+        </a>
+
+        <a href="settings.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition-all">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <span>Paramètres Agence</span>
+        </a>
+      </nav>
+    </div>
+
+    <!-- Profil CM connecté -->
+    <div class="p-3.5 border-t border-slate-800/70 bg-slate-900/60">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2.5 min-w-0">
+          <div class="relative">
+            <div id="user-avatar-badge" class="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#0066FF] to-sky-400 flex items-center justify-center font-black text-xs text-white shadow-sm">
+              AD
+            </div>
+            <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-[#10B981] border-2 border-[#0F172A] rounded-full"></span>
+          </div>
+          <div class="min-w-0">
+            <div id="user-display-name" class="text-xs font-bold text-white truncate">Awa Diop</div>
+            <div id="user-display-role" class="text-[10px] text-slate-400 truncate">Lead CM · Dakar 🇸🇳</div>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          id="btn-logout"
+          title="Déconnexion"
+          class="p-1.5 text-slate-400 hover:text-rose-400 rounded-lg hover:bg-slate-800/80 transition-colors"
+        >
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Fond sombre Mobile -->
+  <div id="sidebar-backdrop" class="fixed inset-0 bg-black/60 z-30 hidden backdrop-blur-xs"></div>
+
+  <!-- =========================================================================
+      ZONE PRINCIPALE (Top Section + Bento Grid)
+      ========================================================================= -->
+  <div class="flex-1 flex flex-col min-w-0 lg:pl-64 z-10">
+    
+    <!-- Top Bar Aérée (Floating Glassmorphism) -->
+    <header class="sticky top-0 z-30 backdrop-blur-xl bg-white/80 border-b border-slate-200/60 px-4 sm:px-8 py-3.5 flex items-center justify-between gap-3 transition-all">
+      
+      <!-- Fil d'Ariane & Hamburger -->
+      <div class="flex items-center gap-3">
+        <button id="open-sidebar-btn" class="lg:hidden p-2 rounded-xl text-slate-700 bg-slate-100 hover:bg-slate-200 transition-colors">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+        </button>
+
+        <div>
+          <div class="flex items-center gap-2 text-sm sm:text-base font-extrabold text-[#0F172A] tracking-tight">
+            <span class="text-slate-400 font-medium">CMFlow</span>
+            <span class="text-slate-300">/</span>
+            <span class="text-slate-700 font-bold">Espaces Clients & Marques</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions Rapides Topbar -->
+      <div class="flex items-center gap-2.5">
+        <button
+          type="button"
+          id="btn-open-add-modal"
+          class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-extrabold bg-[#F94F06] hover:bg-[#e04605] text-white shadow-lg shadow-[#F94F06]/25 hover:shadow-[#F94F06]/40 active:scale-[0.98] transition-all duration-200"
+        >
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+          <span>+ Onboarder une marque</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Corps de Page -->
+    <main class="p-4 sm:p-6 lg:p-8 space-y-6">
+      
+      <!-- =====================================================================
+          A. EN-TÊTE DE PAGE
+          ===================================================================== -->
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-white/90 backdrop-blur-md p-5 sm:p-6 rounded-3xl border border-slate-200/70 shadow-xs">
+        <div>
+          <div class="flex items-center gap-2.5 flex-wrap">
+            <h1 class="text-xl sm:text-2xl font-black text-[#0F172A] tracking-tight">
+              Espaces Clients & Marques Partenaires
+            </h1>
+            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-blue-50 text-blue-700 border border-blue-200/80">
+              <span id="client-count-badge">4</span> Workspaces Actifs
+            </span>
+          </div>
+          <p className="text-xs sm:text-sm text-slate-500 mt-1 font-medium">
+            Gérez vos différents workspaces de manière totalement étanche et sécurisée.
+          </p>
+        </div>
+
+        {/* Jauge Quota */}
+        <div class="px-3.5 py-2 rounded-2xl bg-slate-100/90 border border-slate-200/80 flex items-center gap-2.5 text-xs font-bold text-slate-700">
+          <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+          <span id="quota-text">4 / 5 Marques actives</span>
+          <span class="text-[10px] uppercase font-black px-1.5 py-0.5 rounded-md bg-white border border-slate-200 text-slate-500">Starter</span>
+        </div>
+      </div>
+
+      <!-- =====================================================================
+          B. 3 CARTES KPIS SYNTHÉTIQUES
+          ===================================================================== -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        
+        <div class="bg-white/90 backdrop-blur-md p-5 rounded-3xl border border-slate-200/70 shadow-xs hover:shadow-md transition-all">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Workspaces</span>
+            <span class="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200/60">100% Opérationnel</span>
+          </div>
+          <div id="kpi-total-clients" class="text-2xl font-black text-[#0F172A] mt-2">4 clients actifs</div>
+          <div class="text-xs text-slate-500 mt-1 font-medium">Sénégal 🇸🇳 · Côte d'Ivoire 🇨🇮</div>
+        </div>
+
+        <div class="bg-white/90 backdrop-blur-md p-5 rounded-3xl border border-slate-200/70 shadow-xs hover:shadow-md transition-all">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Comptes Connectés</span>
+            <span class="text-[10px] font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-200/60">Multi-Canal</span>
+          </div>
+          <div id="kpi-total-channels" class="text-2xl font-black text-[#0F172A] mt-2">14 profils sociaux</div>
+          <div class="text-xs text-slate-500 mt-1 font-medium">Instagram, Facebook, LinkedIn, TikTok</div>
+        </div>
+
+        <div class="bg-white/90 backdrop-blur-md p-5 rounded-3xl border border-slate-200/70 shadow-xs hover:shadow-md transition-all">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Validation Globale</span>
+            <span class="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200/60">WhatsApp Direct</span>
+          </div>
+          <div class="text-2xl font-black text-emerald-600 mt-2">92% des plannings à jour</div>
+          <div class="text-xs text-slate-500 mt-1 font-medium">Tous les retours clients traités</div>
+        </div>
+
+      </div>
+
+      <!-- =====================================================================
+          BARRE DE RECHERCHE & FILTRES
+          ===================================================================== -->
+      <div class="bg-white/90 backdrop-blur-md border border-slate-200/80 rounded-2xl p-3.5 sm:p-4 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xs">
+        <div class="relative w-full sm:w-80">
+          <input
+            type="text"
+            id="search-input"
+            placeholder="Rechercher une marque ou secteur..."
+            class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium text-slate-800 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0066FF]"
+          />
+        </div>
+
+        <div class="flex items-center gap-2 w-full sm:w-auto">
+          <span class="text-xs font-bold text-slate-500">Pays :</span>
+          <select id="country-select" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs font-bold text-slate-700 focus:outline-none cursor-pointer">
+            <option value="all">Tous les pays</option>
+            <option value="Sénégal">Sénégal 🇸🇳</option>
+            <option value="Côte d'Ivoire">Côte d'Ivoire 🇨🇮</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- =====================================================================
+          C. GRILLE DES MARQUES (BENTO GRID)
+          ===================================================================== -->
+      <div id="clients-bento-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
+        <!-- Cartes injectées en JS -->
+      </div>
+
+    </main>
+  </div>
+
+  <!-- =========================================================================
+      MODALE : ONBOARDING CLIENT
+      ========================================================================= -->
+  <div id="modal-add-client" class="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-md hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-lg w-full p-6 sm:p-8 border border-slate-200 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between mb-5 pb-3 border-b border-slate-100">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-orange-100 text-[#F94F06] flex items-center justify-center font-bold">
+            +
+          </div>
+          <div>
+            <h3 class="text-base font-extrabold text-[#0F172A]">Onboarder une Marque</h3>
+            <p class="text-xs text-slate-500">Nouveau Workspace sécurisé</p>
+          </div>
+        </div>
+        <button class="btn-close-modal text-slate-400 hover:text-slate-600 p-1">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+
+      <form id="form-add-client" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Nom de l'entreprise / Marque *</label>
+          <input type="text" id="client-name-input" placeholder="ex: Dakar Digital Studio" required class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0066FF]">
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Secteur d'activité</label>
+          <input type="text" id="client-cat-input" placeholder="ex: Restauration, Cosmétiques, FinTech..." class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0066FF]">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Pays</label>
+            <select id="client-country-input" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 font-medium">
+              <option value="Sénégal 🇸🇳">Sénégal 🇸🇳</option>
+              <option value="Côte d'Ivoire 🇨🇮">Côte d'Ivoire 🇨🇮</option>
+              <option value="Bénin 🇧🇯">Bénin 🇧🇯</option>
+              <option value="Cameroun 🇨🇲">Cameroun 🇨🇲</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Devise</label>
+            <select id="client-currency-input" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 font-medium">
+              <option value="FCFA">FCFA (XOF/XAF)</option>
+              <option value="EUR">EUR (€)</option>
+              <option value="USD">USD ($)</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1">Numéro WhatsApp du Décideur *</label>
+          <input type="tel" id="client-whatsapp-input" placeholder="+221 77 800 00 00" required class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#10B981]">
+        </div>
+
+        <div class="pt-3 flex items-center justify-end gap-2 border-t border-slate-100">
+          <button type="button" class="btn-close-modal px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl transition-colors">Annuler</button>
+          <button type="submit" class="px-5 py-2.5 text-xs font-extrabold bg-[#F94F06] hover:bg-[#e04605] text-white rounded-xl shadow-lg shadow-[#F94F06]/25 transition-all">Créer le Workspace</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- JavaScript CMFlow Clients Engine -->
+  <script src="js/firebase-config.js"></script>
+  <script src="js/backend.js"></script>
+  <script src="js/app.js"></script>
+
+  <script>
+    let clientsData = [
+      {
+        id: 'teranga-gourmet',
+        name: 'Teranga Gourmet',
+        country: 'Sénégal 🇸🇳',
+        flag: '🇸🇳',
+        category: 'Haute Gastronomie & Traiteur',
+        avatar: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&auto=format&fit=crop&q=80',
+        whatsapp: '+221 77 842 19 02',
+        statusText: 'Validations à jour',
+        statusType: 'active',
+        scheduledPostsCount: 8,
+        lastContactDate: 'Hier à 16:45',
+        channels: ['instagram', 'facebook', 'tiktok', 'linkedin']
+      },
+      {
+        id: 'sira-cosmetiques',
+        name: 'Sira Cosmétiques Bio',
+        country: 'Côte d\'Ivoire 🇨🇮',
+        flag: '🇨🇮',
+        category: 'Skincare & Beauté Naturelle',
+        avatar: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=400&auto=format&fit=crop&q=80',
+        whatsapp: '+225 07 48 92 10 33',
+        statusText: '1 planning en attente',
+        statusType: 'pending',
+        scheduledPostsCount: 6,
+        lastContactDate: 'Aujourd\'hui à 11:20',
+        channels: ['instagram', 'facebook', 'linkedin']
+      },
+      {
+        id: 'baobab-tech',
+        name: 'Baobab Tech Hub',
+        country: 'Sénégal 🇸🇳',
+        flag: '🇸🇳',
+        category: 'Incubateur & SaaS FinTech',
+        avatar: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=400&auto=format&fit=crop&q=80',
+        whatsapp: '+221 78 112 45 88',
+        statusText: 'Validations à jour',
+        statusType: 'active',
+        scheduledPostsCount: 5,
+        lastContactDate: 'Il y a 2 jours',
+        channels: ['linkedin', 'facebook', 'tiktok']
+      },
+      {
+        id: 'kinkeliba-couture',
+        name: 'Kinkeliba Haute Couture',
+        country: 'Sénégal 🇸🇳',
+        flag: '🇸🇳',
+        category: 'Mode & Prêt-à-porter de Luxe',
+        avatar: 'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=400&auto=format&fit=crop&q=80',
+        whatsapp: '+221 76 902 34 11',
+        statusText: 'Validations à jour',
+        statusType: 'active',
+        scheduledPostsCount: 7,
+        lastContactDate: 'Hier à 19:10',
+        channels: ['instagram', 'facebook', 'tiktok', 'linkedin']
+      }
+    ];
+
+    function showToast(msg) {
+      const toast = document.getElementById('app-toast');
+      const text = document.getElementById('toast-text');
+      text.textContent = msg;
+      toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+      }, 3000);
+    }
+
+    function renderGrid() {
+      const grid = document.getElementById('clients-bento-grid');
+      const search = document.getElementById('search-input').value.toLowerCase();
+      const country = document.getElementById('country-select').value;
+
+      const filtered = clientsData.filter(c => {
+        const matchSearch = c.name.toLowerCase().includes(search) || c.category.toLowerCase().includes(search);
+        const matchCountry = country === 'all' || c.country.includes(country);
+        return matchSearch && matchCountry;
+      });
+
+      let html = '';
+
+      filtered.forEach(client => {
+        html += `
+          <div class="bg-white rounded-3xl border border-slate-200/80 shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between overflow-hidden group">
+            <div class="p-6 space-y-4">
+              <div class="flex items-start justify-between gap-3">
+                <div class="flex items-center gap-3.5 min-w-0">
+                  <div class="relative shrink-0">
+                    <img src="${client.avatar}" alt="${client.name}" class="w-14 h-14 rounded-2xl object-cover ring-2 ring-slate-100 group-hover:scale-105 transition-transform duration-300">
+                    <span class="absolute -bottom-1 -right-1 text-sm bg-white shadow-xs rounded-full px-1 py-0.5 border border-slate-200">${client.flag}</span>
+                  </div>
+                  <div class="min-w-0">
+                    <h3 class="text-base font-extrabold text-[#0F172A] truncate group-hover:text-[#0066FF] transition-colors">${client.name}</h3>
+                    <div class="text-xs text-slate-500 font-medium truncate mt-0.5">${client.category}</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between pt-1">
+                ${client.statusType === 'active' ? `
+                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
+                    <span class="w-2 h-2 rounded-full bg-[#10B981] animate-pulse"></span>
+                    ${client.statusText}
+                  </span>
+                ` : `
+                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600 border border-amber-500/20">
+                    <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                    ${client.statusText}
+                  </span>
+                `}
+                <span class="text-[11px] text-slate-400 font-medium">FCFA</span>
+              </div>
+
+              <div class="bg-slate-50/80 p-3 rounded-2xl border border-slate-200/60 space-y-2">
+                <div class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Canaux connectés (${client.channels.length})</div>
+                <div class="flex items-center gap-2">
+                  ${client.channels.map(ch => `<span class="px-2 py-0.5 bg-white border border-slate-200 rounded-lg text-[10px] font-extrabold text-slate-700 uppercase">${ch}</span>`).join('')}
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-2 pt-1 text-xs">
+                <div class="bg-slate-50/50 p-2.5 rounded-xl border border-slate-100">
+                  <span class="text-[10px] text-slate-400 block font-semibold">Volume Prévu</span>
+                  <span class="font-extrabold text-slate-800">${client.scheduledPostsCount} posts ce mois</span>
+                </div>
+                <div class="bg-slate-50/50 p-2.5 rounded-xl border border-slate-100">
+                  <span class="text-[10px] text-slate-400 block font-semibold">Dernier Contact</span>
+                  <span class="font-extrabold text-slate-800 truncate block">${client.lastContactDate}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-4 bg-slate-50/70 border-t border-slate-100 rounded-b-3xl flex items-center gap-2">
+              <a href="dashboard.html" onclick="selectClient('${client.id}')" class="flex-1 py-2.5 px-3.5 rounded-xl text-xs font-extrabold bg-[#0F172A] hover:bg-slate-800 text-white flex items-center justify-center gap-1.5 transition-all text-center">
+                <span>Ouvrir Cockpit</span>
+              </a>
+              <a href="https://wa.me/${client.whatsapp.replace(/[^0-9]/g, '')}" target="_blank" class="p-2.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-[#059669] border border-emerald-500/25 transition-colors" title="WhatsApp">
+                <svg class="w-4 h-4 text-[#10B981]" fill="none" viewBox="0 0 24 24" stroke="currentColor"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              </a>
+            </div>
+          </div>
+        `;
+      });
+
+      // Empty State Card
+      html += `
+        <div onclick="openAddModal()" class="rounded-3xl border-2 border-dashed border-slate-300 hover:border-[#F94F06]/50 bg-white/50 hover:bg-orange-50/20 p-8 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-300 min-h-[360px] group shadow-2xs hover:shadow-md">
+          <div class="w-14 h-14 rounded-2xl bg-orange-100 text-[#F94F06] group-hover:scale-110 flex items-center justify-center transition-transform duration-300 shadow-sm mb-4">
+            <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+          </div>
+          <h3 class="text-base font-extrabold text-[#0F172A] group-hover:text-[#F94F06] transition-colors">Ajouter un nouveau client</h3>
+          <p class="text-xs text-slate-500 max-w-xs mt-1.5 leading-relaxed font-medium">Configurez son espace de validation WhatsApp direct en moins de 2 minutes.</p>
+          <span class="mt-4 inline-flex items-center gap-1.5 text-xs font-extrabold text-[#F94F06] group-hover:underline">+ Lancer l'onboarding</span>
+        </div>
+      `;
+
+      grid.innerHTML = html;
+
+      // Update counters
+      document.getElementById('client-count-badge').textContent = clientsData.length;
+      document.getElementById('quota-text').textContent = `${clientsData.length} / 5 Marques actives`;
+      document.getElementById('kpi-total-clients').textContent = `${clientsData.length} clients actifs`;
+      const totalChannels = clientsData.reduce((acc, c) => acc + c.channels.length, 0);
+      document.getElementById('kpi-total-channels').textContent = `${totalChannels} profils sociaux`;
+    }
+
+    function selectClient(id) {
+      const found = clientsData.find(c => c.id === id);
+      if (found) {
+        showToast(`Workspace commuté sur « ${found.name} »`);
+      }
+    }
+
+    function openAddModal() {
+      document.getElementById('modal-add-client').classList.remove('hidden');
+      document.getElementById('modal-add-client').classList.add('flex');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderGrid();
+
+      document.getElementById('search-input').addEventListener('input', renderGrid);
+      document.getElementById('country-select').addEventListener('change', renderGrid);
+
+      document.getElementById('btn-open-add-modal').addEventListener('click', openAddModal);
+
+      document.querySelectorAll('.btn-close-modal').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.getElementById('modal-add-client').classList.add('hidden');
+          document.getElementById('modal-add-client').classList.remove('flex');
+        });
+      });
+
+      document.getElementById('form-add-client').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = document.getElementById('client-name-input').value.trim();
+        const cat = document.getElementById('client-cat-input').value.trim();
+        const country = document.getElementById('client-country-input').value;
+        const wa = document.getElementById('client-whatsapp-input').value.trim();
+
+        if (!name) return;
+
+        const flag = country.includes('Côte') ? '🇨🇮' : '🇸🇳';
+
+        clientsData.unshift({
+          id: `client-${Date.now()}`,
+          name: name,
+          country: country,
+          flag: flag,
+          category: cat || 'Commerce & Services',
+          avatar: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&auto=format&fit=crop&q=80',
+          whatsapp: wa || '+221 77 000 00 00',
+          statusText: 'Validations à jour',
+          statusType: 'active',
+          scheduledPostsCount: 0,
+          lastContactDate: 'Créé à l\'instant',
+          channels: ['instagram', 'facebook']
+        });
+
+        document.getElementById('modal-add-client').classList.add('hidden');
+        document.getElementById('modal-add-client').classList.remove('flex');
+        document.getElementById('client-name-input').value = '';
+        document.getElementById('client-whatsapp-input').value = '';
+        renderGrid();
+        showToast(`🎉 Workspace « ${name} » créé avec succès !`);
+      });
+
+      const side = document.getElementById('sidebar');
+      const sideBack = document.getElementById('sidebar-backdrop');
+      const openSide = document.getElementById('open-sidebar-btn');
+      const closeSide = document.getElementById('close-sidebar-btn');
+
+      if (openSide && side && sideBack) {
+        openSide.addEventListener('click', () => {
+          side.classList.remove('-translate-x-full');
+          sideBack.classList.remove('hidden');
+        });
+      }
+      if (closeSide && side && sideBack) {
+        closeSide.addEventListener('click', () => {
+          side.classList.add('-translate-x-full');
+          sideBack.classList.add('hidden');
+        });
+      }
+      if (sideBack && side) {
+        sideBack.addEventListener('click', () => {
+          side.classList.add('-translate-x-full');
+          sideBack.classList.add('hidden');
+        });
+      }
+
+      const logoutBtn = document.getElementById('btn-logout');
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+          if (confirm('Se déconnecter de CMFlow ?')) {
+            if (typeof CMFlowStore !== 'undefined') CMFlowStore.logout();
+            window.location.href = 'login.html';
+          }
+        });
+      }
+    });
+  </script>
+  <script src="js/workspace-state.js"></script>
+  <script src="js/realtime-listener.js"></script>
+</body>
+</html>
