@@ -40,6 +40,90 @@ const nextConfig = {
   async rewrites() {
     return [
       {
+        source: '/',
+        destination: '/index.html',
+      },
+      {
+        source: '/dashboard',
+        destination: '/dashboard.html',
+      },
+      {
+        source: '/admin',
+        destination: '/admin.html',
+      },
+      {
+        source: '/planning',
+        destination: '/planning.html',
+      },
+      {
+        source: '/billing',
+        destination: '/billing.html',
+      },
+      {
+        source: '/clients',
+        destination: '/clients.html',
+      },
+      {
+        source: '/analytics',
+        destination: '/analytics.html',
+      },
+      {
+        source: '/inbox',
+        destination: '/inbox.html',
+      },
+      {
+        source: '/settings',
+        destination: '/settings.html',
+      },
+      {
+        source: '/channels',
+        destination: '/channels.html',
+      },
+      {
+        source: '/settings/channels',
+        destination: '/channels.html',
+      },
+      {
+        source: '/dashboard/channels',
+        destination: '/channels.html',
+      },
+      {
+        source: '/dashboard/settings/channels',
+        destination: '/channels.html',
+      },
+      {
+        source: '/validation',
+        destination: '/validation.html',
+      },
+      {
+        source: '/startpage',
+        destination: '/startpage.html',
+      },
+      {
+        source: '/bio',
+        destination: '/startpage.html',
+      },
+      {
+        source: '/login',
+        destination: '/login.html',
+      },
+      {
+        source: '/register',
+        destination: '/register.html',
+      },
+      {
+        source: '/media',
+        destination: '/media.html',
+      },
+      {
+        source: '/legal',
+        destination: '/legal.html',
+      },
+      {
+        source: '/onboarding',
+        destination: '/onboarding.html',
+      },
+      {
         source: '/v/:token',
         destination: '/client-review.html',
       },
