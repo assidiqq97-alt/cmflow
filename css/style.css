@@ -86,20 +86,95 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1, .heading-1 {
   font-family: var(--font-heading);
   color: var(--text-main);
+  font-size: 2rem; /* 32px mobile */
+  line-height: 1.15;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+}
+
+@media (min-width: 768px) {
+  h1, .heading-1 {
+    font-size: 3rem; /* 48px desktop */
+    line-height: 1.1;
+  }
+}
+
+h2, .heading-2 {
+  font-family: var(--font-heading);
+  color: var(--text-main);
+  font-size: 1.5rem; /* 24px mobile */
   line-height: 1.25;
   font-weight: 700;
   letter-spacing: -0.02em;
 }
 
-p {
+@media (min-width: 768px) {
+  h2, .heading-2 {
+    font-size: 2rem; /* 32px desktop */
+    line-height: 1.2;
+  }
+}
+
+h3, .heading-3 {
+  font-family: var(--font-heading);
+  color: var(--text-main);
+  font-size: 1.125rem; /* 18px mobile */
+  line-height: 1.35;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+@media (min-width: 768px) {
+  h3, .heading-3 {
+    font-size: 1.375rem; /* 22px desktop */
+    line-height: 1.3;
+  }
+}
+
+p, .paragraph {
+  font-size: 1rem; /* 16px */
+  line-height: 1.6;
+  color: var(--text-body);
   margin-bottom: 0.85rem;
 }
 
 p:last-child {
   margin-bottom: 0;
+}
+
+.caption {
+  font-size: 0.8125rem; /* 13px */
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
+@media (min-width: 768px) {
+  .caption {
+    font-size: 0.875rem; /* 14px */
+  }
+}
+
+/* Ergonomie Mobile : Inputs anti-zoom Safari iOS (min 16px) */
+input, select, textarea, .input-field {
+  font-size: 16px !important;
+  min-height: 46px;
+}
+
+/* Ergonomie Mobile : Boutons et CTA (Zone tactile 44px - 48px) */
+.btn-primary, .btn-secondary {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (min-width: 768px) {
+  .btn-primary, .btn-secondary {
+    min-height: 48px;
+  }
 }
 
 a {
