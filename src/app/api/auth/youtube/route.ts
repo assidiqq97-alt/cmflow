@@ -13,15 +13,55 @@ export async function GET(req: Request) {
     const redirectPath = searchParams.get('redirectPath') || '/dashboard/settings/channels';
 
     const origin = process.env.NEXT_PUBLIC_APP_URL || new URL(req.url).origin;
-    const clientId = (process.env.YOUTUBE_CLIENT_ID || process.env.GOOGLE_CLIENT_ID || '').trim();
+    const clientId = (
+      process.env.YOUTUBE_CLIENT_ID ||
+      process.env.GOOGLE_CLIENT_ID ||
+      process.env.NEXT_PUBLIC_YOUTUBE_CLIENT_ID ||
+      ''
+    ).trim();
     const redirectUri = `${origin}/api/auth/callback/youtube`;
 
     if (!clientId) {
-      console.error('❌ [YouTube OAuth] YOUTUBE_CLIENT_ID est manquant dans les variables d\'environnement.');
-      const errUrl = new URL(redirectPath, origin);
-      errUrl.searchParams.set('error', 'missing_youtube_client_id');
-      errUrl.searchParams.set('message', 'YOUTUBE_CLIENT_ID non détecté sur Vercel. Veuillez redéployer le projet sur Vercel.');
-      return NextResponse.redirect(errUrl);
+      console.warn('⚠️ [YouTube OAuth] YOUTUBE_CLIENT_ID est manquant.');
+      return new Response(
+        `<!DOCTYPE html>
+        <html lang="fr">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Configuration YouTube requise — CMFlow</title>
+          <script src="https://cdn.tailwindcss.com"></script>
+        </head>
+        <body class="bg-slate-900 text-slate-100 flex items-center justify-center min-h-screen p-4 font-sans antialiased">
+          <div class="max-w-md w-full bg-slate-800/90 border border-slate-700 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 text-center">
+            <div class="w-14 h-14 rounded-2xl bg-red-500/20 text-red-500 border border-red-500/30 flex items-center justify-center mx-auto text-2xl font-black">
+              🎬
+            </div>
+            <div>
+              <h1 class="text-xl font-black text-white">Clé YouTube en attente</h1>
+              <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+                La variable <code class="bg-slate-900 px-2 py-0.5 rounded text-amber-400 font-mono">YOUTUBE_CLIENT_ID</code> n'a pas encore été rechargée par Vercel.
+              </p>
+            </div>
+            <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-700/60 text-left space-y-2 text-xs">
+              <div class="font-bold text-slate-300">Vérification rapide :</div>
+              <ul class="list-disc list-inside text-slate-400 space-y-1 text-[11px]">
+                <li>Sur Vercel &gt; Settings &gt; Environment Variables : le nom doit être exactement <b class="text-white font-mono">YOUTUBE_CLIENT_ID</b>.</li>
+                <li>Vérifiez que les cases <b>Production</b> et <b>Preview</b> sont cochées.</li>
+                <li>Cliquez sur <b>Redeploy</b> sur Vercel pour activer immédiatement la clé.</li>
+              </ul>
+            </div>
+            <a href="/dashboard/settings/channels" class="block w-full py-3 px-4 rounded-xl bg-gradient-to-r from-[#F94F06] to-amber-500 hover:opacity-90 text-white text-xs font-extrabold shadow-lg transition">
+              ← Retour aux Réseaux Connectés
+            </a>
+          </div>
+        </body>
+        </html>`,
+        {
+          status: 200,
+          headers: { 'Content-Type': 'text/html; charset=utf-8' },
+        }
+      );
     }
 
     const scopes = [
