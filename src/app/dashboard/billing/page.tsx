@@ -338,7 +338,7 @@ export default function BillingPage() {
               Choisissez la Formule Adaptée à votre Volume
             </h2>
             <p className="text-xs text-slate-500">
-              Paiement flexible en Franc CFA via Wave, Orange Money ou Carte Bancaire.
+              Paiement flexible en Franc CFA via Wave ou Orange Money.
             </p>
           </div>
 
@@ -362,7 +362,7 @@ export default function BillingPage() {
             >
               <span>Annuel</span>
               <span className="text-[10px] bg-emerald-100 text-emerald-800 px-1.5 py-0.2 rounded-full font-black">
-                -15%
+                -2 mois offerts
               </span>
             </button>
           </div>
@@ -371,37 +371,41 @@ export default function BillingPage() {
         {/* 3 Cartes Forfaits */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           
-          {/* Plan 1 : Starter Freelance */}
+          {/* Plan 1 : Solo / Freelance */}
           <div className="bg-white rounded-3xl border border-slate-200/80 p-6 shadow-xs hover:shadow-lg transition-all flex flex-col justify-between space-y-6">
             <div className="space-y-4">
               <div>
                 <span className="text-xs font-extrabold text-slate-400 uppercase tracking-wider">
-                  Freelance CM
+                  Solo / Freelance
                 </span>
-                <h3 className="text-lg font-black text-[#0F172A] mt-0.5">Starter Freelance</h3>
+                <h3 className="text-lg font-black text-[#0F172A] mt-0.5">Solo / Freelance</h3>
                 <div className="text-2xl font-black text-[#0F172A] mt-2">
-                  {billingCycle === 'monthly' ? '7 500 FCFA' : '6 375 FCFA'}
-                  <span className="text-xs font-normal text-slate-400"> / mois</span>
+                  {billingCycle === 'monthly' ? '3 500 FCFA' : '35 000 FCFA'}
+                  <span className="text-xs font-normal text-slate-400"> {billingCycle === 'monthly' ? '/ mois' : '/ an'}</span>
                 </div>
-                <p className="text-xs text-slate-500 mt-1">Pour les CMs indépendants démarrant avec 1 à 2 marques.</p>
+                <p className="text-xs text-slate-500 mt-1">Tout le nécessaire pour gérer vos premiers clients et automatiser vos validations.</p>
               </div>
 
               <ul className="space-y-2.5 text-xs text-slate-700 font-medium">
                 <li className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>Jusqu'à <strong>2 Marques clientes</strong></span>
+                  <span>Jusqu'à <strong>3 Workspaces clients inclus</strong></span>
                 </li>
                 <li className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>Validation WhatsApp sans mot de passe</span>
+                  <span>Publications & médias illimités</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>Planning de publication & Queue</span>
+                  <span>Validation WhatsApp 1-clic</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <span>Publication Instagram & Facebook</span>
                 </li>
                 <li className="flex items-center gap-2 text-slate-400">
                   <X className="w-4 h-4 text-slate-300 shrink-0" />
-                  <span>Start Page Bio non incluse</span>
+                  <span>Publication TikTok & LinkedIn non incluse</span>
                 </li>
               </ul>
             </div>
@@ -409,23 +413,23 @@ export default function BillingPage() {
             <div className="space-y-2">
               <button
                 type="button"
-                onClick={() => handleStartWaveCheckout('SOLO' as any, billingCycle === 'monthly' ? 7500 : 76500)}
+                onClick={() => handleStartWaveCheckout('SOLO' as any, billingCycle === 'monthly' ? 3500 : 35000)}
                 disabled={isProcessingPayment}
                 className="w-full py-2.5 px-4 rounded-xl text-xs font-black bg-[#0284C7] hover:bg-[#0369a1] text-white shadow-md shadow-blue-500/25 flex items-center justify-center gap-2 transition-all active:scale-[0.98] cursor-pointer disabled:opacity-60"
               >
                 <span className="bg-white px-1.5 py-0.5 rounded flex items-center justify-center shadow-xs">
                   <img src="/images/wave-logo.png" alt="Wave" className="h-3.5 w-auto object-contain" />
                 </span>
-                <span>Payer via Wave ({billingCycle === 'monthly' ? '7 500 FCFA' : '76 500 FCFA'})</span>
+                <span>Payer via Wave ({billingCycle === 'monthly' ? '3 500 FCFA' : '35 000 FCFA'})</span>
               </button>
               <button
                 type="button"
-                onClick={() => handleStartOrangeMoneyCheckout('SOLO' as any, billingCycle === 'monthly' ? 7500 : 76500)}
+                onClick={() => handleStartOrangeMoneyCheckout('SOLO' as any, billingCycle === 'monthly' ? 3500 : 35000)}
                 disabled={isProcessingPayment}
                 className="w-full py-2.5 px-4 rounded-xl text-xs font-black bg-[#FF7900] hover:bg-[#e56c00] text-white shadow-md shadow-orange-500/20 flex items-center justify-center gap-2 transition-all active:scale-[0.98] cursor-pointer disabled:opacity-60"
               >
                 <img src="/images/orange-logo.png" alt="Orange Money" className="h-4 w-4 rounded object-contain" />
-                <span>Payer via Orange Money ({billingCycle === 'monthly' ? '7 500 FCFA' : '76 500 FCFA'})</span>
+                <span>Payer via Orange Money ({billingCycle === 'monthly' ? '3 500 FCFA' : '35 000 FCFA'})</span>
               </button>
             </div>
           </div>
@@ -445,8 +449,8 @@ export default function BillingPage() {
                 </span>
                 <h3 className="text-lg font-black text-[#0F172A] mt-0.5">Pro Agency</h3>
                 <div className="text-2xl font-black text-[#0F172A] mt-2">
-                  {billingCycle === 'monthly' ? '15 000 FCFA' : '12 750 FCFA'}
-                  <span className="text-xs font-normal text-slate-400"> / mois</span>
+                  {billingCycle === 'monthly' ? '15 000 FCFA' : '150 000 FCFA'}
+                  <span className="text-xs font-normal text-slate-400"> {billingCycle === 'monthly' ? '/ mois' : '/ an'}</span>
                 </div>
                 <p className="text-xs text-slate-500 mt-1">Tout le cockpit complet pour gérer jusqu'à 10 clients sereinement.</p>
               </div>
@@ -454,19 +458,19 @@ export default function BillingPage() {
               <ul className="space-y-2.5 text-xs text-slate-800 font-semibold">
                 <li className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>Jusqu'à <strong>10 Marques actives</strong></span>
+                  <span>Jusqu'à <strong>10 Workspaces clients inclus</strong></span>
                 </li>
                 <li className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span><strong>Start Page & Bio WhatsApp</strong> incluse</span>
+                  <span><strong>Publication TikTok & LinkedIn incluse</strong></span>
                 </li>
                 <li className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span><strong>Messagerie & Retours</strong> unifiés</span>
+                  <span><strong>3 Comptes collaborateurs inclus</strong></span>
                 </li>
                 <li className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>Médiathèque & Brand Kits cliquables</span>
+                  <span>Start Page & Bio WhatsApp incluse</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-emerald-600 shrink-0" />
@@ -478,46 +482,50 @@ export default function BillingPage() {
             <div className="space-y-2">
               <button
                 type="button"
-                onClick={() => handleStartWaveCheckout('PRO_AGENCY', billingCycle === 'monthly' ? 15000 : 153000)}
+                onClick={() => handleStartWaveCheckout('PRO_AGENCY', billingCycle === 'monthly' ? 15000 : 150000)}
                 disabled={isProcessingPayment}
                 className="w-full py-2.5 px-4 rounded-xl text-xs font-black bg-[#0284C7] hover:bg-[#0369a1] text-white shadow-md shadow-blue-500/25 flex items-center justify-center gap-2 transition-all active:scale-[0.98] cursor-pointer disabled:opacity-60"
               >
                 <span className="bg-white px-1.5 py-0.5 rounded flex items-center justify-center shadow-xs">
                   <img src="/images/wave-logo.png" alt="Wave" className="h-3.5 w-auto object-contain" />
                 </span>
-                <span>Payer via Wave ({billingCycle === 'monthly' ? '15 000 FCFA' : '153 000 FCFA'})</span>
+                <span>Payer via Wave ({billingCycle === 'monthly' ? '15 000 FCFA' : '150 000 FCFA'})</span>
               </button>
               <button
                 type="button"
-                onClick={() => handleStartOrangeMoneyCheckout('PRO_AGENCY', billingCycle === 'monthly' ? 15000 : 153000)}
+                onClick={() => handleStartOrangeMoneyCheckout('PRO_AGENCY', billingCycle === 'monthly' ? 15000 : 150000)}
                 disabled={isProcessingPayment}
                 className="w-full py-2.5 px-4 rounded-xl text-xs font-black bg-[#FF7900] hover:bg-[#e56c00] text-white shadow-md shadow-orange-500/20 flex items-center justify-center gap-2 transition-all active:scale-[0.98] cursor-pointer disabled:opacity-60"
               >
                 <img src="/images/orange-logo.png" alt="Orange Money" className="h-4 w-4 rounded object-contain" />
-                <span>Payer via Orange Money ({billingCycle === 'monthly' ? '15 000 FCFA' : '153 000 FCFA'})</span>
+                <span>Payer via Orange Money ({billingCycle === 'monthly' ? '15 000 FCFA' : '150 000 FCFA'})</span>
               </button>
             </div>
           </div>
 
-          {/* Plan 3 : Scale Multi-Agences */}
+          {/* Plan 3 : Scale Agence */}
           <div className="bg-white rounded-3xl border border-slate-200/80 p-6 shadow-xs hover:shadow-lg transition-all flex flex-col justify-between space-y-6">
             <div className="space-y-4">
               <div>
                 <span className="text-xs font-extrabold text-purple-600 uppercase tracking-wider">
                   Grandes Équipes
                 </span>
-                <h3 className="text-lg font-black text-[#0F172A] mt-0.5">Scale Multi-Agences</h3>
+                <h3 className="text-lg font-black text-[#0F172A] mt-0.5">Scale Agence</h3>
                 <div className="text-2xl font-black text-[#0F172A] mt-2">
-                  {billingCycle === 'monthly' ? '35 000 FCFA' : '29 750 FCFA'}
-                  <span className="text-xs font-normal text-slate-400"> / mois</span>
+                  {billingCycle === 'monthly' ? '35 000 FCFA' : '350 000 FCFA'}
+                  <span className="text-xs font-normal text-slate-400"> {billingCycle === 'monthly' ? '/ mois' : '/ an'}</span>
                 </div>
-                <p className="text-xs text-slate-500 mt-1">Marques illimitées, accès multi-collaborateurs et domaine personnalisé.</p>
+                <p className="text-xs text-slate-500 mt-1">Marques illimitées, accès multi-collaborateurs et marque blanche totale.</p>
               </div>
 
               <ul className="space-y-2.5 text-xs text-slate-700 font-medium">
                 <li className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span><strong>Marques & Workspaces illimités</strong></span>
+                  <span><strong>Workspaces clients illimités</strong></span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <span><strong>Marque Blanche Totale (votre logo)</strong></span>
                 </li>
                 <li className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-emerald-600 shrink-0" />
@@ -525,11 +533,11 @@ export default function BillingPage() {
                 </li>
                 <li className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>Domaine personnalisé (links.monagence.sn)</span>
+                  <span>Intégration API & Webhooks sur mesure</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span>Support prioritaire 24/7 sur WhatsApp</span>
+                  <span>Support VIP 24/7 sur WhatsApp</span>
                 </li>
               </ul>
             </div>
@@ -537,23 +545,23 @@ export default function BillingPage() {
             <div className="space-y-2">
               <button
                 type="button"
-                onClick={() => handleStartWaveCheckout('SCALE', billingCycle === 'monthly' ? 35000 : 357000)}
+                onClick={() => handleStartWaveCheckout('SCALE', billingCycle === 'monthly' ? 35000 : 350000)}
                 disabled={isProcessingPayment}
                 className="w-full py-2.5 px-4 rounded-xl text-xs font-black bg-[#0284C7] hover:bg-[#0369a1] text-white shadow-md transition-all active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
               >
                 <span className="bg-white px-1.5 py-0.5 rounded flex items-center justify-center shadow-xs">
                   <img src="/images/wave-logo.png" alt="Wave" className="h-3.5 w-auto object-contain" />
                 </span>
-                <span>Payer via Wave ({billingCycle === 'monthly' ? '35 000 FCFA' : '357 000 FCFA'})</span>
+                <span>Payer via Wave ({billingCycle === 'monthly' ? '35 000 FCFA' : '350 000 FCFA'})</span>
               </button>
               <button
                 type="button"
-                onClick={() => handleStartOrangeMoneyCheckout('SCALE', billingCycle === 'monthly' ? 35000 : 357000)}
+                onClick={() => handleStartOrangeMoneyCheckout('SCALE', billingCycle === 'monthly' ? 35000 : 350000)}
                 disabled={isProcessingPayment}
                 className="w-full py-2.5 px-4 rounded-xl text-xs font-black bg-[#FF7900] hover:bg-[#e56c00] text-white shadow-md shadow-orange-500/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
               >
                 <img src="/images/orange-logo.png" alt="Orange Money" className="h-4 w-4 rounded object-contain" />
-                <span>Payer via Orange Money ({billingCycle === 'monthly' ? '35 000 FCFA' : '357 000 FCFA'})</span>
+                <span>Payer via Orange Money ({billingCycle === 'monthly' ? '35 000 FCFA' : '350 000 FCFA'})</span>
               </button>
             </div>
           </div>

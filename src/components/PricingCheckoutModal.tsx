@@ -16,15 +16,15 @@ export interface PlanDetails {
 export const PLANS_DATA: Record<'starter' | 'pro' | 'scale', PlanDetails> = {
   starter: {
     id: 'starter',
-    name: 'Starter Solo',
-    badge: 'Essai 14j Gratuit 🌱',
-    badgeColor: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-    monthlyPrice: 0,
-    yearlyPrice: 0,
+    name: 'Solo / Freelance',
+    badge: 'Offre Populaire ⚡',
+    badgeColor: 'bg-blue-50 text-[#0066FF] border-blue-200',
+    monthlyPrice: 3500,
+    yearlyPrice: 35000,
     features: [
-      'Jusqu’à 2 marques clientes',
+      'Jusqu’à 3 marques clientes',
       'Validation WhatsApp 1-clic',
-      'Stockage médias HD (Max 50 Mo)',
+      'Stockage médias & publications illimités',
     ],
   },
   pro: {
