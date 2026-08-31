@@ -87,8 +87,8 @@ export const NAV_ITEMS: NavItem[] = [
     href: '/dashboard/billing',
     icon: CreditCard,
     badge: (
-      <span className="bg-[#1E90FF]/15 text-[#1E90FF] border border-[#1E90FF]/30 px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-tight">
-        Wave
+      <span className="bg-gradient-to-r from-sky-500/20 to-orange-500/20 text-sky-300 border border-sky-500/30 px-2 py-0.5 rounded-full text-[10px] font-extrabold tracking-tight">
+        Wave / OM
       </span>
     ),
   },

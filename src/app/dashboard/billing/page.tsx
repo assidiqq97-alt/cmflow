@@ -405,13 +405,24 @@ export default function BillingPage() {
               </ul>
             </div>
 
-            <button
-              type="button"
-              onClick={() => showToast('ℹ️ Vous êtes actuellement sur la formule supérieure Pro Agency.')}
-              className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-extrabold text-xs rounded-xl transition-all"
-            >
-              Rétrograder
-            </button>
+            <div className="space-y-2">
+              <button
+                type="button"
+                onClick={() => handleStartWaveCheckout('SOLO' as any, billingCycle === 'monthly' ? 7500 : 76500)}
+                disabled={isProcessingPayment}
+                className="w-full py-2.5 px-4 rounded-xl text-xs font-black bg-[#1E90FF] hover:bg-[#1873cc] text-white shadow-md shadow-blue-500/25 flex items-center justify-center gap-2 transition-all active:scale-[0.98] cursor-pointer disabled:opacity-60"
+              >
+                <span>🌊 Payer via Wave (7 500 FCFA)</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => handleStartOrangeMoneyCheckout('SOLO' as any, billingCycle === 'monthly' ? 7500 : 76500)}
+                disabled={isProcessingPayment}
+                className="w-full py-2.5 px-4 rounded-xl text-xs font-black bg-[#FF7900] hover:bg-[#e56c00] text-white shadow-md shadow-orange-500/20 flex items-center justify-center gap-2 transition-all active:scale-[0.98] cursor-pointer disabled:opacity-60"
+              >
+                <span>🍊 Payer via Orange Money</span>
+              </button>
+            </div>
           </div>
 
           {/* Plan 2 : Pro Agency (Formule Actuelle) */}
