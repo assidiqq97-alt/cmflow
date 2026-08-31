@@ -238,9 +238,14 @@
           <div class="bg-slate-900/80 border border-slate-700 p-4 rounded-2xl space-y-2 shrink-0">
             <div class="text-[11px] text-slate-400 font-bold">Moyen de prélèvement associé :</div>
             <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-xl bg-[#1E90FF] text-white font-black text-xs flex items-center justify-center shadow-md">🌊</div>
+              <div class="w-12 h-10 rounded-xl bg-white p-1 flex items-center justify-center shadow-md">
+                <img src="images/wave-logo.png" alt="Wave" class="h-6 w-auto object-contain">
+              </div>
               <div>
-                <div class="text-xs font-black text-white">Wave Sénégal</div>
+                <div class="text-xs font-black text-white flex items-center gap-1.5">
+                  <span>Wave Sénégal</span>
+                  <span class="text-[10px] bg-emerald-500/20 text-emerald-400 px-1.5 py-0.5 rounded font-bold">Actif</span>
+                </div>
                 <div class="text-[11px] font-mono text-slate-400">+221 77 800 12 34</div>
               </div>
             </div>
@@ -319,9 +324,10 @@
               <button
                 type="button"
                 onclick="startWavePayment('SOLO', 3500)"
-                class="w-full py-2.5 px-4 rounded-xl text-xs font-black bg-[#1E90FF] hover:bg-[#1873cc] text-white shadow-md shadow-blue-500/25 flex items-center justify-center gap-2 transition-all active:scale-[0.98] cursor-pointer"
+                class="w-full py-2.5 px-4 rounded-xl text-xs font-black bg-[#0284C7] hover:bg-[#0369a1] text-white shadow-md shadow-blue-500/25 flex items-center justify-center gap-2 transition-all active:scale-[0.98] cursor-pointer"
               >
-                <span>🌊 Payer via Wave (3 500 F)</span>
+                <img src="images/wave-logo.png" alt="Wave" class="h-4 w-auto object-contain brightness-0 invert">
+                <span>Payer via Wave (3 500 F)</span>
               </button>
             </div>
           </div>
@@ -351,16 +357,18 @@
               <button
                 type="button"
                 onclick="startWavePayment('PRO_AGENCY', 15000)"
-                class="w-full py-2.5 px-4 rounded-xl text-xs font-black bg-[#1E90FF] hover:bg-[#1873cc] text-white shadow-md shadow-blue-500/25 flex items-center justify-center gap-2 transition-all active:scale-[0.98] cursor-pointer"
+                class="w-full py-2.5 px-4 rounded-xl text-xs font-black bg-[#0284C7] hover:bg-[#0369a1] text-white shadow-md shadow-blue-500/25 flex items-center justify-center gap-2 transition-all active:scale-[0.98] cursor-pointer"
               >
-                <span>🌊 Payer via Wave (15 000 F)</span>
+                <img src="images/wave-logo.png" alt="Wave" class="h-4 w-auto object-contain brightness-0 invert">
+                <span>Payer via Wave (15 000 F)</span>
               </button>
               <button
                 type="button"
                 onclick="startOrangeMoneyPayment('PRO_AGENCY', 15000)"
                 class="w-full py-2.5 px-4 rounded-xl text-xs font-black bg-[#FF7900] hover:bg-[#e56c00] text-white shadow-md shadow-orange-500/20 flex items-center justify-center gap-2 transition-all active:scale-[0.98] cursor-pointer"
               >
-                <span>🍊 Payer via Orange Money (15 000 F)</span>
+                <img src="images/orange-logo.png" alt="Orange" class="h-3.5 w-3.5 rounded object-contain">
+                <span>Payer via Orange Money (15 000 F)</span>
               </button>
             </div>
           </div>
@@ -387,16 +395,18 @@
               <button
                 type="button"
                 onclick="startWavePayment('SCALE', 35000)"
-                class="w-full py-2.5 px-4 rounded-xl text-xs font-black bg-[#1E90FF] hover:bg-[#1873cc] text-white shadow-md transition-all active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer"
+                class="w-full py-2.5 px-4 rounded-xl text-xs font-black bg-[#0284C7] hover:bg-[#0369a1] text-white shadow-md transition-all active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer"
               >
-                <span>🌊 Payer via Wave (35 000 F)</span>
+                <img src="images/wave-logo.png" alt="Wave" class="h-4 w-auto object-contain brightness-0 invert">
+                <span>Payer via Wave (35 000 F)</span>
               </button>
               <button
                 type="button"
                 onclick="startOrangeMoneyPayment('SCALE', 35000)"
                 class="w-full py-2.5 px-4 rounded-xl text-xs font-black bg-[#FF7900] hover:bg-[#e56c00] text-white shadow-md shadow-orange-500/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer"
               >
-                <span>🍊 Payer via Orange Money (35 000 F)</span>
+                <img src="images/orange-logo.png" alt="Orange" class="h-3.5 w-3.5 rounded object-contain">
+                <span>Payer via Orange Money (35 000 F)</span>
               </button>
             </div>
           </div>
