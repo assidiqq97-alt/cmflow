@@ -198,31 +198,32 @@
       </nav>
     </div>
 
-    <!-- Profil CM connecté -->
-    <div class="p-3.5 border-t border-slate-800/70 bg-slate-900/60">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-2.5 min-w-0">
-          <div class="relative">
-            <div id="user-avatar-badge" class="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#0066FF] to-sky-400 flex items-center justify-center font-black text-xs text-white shadow-sm">
-              AD
-            </div>
-            <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-[#10B981] border-2 border-[#0F172A] rounded-full"></span>
+    <!-- Profil CM connecté & Déconnexion -->
+    <div class="p-3.5 border-t border-slate-800/70 bg-slate-900/80">
+      <div class="flex items-center gap-2.5 min-w-0 mb-2.5">
+        <div class="relative shrink-0">
+          <div id="user-avatar-badge" class="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#0066FF] to-sky-400 flex items-center justify-center font-black text-xs text-white shadow-sm">
+            AD
           </div>
-          <div class="min-w-0">
-            <div id="user-display-name" class="text-xs font-bold text-white truncate">Awa Diop</div>
-            <div id="user-display-role" class="text-[10px] text-slate-400 truncate">Lead CM · Dakar 🇸🇳</div>
-          </div>
+          <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-[#10B981] border-2 border-[#0F172A] rounded-full"></span>
         </div>
-
-        <button
-          type="button"
-          id="btn-logout"
-          title="Déconnexion"
-          class="p-1.5 text-slate-400 hover:text-rose-400 rounded-lg hover:bg-slate-800/80 transition-colors"
-        >
-          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
-        </button>
+        <div class="min-w-0 flex-1">
+          <div id="user-display-name" class="text-xs font-bold text-white truncate">Awa Diop</div>
+          <div id="user-display-role" class="text-[10px] text-slate-400 truncate">Lead CM · Dakar 🇸🇳</div>
+        </div>
       </div>
+      
+      <button
+        type="button"
+        id="btn-logout"
+        onclick="window.handleAppLogout ? window.handleAppLogout(true) : null"
+        class="w-full py-2 px-3 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 hover:text-rose-200 border border-rose-500/25 text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98]"
+      >
+        <svg class="w-4 h-4 text-rose-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+        </svg>
+        <span>Déconnexion</span>
+      </button>
     </div>
   </aside>
 

@@ -1033,13 +1033,31 @@ function initSidebar() {
     });
   }
 
-  // Déconnexion
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', () => {
+  // Déconnexion Globale & Déléguée
+  window.handleAppLogout = function(confirmFirst = true) {
+    if (confirmFirst && !confirm('Voulez-vous vraiment vous déconnecter de CMFlow ?')) {
+      return;
+    }
+    if (typeof CMFlowStore !== 'undefined' && CMFlowStore.logout) {
       CMFlowStore.logout();
-      window.location.href = 'index.html';
-    });
-  }
+    }
+    if (typeof CMFlowBackend !== 'undefined' && CMFlowBackend.logout) {
+      CMFlowBackend.logout();
+    }
+    localStorage.removeItem('cmflow_user');
+    localStorage.removeItem('cmflow_workspace');
+    localStorage.removeItem('cmflow_prefs');
+    localStorage.removeItem('cmflow_user_profile');
+    window.location.href = '/login';
+  };
+
+  document.addEventListener('click', (e) => {
+    const target = e.target.closest('#btn-logout, [data-action="logout"], .btn-logout-action');
+    if (target) {
+      e.preventDefault();
+      window.handleAppLogout(true);
+    }
+  });
 
   // "Bientôt disponible" pour les items désactivés
   document.querySelectorAll('[data-coming-soon]').forEach(item => {
