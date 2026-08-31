@@ -41,7 +41,7 @@ export async function GET(req: Request) {
   try {
     const clientId = process.env.LINKEDIN_CLIENT_ID || '77589j7j2nnfkw';
     const clientSecret = process.env.LINKEDIN_CLIENT_SECRET || '';
-    const redirectUri = process.env.LINKEDIN_REDIRECT_URI || 'http://localhost:3000/api/auth/callback/linkedin';
+    const redirectUri = process.env.LINKEDIN_REDIRECT_URI || `${appBaseUrl}/api/auth/callback/linkedin`;
 
     // 1. Échange du code contre le jeton d'accès OAuth 2.0
     const tokenRes = await fetch('https://www.linkedin.com/oauth/v2/accessToken', {

@@ -495,7 +495,7 @@
       const wsId = getActiveWorkspaceId();
       showToast('🚀 Redirection vers LinkedIn OAuth2...', '🔗');
       setTimeout(() => {
-        window.location.href = `/api/auth/linkedin?workspaceId=${encodeURIComponent(wsId)}&redirectPath=/channels.html`;
+        window.location.href = `/api/auth/linkedin?workspaceId=${encodeURIComponent(wsId)}&redirectPath=/channels`;
       }, 500);
     }
 
