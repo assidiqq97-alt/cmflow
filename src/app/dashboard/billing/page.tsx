@@ -244,19 +244,20 @@ export default function BillingPage() {
           {/* Moyen de Paiement Associé */}
           <div className="bg-slate-900/80 border border-slate-700/80 p-4 rounded-2xl space-y-3 shrink-0">
             <div className="text-xs font-bold text-slate-400 flex items-center justify-between gap-4">
-              <span>Moyen de prélèvement :</span>
+              <span>Moyens de paiement acceptés :</span>
               <span className="text-emerald-400 text-[11px] flex items-center gap-1 font-bold">
                 ✓ Prélèvement Auto
               </span>
             </div>
 
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#1E90FF] text-white font-black text-xs flex items-center justify-center shadow-md">
-                🌊
+              <div className="flex items-center gap-2 bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-700">
+                <img src="/images/wave-logo.png" alt="Wave" className="h-4 w-auto object-contain" />
+                <span className="text-xs font-bold text-sky-400">Wave 🇸🇳</span>
               </div>
-              <div>
-                <div className="text-xs font-black text-white">Wave Mobile Money</div>
-                <div className="text-[11px] font-mono text-slate-400">{wavePhone}</div>
+              <div className="flex items-center gap-2 bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-700">
+                <img src="/images/orange-logo.png" alt="Orange Money" className="h-3.5 w-3.5 rounded object-contain" />
+                <span className="text-xs font-bold text-orange-400">Orange Money 🇸🇳</span>
               </div>
             </div>
 
@@ -410,9 +411,12 @@ export default function BillingPage() {
                 type="button"
                 onClick={() => handleStartWaveCheckout('SOLO' as any, billingCycle === 'monthly' ? 7500 : 76500)}
                 disabled={isProcessingPayment}
-                className="w-full py-2.5 px-4 rounded-xl text-xs font-black bg-[#1E90FF] hover:bg-[#1873cc] text-white shadow-md shadow-blue-500/25 flex items-center justify-center gap-2 transition-all active:scale-[0.98] cursor-pointer disabled:opacity-60"
+                className="w-full py-2.5 px-4 rounded-xl text-xs font-black bg-[#0284C7] hover:bg-[#0369a1] text-white shadow-md shadow-blue-500/25 flex items-center justify-center gap-2 transition-all active:scale-[0.98] cursor-pointer disabled:opacity-60"
               >
-                <span>🌊 Payer via Wave (7 500 FCFA)</span>
+                <span className="bg-white px-1.5 py-0.5 rounded flex items-center justify-center shadow-xs">
+                  <img src="/images/wave-logo.png" alt="Wave" className="h-3.5 w-auto object-contain" />
+                </span>
+                <span>Payer via Wave ({billingCycle === 'monthly' ? '7 500 FCFA' : '76 500 FCFA'})</span>
               </button>
               <button
                 type="button"
@@ -420,7 +424,8 @@ export default function BillingPage() {
                 disabled={isProcessingPayment}
                 className="w-full py-2.5 px-4 rounded-xl text-xs font-black bg-[#FF7900] hover:bg-[#e56c00] text-white shadow-md shadow-orange-500/20 flex items-center justify-center gap-2 transition-all active:scale-[0.98] cursor-pointer disabled:opacity-60"
               >
-                <span>🍊 Payer via Orange Money</span>
+                <img src="/images/orange-logo.png" alt="Orange Money" className="h-4 w-4 rounded object-contain" />
+                <span>Payer via Orange Money ({billingCycle === 'monthly' ? '7 500 FCFA' : '76 500 FCFA'})</span>
               </button>
             </div>
           </div>
@@ -475,9 +480,12 @@ export default function BillingPage() {
                 type="button"
                 onClick={() => handleStartWaveCheckout('PRO_AGENCY', billingCycle === 'monthly' ? 15000 : 153000)}
                 disabled={isProcessingPayment}
-                className="w-full py-2.5 px-4 rounded-xl text-xs font-black bg-[#1E90FF] hover:bg-[#1873cc] text-white shadow-md shadow-blue-500/25 flex items-center justify-center gap-2 transition-all active:scale-[0.98] cursor-pointer disabled:opacity-60"
+                className="w-full py-2.5 px-4 rounded-xl text-xs font-black bg-[#0284C7] hover:bg-[#0369a1] text-white shadow-md shadow-blue-500/25 flex items-center justify-center gap-2 transition-all active:scale-[0.98] cursor-pointer disabled:opacity-60"
               >
-                <span>🌊 Payer via Wave (15 000 FCFA)</span>
+                <span className="bg-white px-1.5 py-0.5 rounded flex items-center justify-center shadow-xs">
+                  <img src="/images/wave-logo.png" alt="Wave" className="h-3.5 w-auto object-contain" />
+                </span>
+                <span>Payer via Wave ({billingCycle === 'monthly' ? '15 000 FCFA' : '153 000 FCFA'})</span>
               </button>
               <button
                 type="button"
@@ -485,7 +493,8 @@ export default function BillingPage() {
                 disabled={isProcessingPayment}
                 className="w-full py-2.5 px-4 rounded-xl text-xs font-black bg-[#FF7900] hover:bg-[#e56c00] text-white shadow-md shadow-orange-500/20 flex items-center justify-center gap-2 transition-all active:scale-[0.98] cursor-pointer disabled:opacity-60"
               >
-                <span>🍊 Payer via Orange Money</span>
+                <img src="/images/orange-logo.png" alt="Orange Money" className="h-4 w-4 rounded object-contain" />
+                <span>Payer via Orange Money ({billingCycle === 'monthly' ? '15 000 FCFA' : '153 000 FCFA'})</span>
               </button>
             </div>
           </div>
@@ -530,17 +539,21 @@ export default function BillingPage() {
                 type="button"
                 onClick={() => handleStartWaveCheckout('SCALE', billingCycle === 'monthly' ? 35000 : 357000)}
                 disabled={isProcessingPayment}
-                className="w-full py-2.5 bg-[#1E90FF] hover:bg-[#1873cc] text-white font-extrabold text-xs rounded-xl shadow-md transition-all active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
+                className="w-full py-2.5 px-4 rounded-xl text-xs font-black bg-[#0284C7] hover:bg-[#0369a1] text-white shadow-md transition-all active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
               >
-                <span>🌊 Payer via Wave (35 000 FCFA)</span>
+                <span className="bg-white px-1.5 py-0.5 rounded flex items-center justify-center shadow-xs">
+                  <img src="/images/wave-logo.png" alt="Wave" className="h-3.5 w-auto object-contain" />
+                </span>
+                <span>Payer via Wave ({billingCycle === 'monthly' ? '35 000 FCFA' : '357 000 FCFA'})</span>
               </button>
               <button
                 type="button"
                 onClick={() => handleStartOrangeMoneyCheckout('SCALE', billingCycle === 'monthly' ? 35000 : 357000)}
                 disabled={isProcessingPayment}
-                className="w-full py-2.5 bg-[#FF7900] hover:bg-[#e56c00] text-white font-extrabold text-xs rounded-xl shadow-md shadow-orange-500/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
+                className="w-full py-2.5 px-4 rounded-xl text-xs font-black bg-[#FF7900] hover:bg-[#e56c00] text-white shadow-md shadow-orange-500/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
               >
-                <span>🍊 Payer via Orange Money</span>
+                <img src="/images/orange-logo.png" alt="Orange Money" className="h-4 w-4 rounded object-contain" />
+                <span>Payer via Orange Money ({billingCycle === 'monthly' ? '35 000 FCFA' : '357 000 FCFA'})</span>
               </button>
             </div>
           </div>
@@ -587,8 +600,18 @@ export default function BillingPage() {
                   <td className="py-3.5 text-slate-500">{inv.date}</td>
                   <td className="py-3.5 font-bold text-[#0F172A]">{inv.amount}</td>
                   <td className="py-3.5">
-                    <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-lg text-[10px] font-bold bg-slate-100 text-slate-700">
-                      {inv.method === 'wave' ? '🌊 Wave' : '🍊 Orange Money'}
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-100 text-slate-700">
+                      {inv.method === 'wave' ? (
+                        <>
+                          <img src="/images/wave-logo.png" alt="Wave" className="h-3.5 w-auto object-contain" />
+                          <span>Wave</span>
+                        </>
+                      ) : (
+                        <>
+                          <img src="/images/orange-logo.png" alt="Orange Money" className="h-3.5 w-3.5 rounded object-contain" />
+                          <span>Orange Money</span>
+                        </>
+                      )}
                     </span>
                   </td>
                   <td className="py-3.5">
