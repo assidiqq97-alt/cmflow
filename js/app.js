@@ -1194,15 +1194,15 @@ function openCheckoutModal(planName = 'Plan Pro Illimité', amount = '9 900 FCFA
       <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 18px;" id="checkout-methods-grid">
         
         <!-- Option Wave -->
-        <div class="checkout-method-card active" id="method-wave" onclick="selectCheckoutMethod('wave')" style="border: 2px solid #1E3A8A; background: #EFF6FF; border-radius: var(--radius-md); padding: 12px 10px; text-align: center; cursor: pointer; transition: all 0.2s;">
-          <div style="font-size: 1.5rem; margin-bottom: 4px;">🌊</div>
-          <strong style="font-size: 0.82rem; color: #1E3A8A; display: block;">Wave Sénégal</strong>
-          <span style="font-size: 0.7rem; color: #3B82F6;">1-clic direct</span>
+        <div class="checkout-method-card active" id="method-wave" onclick="selectCheckoutMethod('wave')" style="border: 2px solid #0284C7; background: #F0F9FF; border-radius: var(--radius-md); padding: 12px 10px; text-align: center; cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;">
+          <img src="images/wave-logo.png" alt="Wave" style="height: 24px; width: auto; object-fit: contain;">
+          <strong style="font-size: 0.82rem; color: #0284C7; display: block;">Wave Sénégal</strong>
+          <span style="font-size: 0.7rem; color: #0369a1;">1-clic direct</span>
         </div>
 
         <!-- Option Orange Money -->
-        <div class="checkout-method-card" id="method-om" onclick="selectCheckoutMethod('om')" style="border: 1.5px solid var(--border-light); background: white; border-radius: var(--radius-md); padding: 12px 10px; text-align: center; cursor: pointer; transition: all 0.2s;">
-          <div style="font-size: 1.5rem; margin-bottom: 4px;">🍊</div>
+        <div class="checkout-method-card" id="method-om" onclick="selectCheckoutMethod('om')" style="border: 1.5px solid var(--border-light); background: white; border-radius: var(--radius-md); padding: 12px 10px; text-align: center; cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;">
+          <img src="images/orange-money-logo.png" alt="Orange Money" style="height: 22px; width: 22px; border-radius: 4px; object-fit: contain;">
           <strong style="font-size: 0.82rem; color: #EA580C; display: block;">Orange Money</strong>
           <span style="font-size: 0.7rem; color: var(--text-muted);">Paiement USSD</span>
         </div>

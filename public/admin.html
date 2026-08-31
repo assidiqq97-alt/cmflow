@@ -1212,8 +1212,8 @@
             <td style="font-family: var(--font-mono); font-size: 0.75rem; color: #64748B;">${tx.txId}</td>
             <td style="font-weight: 800; color: #0F172A;">${tx.agency}</td>
             <td>
-              <span class="badge ${tx.method === 'WAVE' ? 'badge-wave' : 'badge-om'}">
-                ${tx.method === 'WAVE' ? '🌊 Wave' : '🍊 Orange Money'}
+              <span class="badge ${tx.method === 'WAVE' ? 'badge-wave' : 'badge-om'}" style="display: inline-flex; align-items: center; gap: 5px;">
+                ${tx.method === 'WAVE' ? '<img src="images/wave-logo.png" alt="Wave" style="height: 14px; width: auto; object-fit: contain;"> <span>Wave</span>' : '<img src="images/orange-logo.png" alt="Orange Money" style="height: 12px; width: 12px; border-radius: 2px; object-fit: contain;"> <span>Orange Money</span>'}
               </span>
             </td>
             <td style="font-family: var(--font-mono); font-weight: 800; color: #0F172A;">
