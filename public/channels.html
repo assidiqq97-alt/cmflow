@@ -636,22 +636,16 @@
         window.history.replaceState({}, document.title, window.location.pathname);
       }
 
-      // Rendu dynamique initial depuis localStorage
+      // Rendu dynamique initial depuis localStorage (Non connecté par défaut tant qu'aucun compte réel n'est lié)
       const fb = localStorage.getItem('cmflow_facebook_connected');
       const ig = localStorage.getItem('cmflow_instagram_connected');
       const li = localStorage.getItem('cmflow_linkedin_connected');
       const tt = localStorage.getItem('cmflow_tiktok_connected');
 
-      // Si pas encore d'état, on active Facebook et Instagram par défaut (démo)
-      if (fb === null && ig === null && li === null && tt === null) {
-        localStorage.setItem('cmflow_facebook_connected', 'siddiqsolutions');
-        localStorage.setItem('cmflow_instagram_connected', '@siddiqsolutions');
-      }
-
-      renderChannelCard('facebook', !!localStorage.getItem('cmflow_facebook_connected'), localStorage.getItem('cmflow_facebook_connected') || 'siddiqsolutions');
-      renderChannelCard('instagram', !!localStorage.getItem('cmflow_instagram_connected'), localStorage.getItem('cmflow_instagram_connected') || '@siddiqsolutions');
-      renderChannelCard('linkedin', !!localStorage.getItem('cmflow_linkedin_connected'), localStorage.getItem('cmflow_linkedin_connected') || 'Siddiq Solutions');
-      renderChannelCard('tiktok', !!localStorage.getItem('cmflow_tiktok_connected'), localStorage.getItem('cmflow_tiktok_connected') || 'Compte TikTok');
+      renderChannelCard('facebook', !!fb, fb || '');
+      renderChannelCard('instagram', !!ig, ig || '');
+      renderChannelCard('linkedin', !!li, li || '');
+      renderChannelCard('tiktok', !!tt, tt || '');
 
       // Sidebar Mobile & Interactions
       const side = document.getElementById('sidebar');
