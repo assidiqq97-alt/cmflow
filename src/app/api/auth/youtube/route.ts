@@ -13,8 +13,16 @@ export async function GET(req: Request) {
     const redirectPath = searchParams.get('redirectPath') || '/dashboard/settings/channels';
 
     const origin = process.env.NEXT_PUBLIC_APP_URL || new URL(req.url).origin;
-    const clientId = process.env.YOUTUBE_CLIENT_ID || process.env.GOOGLE_CLIENT_ID || '';
+    const clientId = (process.env.YOUTUBE_CLIENT_ID || process.env.GOOGLE_CLIENT_ID || '').trim();
     const redirectUri = `${origin}/api/auth/callback/youtube`;
+
+    if (!clientId) {
+      console.error('❌ [YouTube OAuth] YOUTUBE_CLIENT_ID est manquant dans les variables d\'environnement.');
+      const errUrl = new URL(redirectPath, origin);
+      errUrl.searchParams.set('error', 'missing_youtube_client_id');
+      errUrl.searchParams.set('message', 'YOUTUBE_CLIENT_ID non détecté sur Vercel. Veuillez redéployer le projet sur Vercel.');
+      return NextResponse.redirect(errUrl);
+    }
 
     const scopes = [
       'https://www.googleapis.com/auth/youtube.upload',
