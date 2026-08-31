@@ -621,7 +621,12 @@ function initAuthModal() {
         localStorage.setItem('cmflow_prefs', JSON.stringify({ onboardingComplete: true }));
       }
 
-      submitBtn.disabled = false;
+      // Enregistrer dans la base de comptes locaux sécurisés
+      try {
+        const reg = JSON.parse(localStorage.getItem('cmflow_registered_users') || '{}');
+        reg[email] = { id: userId, name: fullName, password: password, createdAt: new Date().toISOString() };
+        localStorage.setItem('cmflow_registered_users', JSON.stringify(reg));
+      } catch (e) {}
       submitBtn.textContent = 'Démarrer l\'essai gratuit';
       closeModal();
 

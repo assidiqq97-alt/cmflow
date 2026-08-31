@@ -374,6 +374,12 @@
         return;
       }
 
+      if (!pwd || pwd.length < 6) {
+        setLoading(false);
+        showAlert('Le mot de passe doit contenir au moins 6 caractères.');
+        return;
+      }
+
       setLoading(true);
       document.getElementById('alert-box').classList.add('hidden');
 
@@ -383,14 +389,36 @@
         const firstName = displayName.charAt(0).toUpperCase() + displayName.slice(1);
 
         if (window.CMFlowBackend && window.CMFlowBackend.useFirebase) {
-          try {
-            const res = await window.CMFlowBackend.login(email, pwd);
-            if (res && res.success && res.user) {
-              userId = res.user.uid;
-              displayName = res.user.displayName || firstName;
+          const res = await window.CMFlowBackend.login(email, pwd);
+          if (!res || !res.success) {
+            setLoading(false);
+            showAlert(res?.error || 'Adresse email ou mot de passe incorrect.');
+            return;
+          }
+          if (res.user) {
+            userId = res.user.uid;
+            displayName = res.user.displayName || firstName;
+          }
+        } else {
+          // Mode stockage sécurisé : Vérification des comptes enregistrés
+          const registeredUsers = JSON.parse(localStorage.getItem('cmflow_registered_users') || '{}');
+          if (registeredUsers[email]) {
+            if (registeredUsers[email].password !== pwd) {
+              setLoading(false);
+              showAlert('Mot de passe incorrect. Veuillez vérifier vos identifiants.');
+              return;
             }
-          } catch (fbErr) {
-            console.warn('Firebase login info:', fbErr);
+            userId = registeredUsers[email].id || userId;
+            displayName = registeredUsers[email].name || displayName;
+          } else {
+            // Premier enregistrement de ce compte en local
+            registeredUsers[email] = {
+              id: userId,
+              name: displayName,
+              password: pwd,
+              createdAt: new Date().toISOString()
+            };
+            localStorage.setItem('cmflow_registered_users', JSON.stringify(registeredUsers));
           }
         }
 
@@ -413,15 +441,14 @@
         }));
         localStorage.setItem('cmflow_prefs', JSON.stringify({ onboardingComplete: true }));
 
-        showAlert('Connexion réussie ! Redirection...', true);
+        showAlert('Connexion réussie ! Redirection vers votre tableau de bord...', true);
         setTimeout(() => {
-          window.location.href = 'dashboard.html';
-        }, 400);
+          window.location.href = '/dashboard';
+        }, 500);
       } catch (err) {
-        console.error(err);
+        console.error('Erreur authentification:', err);
         setLoading(false);
-        showAlert('Connexion effectuée. Redirection...', true);
-        setTimeout(() => { window.location.href = 'dashboard.html'; }, 500);
+        showAlert(err.message || 'Impossible de se connecter. Veuillez réessayer.');
       }
     }
 
