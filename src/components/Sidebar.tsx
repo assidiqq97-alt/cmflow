@@ -18,7 +18,8 @@ import {
   LogOut,
   ChevronDown,
   Sparkles,
-  Plus
+  Plus,
+  X
 } from 'lucide-react';
 import { useWorkspace, useClient } from '../context/WorkspaceContext';
 import WorkspaceSelector from './WorkspaceSelector';
@@ -99,7 +100,12 @@ export const NAV_ITEMS: NavItem[] = [
   },
 ];
 
-export default function Sidebar() {
+interface SidebarProps {
+  isMobileOpen?: boolean;
+  onCloseMobile?: () => void;
+}
+
+export default function Sidebar({ isMobileOpen = false, onCloseMobile }: SidebarProps) {
   const pathname = usePathname();
   const { clients, activeClient, setActiveClient } = useClient();
   const [isClientDropdownOpen, setIsClientDropdownOpen] = useState(false);
@@ -123,25 +129,54 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="w-64 flex-shrink-0 bg-[#0F172A] text-white flex flex-col justify-between border-r border-slate-800/80 h-screen sticky top-0 overflow-hidden select-none z-40">
-      
-      <div className="flex-1 min-h-0 overflow-y-auto">
-        {/* En-tête Logo & Badge Pro */}
-        <div className="p-5 border-b border-slate-800/80 flex items-center justify-between">
-          <Link href="/dashboard/calendar" className="inline-flex items-center gap-2.5 group">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#F94F06] to-amber-500 flex items-center justify-center font-black text-white text-base shadow-md shadow-orange-500/20 group-hover:scale-105 transition-transform">
-              ⚡
-            </div>
-            <div className="flex flex-col">
-              <span className="font-black text-lg tracking-tight text-white flex items-center gap-1.5">
-                CMFlow
-                <span className="text-[9px] font-black uppercase px-2 py-0.5 rounded-full bg-[#F94F06]/20 text-[#F94F06] border border-[#F94F06]/30">
-                  PRO
+    <>
+      {/* Backdrop sombre sur Mobile */}
+      {isMobileOpen && (
+        <div
+          onClick={onCloseMobile}
+          className="fixed inset-0 z-40 bg-slate-950/80 backdrop-blur-sm lg:hidden transition-opacity duration-300"
+          aria-hidden="true"
+        />
+      )}
+
+      {/* Conteneur Aside Sidebar (Desktop fixe / Mobile tiroir glissant) */}
+      <aside
+        className={`fixed inset-y-0 left-0 z-50 w-72 lg:w-64 bg-[#0F172A] text-white flex flex-col justify-between border-r border-slate-800/80 h-screen select-none transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:sticky lg:top-0 ${
+          isMobileOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full lg:translate-x-0'
+        }`}
+      >
+        
+        <div className="flex-1 min-h-0 overflow-y-auto">
+          {/* En-tête Logo & Badge Pro + Bouton Fermer sur Mobile */}
+          <div className="p-4 sm:p-5 border-b border-slate-800/80 flex items-center justify-between">
+            <Link
+              href="/dashboard/calendar"
+              onClick={onCloseMobile}
+              className="inline-flex items-center gap-2.5 group"
+            >
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#F94F06] to-amber-500 flex items-center justify-center font-black text-white text-base shadow-md shadow-orange-500/20 group-hover:scale-105 transition-transform">
+                ⚡
+              </div>
+              <div className="flex flex-col">
+                <span className="font-black text-lg tracking-tight text-white flex items-center gap-1.5">
+                  CMFlow
+                  <span className="text-[9px] font-black uppercase px-2 py-0.5 rounded-full bg-[#F94F06]/20 text-[#F94F06] border border-[#F94F06]/30">
+                    PRO
+                  </span>
                 </span>
-              </span>
-            </div>
-          </Link>
-        </div>
+              </div>
+            </Link>
+
+            {/* Bouton Fermer sur Mobile */}
+            <button
+              type="button"
+              onClick={onCloseMobile}
+              className="lg:hidden p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/80 transition-colors"
+              aria-label="Fermer le menu"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
 
         {/* Sélecteur d'Espace Client Actif */}
         <div className="p-3.5">
@@ -169,6 +204,7 @@ export default function Sidebar() {
               <Link
                 key={item.href}
                 href={item.href}
+                onClick={onCloseMobile}
                 className={`flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs transition-all duration-200 ${
                   isActive
                     ? 'bg-[#F94F06] text-white font-semibold shadow-[0_8px_20px_-4px_rgba(249,79,6,0.35)]'
@@ -210,6 +246,7 @@ export default function Sidebar() {
       </div>
 
     </aside>
+    </>
   );
 }
 

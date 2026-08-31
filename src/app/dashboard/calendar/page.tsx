@@ -636,7 +636,7 @@ export default function CalendarPage() {
   };
 
   return (
-    <div className="p-6 md:p-8 max-w-7xl mx-auto space-y-8">
+    <div className="p-3.5 sm:p-6 md:p-8 max-w-7xl mx-auto space-y-5 sm:space-y-8">
       
       {/* Toast Flottant */}
       {toastMessage && (
