@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation';
 import {
   Calendar,
   Users,
+  Share2,
   Image as ImageIcon,
   MessageSquare,
   Globe,
@@ -14,6 +15,7 @@ import {
   ShieldCheck,
   CreditCard,
   Settings,
+  LogOut,
   ChevronDown,
   Sparkles,
   Plus
@@ -38,6 +40,16 @@ export const NAV_ITEMS: NavItem[] = [
     name: 'Espaces Clients',
     href: '/dashboard/clients',
     icon: Users,
+  },
+  {
+    name: 'Réseaux Connectés',
+    href: '/dashboard/settings/channels',
+    icon: Share2,
+    badge: (
+      <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-md bg-[#0066FF]/20 text-sky-300 border border-[#0066FF]/30">
+        APIs
+      </span>
+    ),
   },
   {
     name: 'Médiathèque Assets',
@@ -75,7 +87,7 @@ export const NAV_ITEMS: NavItem[] = [
     href: '/dashboard/billing',
     icon: CreditCard,
     badge: (
-      <span className="bg-[#1E90FF]/15 text-[#1E90FF] border border-[#1E90FF]/30 px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-tight">
+      <span className="bg-[#1E90FF]/15 text-[#1E90FF] border border-[#1E90FF]/30 px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-tight">
         Wave
       </span>
     ),
@@ -92,10 +104,28 @@ export default function Sidebar() {
   const { clients, activeClient, setActiveClient } = useClient();
   const [isClientDropdownOpen, setIsClientDropdownOpen] = useState(false);
 
+  const handleLogout = async () => {
+    try {
+      localStorage.removeItem('cmflow_user');
+      localStorage.removeItem('cmflow_auth');
+      localStorage.removeItem('user');
+      localStorage.removeItem('token');
+      sessionStorage.clear();
+      try {
+        const { auth } = await import('@/lib/firebase');
+        if (auth) {
+          const { signOut } = await import('firebase/auth');
+          await signOut(auth);
+        }
+      } catch (e) {}
+    } catch (err) {}
+    window.location.href = '/login.html';
+  };
+
   return (
-    <aside className="w-64 flex-shrink-0 bg-[#0F172A] text-white flex flex-col justify-between border-r border-slate-800/80 min-h-screen sticky top-0 h-screen overflow-y-auto select-none z-40">
+    <aside className="w-64 flex-shrink-0 bg-[#0F172A] text-white flex flex-col justify-between border-r border-slate-800/80 h-screen sticky top-0 overflow-hidden select-none z-40">
       
-      <div>
+      <div className="flex-1 min-h-0 overflow-y-auto">
         {/* En-tête Logo & Badge Pro */}
         <div className="p-5 border-b border-slate-800/80 flex items-center justify-between">
           <Link href="/dashboard/calendar" className="inline-flex items-center gap-2.5 group">
@@ -118,16 +148,22 @@ export default function Sidebar() {
           <WorkspaceSelector variant="sidebar" />
         </div>
 
-        {/* 9 Modules de Navigation Strictes */}
-        <nav className="px-3 space-y-1.5 mt-2">
+        {/* Modules de Navigation Clés */}
+        <nav className="px-3 space-y-1.5 mt-2 pb-4">
           {NAV_ITEMS.map((item) => {
             const Icon = item.icon;
             
             // Détection stricte de l'élément actif
-            const isActive =
-              pathname === item.href ||
-              (item.href === '/dashboard/calendar' && (pathname === '/dashboard' || pathname === '/dashboard/calendar')) ||
-              (item.href !== '/dashboard/calendar' && pathname.startsWith(item.href));
+            let isActive = false;
+            if (item.href === '/dashboard/calendar') {
+              isActive = pathname === '/dashboard' || pathname === '/dashboard/calendar';
+            } else if (item.href === '/dashboard/settings/channels') {
+              isActive = pathname === '/dashboard/settings/channels';
+            } else if (item.href === '/dashboard/settings') {
+              isActive = pathname === '/dashboard/settings';
+            } else {
+              isActive = pathname.startsWith(item.href);
+            }
 
             return (
               <Link
@@ -140,7 +176,7 @@ export default function Sidebar() {
                 }`}
               >
                 <div className="flex items-center gap-3 min-w-0">
-                  <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-white' : 'text-slate-400'}`} />
+                  <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-white' : item.name === 'Réseaux Connectés' ? 'text-sky-400' : 'text-slate-400'}`} />
                   <span className="truncate">{item.name}</span>
                 </div>
 
@@ -151,9 +187,9 @@ export default function Sidebar() {
         </nav>
       </div>
 
-      {/* Profil Connecté (Bas de Sidebar) */}
-      <div className="p-3.5 border-t border-slate-800/80 bg-slate-900/60 mt-4">
-        <div className="flex items-center gap-2.5">
+      {/* Profil Connecté & Déconnexion Épinglé en Bas */}
+      <div className="shrink-0 p-3.5 border-t border-slate-800/80 bg-slate-900/90 backdrop-blur-md">
+        <div className="flex items-center gap-2.5 mb-2.5">
           <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#0066FF] to-sky-400 flex items-center justify-center font-black text-xs text-white shadow-sm shrink-0">
             AD
           </div>
@@ -162,8 +198,18 @@ export default function Sidebar() {
             <div className="text-[10px] text-slate-400 truncate">Lead CM · Dakar 🇸🇳</div>
           </div>
         </div>
+
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="w-full py-2 px-3 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 hover:text-rose-100 border border-rose-500/30 text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98]"
+        >
+          <LogOut className="w-4 h-4 text-rose-400" />
+          <span>Déconnexion</span>
+        </button>
       </div>
 
     </aside>
   );
 }
+
