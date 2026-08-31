@@ -477,28 +477,54 @@ export default function ClientsPage() {
                   Canaux connectés ({Object.keys(client.connectedAccounts || {}).length})
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-1.5">
                   {client.connectedAccounts.instagram ? (
-                    <div className="w-7 h-7 rounded-xl bg-pink-50 text-pink-600 border border-pink-200 flex items-center justify-center shadow-2xs" title={client.connectedAccounts.instagram}>
-                      <Instagram className="w-3.5 h-3.5" />
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-pink-50 border border-pink-200/80 shadow-2xs hover:scale-105 transition-transform" title={client.connectedAccounts.instagram}>
+                      <svg className="w-3.5 h-3.5 rounded-sm shrink-0 shadow-2xs" viewBox="0 0 24 24" fill="none">
+                        <defs>
+                          <linearGradient id={`ig-cl-react-${client.id}`} x1="0%" y1="100%" x2="100%" y2="0%">
+                            <stop offset="0%" stopColor="#fdf497"/>
+                            <stop offset="45%" stopColor="#fd5949"/>
+                            <stop offset="60%" stopColor="#d6249f"/>
+                            <stop offset="90%" stopColor="#285AEB"/>
+                          </linearGradient>
+                        </defs>
+                        <rect width="24" height="24" rx="6" fill={`url(#ig-cl-react-${client.id})`}/>
+                        <rect x="5.5" y="5.5" width="13" height="13" rx="3.5" stroke="#FFFFFF" strokeWidth="1.6" fill="none"/>
+                        <circle cx="12" cy="12" r="3.2" stroke="#FFFFFF" strokeWidth="1.6" fill="none"/>
+                        <circle cx="15.8" cy="8.2" r="0.9" fill="#FFFFFF"/>
+                      </svg>
+                      <span className="text-[10px] font-extrabold text-pink-900">Instagram</span>
                     </div>
                   ) : null}
 
                   {client.connectedAccounts.facebook ? (
-                    <div className="w-7 h-7 rounded-xl bg-blue-50 text-blue-600 border border-blue-200 flex items-center justify-center shadow-2xs" title={client.connectedAccounts.facebook}>
-                      <Facebook className="w-3.5 h-3.5" />
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-blue-50 border border-blue-200/80 shadow-2xs hover:scale-105 transition-transform" title={client.connectedAccounts.facebook}>
+                      <svg className="w-3.5 h-3.5 rounded-sm shrink-0 shadow-2xs" viewBox="0 0 24 24" fill="none">
+                        <rect width="24" height="24" rx="6" fill="#1877F2"/>
+                        <path d="M16.5 12.5h-2.5V20h-3.2v-7.5H9v-2.8h1.8V7.9c0-1.8 1.1-3 2.9-3 1 0 1.9.1 1.9.1v2.1h-1.1c-1 0-1.3.6-1.3 1.2v1.5h2.5l-.4 2.8z" fill="#FFFFFF"/>
+                      </svg>
+                      <span className="text-[10px] font-extrabold text-blue-900">Facebook</span>
                     </div>
                   ) : null}
 
                   {client.connectedAccounts.tiktok ? (
-                    <div className="w-7 h-7 rounded-xl bg-slate-900 text-white flex items-center justify-center text-[9px] font-black shadow-2xs" title={client.connectedAccounts.tiktok}>
-                      TT
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-900 border border-slate-800 shadow-2xs hover:scale-105 transition-transform text-white" title={client.connectedAccounts.tiktok}>
+                      <svg className="w-3.5 h-3.5 rounded-sm shrink-0 shadow-2xs" viewBox="0 0 24 24" fill="none">
+                        <rect width="24" height="24" rx="6" fill="#000000"/>
+                        <path d="M14.5 5.5v7.2a3.3 3.3 0 1 1-3.3-3.3c.3 0 .7.1 1 .2V7.1a5.6 5.6 0 1 0 4.5 5.5V8.8a5.5 5.5 0 0 0 3.3 1.1V7.6a3.5 3.5 0 0 1-3.3-2.1h-2.2z" fill="#FFFFFF"/>
+                      </svg>
+                      <span className="text-[10px] font-extrabold text-white">TikTok</span>
                     </div>
                   ) : null}
 
                   {client.connectedAccounts.linkedin ? (
-                    <div className="w-7 h-7 rounded-xl bg-sky-50 text-sky-700 border border-sky-200 flex items-center justify-center shadow-2xs" title={client.connectedAccounts.linkedin}>
-                      <Linkedin className="w-3.5 h-3.5" />
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-sky-50 border border-sky-200/80 shadow-2xs hover:scale-105 transition-transform" title={client.connectedAccounts.linkedin}>
+                      <svg className="w-3.5 h-3.5 rounded-sm shrink-0 shadow-2xs" viewBox="0 0 24 24" fill="none">
+                        <rect width="24" height="24" rx="6" fill="#0A66C2"/>
+                        <path d="M7 9h2.2v8H7V9zm1.1-3.5c.7 0 1.3.6 1.3 1.3 0 .7-.6 1.3-1.3 1.3-.7 0-1.3-.6-1.3-1.3 0-.7.6-1.3 1.3-1.3zM10.8 9H13v1.1h.1c.3-.6 1.1-1.3 2.3-1.3 2.5 0 3 1.6 3 3.8V17h-2.2v-3.7c0-.9 0-2-1.2-2s-1.4 1-1.4 2V17h-2.2V9z" fill="#FFFFFF"/>
+                      </svg>
+                      <span className="text-[10px] font-extrabold text-sky-900">LinkedIn</span>
                     </div>
                   ) : null}
                 </div>
@@ -690,22 +716,68 @@ export default function ClientsPage() {
                 </label>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                   {[
-                    { id: 'instagram', label: 'Instagram', icon: Instagram },
-                    { id: 'facebook', label: 'Facebook', icon: Facebook },
-                    { id: 'tiktok', label: 'TikTok' },
-                    { id: 'linkedin', label: 'LinkedIn', icon: Linkedin },
+                    {
+                      id: 'instagram',
+                      label: 'Instagram',
+                      renderIcon: () => (
+                        <svg className="w-3.5 h-3.5 rounded-sm shrink-0" viewBox="0 0 24 24" fill="none">
+                          <defs>
+                            <linearGradient id="ig-modal-grad" x1="0%" y1="100%" x2="100%" y2="0%">
+                              <stop offset="0%" stopColor="#fdf497"/>
+                              <stop offset="45%" stopColor="#fd5949"/>
+                              <stop offset="60%" stopColor="#d6249f"/>
+                              <stop offset="90%" stopColor="#285AEB"/>
+                            </linearGradient>
+                          </defs>
+                          <rect width="24" height="24" rx="6" fill="url(#ig-modal-grad)"/>
+                          <rect x="5.5" y="5.5" width="13" height="13" rx="3.5" stroke="#FFFFFF" strokeWidth="1.6" fill="none"/>
+                          <circle cx="12" cy="12" r="3.2" stroke="#FFFFFF" strokeWidth="1.6" fill="none"/>
+                          <circle cx="15.8" cy="8.2" r="0.9" fill="#FFFFFF"/>
+                        </svg>
+                      ),
+                    },
+                    {
+                      id: 'facebook',
+                      label: 'Facebook',
+                      renderIcon: () => (
+                        <svg className="w-3.5 h-3.5 rounded-sm shrink-0" viewBox="0 0 24 24" fill="none">
+                          <rect width="24" height="24" rx="6" fill="#1877F2"/>
+                          <path d="M16.5 12.5h-2.5V20h-3.2v-7.5H9v-2.8h1.8V7.9c0-1.8 1.1-3 2.9-3 1 0 1.9.1 1.9.1v2.1h-1.1c-1 0-1.3.6-1.3 1.2v1.5h2.5l-.4 2.8z" fill="#FFFFFF"/>
+                        </svg>
+                      ),
+                    },
+                    {
+                      id: 'tiktok',
+                      label: 'TikTok',
+                      renderIcon: () => (
+                        <svg className="w-3.5 h-3.5 rounded-sm shrink-0" viewBox="0 0 24 24" fill="none">
+                          <rect width="24" height="24" rx="6" fill="#000000"/>
+                          <path d="M14.5 5.5v7.2a3.3 3.3 0 1 1-3.3-3.3c.3 0 .7.1 1 .2V7.1a5.6 5.6 0 1 0 4.5 5.5V8.8a5.5 5.5 0 0 0 3.3 1.1V7.6a3.5 3.5 0 0 1-3.3-2.1h-2.2z" fill="#FFFFFF"/>
+                        </svg>
+                      ),
+                    },
+                    {
+                      id: 'linkedin',
+                      label: 'LinkedIn',
+                      renderIcon: () => (
+                        <svg className="w-3.5 h-3.5 rounded-sm shrink-0" viewBox="0 0 24 24" fill="none">
+                          <rect width="24" height="24" rx="6" fill="#0A66C2"/>
+                          <path d="M7 9h2.2v8H7V9zm1.1-3.5c.7 0 1.3.6 1.3 1.3 0 .7-.6 1.3-1.3 1.3-.7 0-1.3-.6-1.3-1.3 0-.7.6-1.3 1.3-1.3zM10.8 9H13v1.1h.1c.3-.6 1.1-1.3 2.3-1.3 2.5 0 3 1.6 3 3.8V17h-2.2v-3.7c0-.9 0-2-1.2-2s-1.4 1-1.4 2V17h-2.2V9z" fill="#FFFFFF"/>
+                        </svg>
+                      ),
+                    },
                   ].map((chan) => (
                     <button
                       key={chan.id}
                       type="button"
                       onClick={() => toggleChannel(chan.id)}
-                      className={`p-2 rounded-xl border flex items-center justify-center gap-1.5 text-xs font-bold transition-all ${
+                      className={`p-2.5 rounded-xl border flex items-center justify-center gap-2 text-xs font-bold transition-all cursor-pointer ${
                         selectedChannels.includes(chan.id)
-                          ? 'border-[#0066FF] bg-blue-50/70 text-[#0066FF] shadow-2xs'
-                          : 'border-slate-200 text-slate-500 hover:bg-slate-50'
+                          ? 'border-[#0066FF] bg-blue-50/70 text-[#0066FF] shadow-xs ring-1 ring-[#0066FF]/30'
+                          : 'border-slate-200 text-slate-600 hover:bg-slate-50'
                       }`}
                     >
-                      {chan.icon && <chan.icon className="w-3.5 h-3.5" />}
+                      {chan.renderIcon()}
                       <span>{chan.label}</span>
                     </button>
                   ))}
