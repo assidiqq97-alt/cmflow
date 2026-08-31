@@ -636,6 +636,14 @@
         window.history.replaceState({}, document.title, window.location.pathname);
       }
 
+      // Nettoyage automatique des anciennes valeurs de démo factices
+      if (localStorage.getItem('cmflow_facebook_connected') === 'siddiqsolutions') {
+        localStorage.removeItem('cmflow_facebook_connected');
+      }
+      if (localStorage.getItem('cmflow_instagram_connected') === '@siddiqsolutions') {
+        localStorage.removeItem('cmflow_instagram_connected');
+      }
+
       // Rendu dynamique initial depuis localStorage (Non connecté par défaut tant qu'aucun compte réel n'est lié)
       const fb = localStorage.getItem('cmflow_facebook_connected');
       const ig = localStorage.getItem('cmflow_instagram_connected');
