@@ -40,10 +40,6 @@ const nextConfig = {
   async rewrites() {
     return [
       {
-        source: '/',
-        destination: '/index.html',
-      },
-      {
         source: '/dashboard',
         destination: '/dashboard.html',
       },
