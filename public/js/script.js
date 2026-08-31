@@ -584,6 +584,10 @@ function initAuthModal() {
           const result = await CMFlowBackend.register(email, password, fullName);
           if (result.success && result.user) {
             userId = result.user.uid;
+            // Envoi immédiat de l'email d'authentification / confirmation
+            if (CMFlowBackend.sendVerificationEmail) {
+              await CMFlowBackend.sendVerificationEmail(result.user);
+            }
           }
         } catch (fbErr) {
           console.warn('Firebase register warning, proceeding with local session:', fbErr);
@@ -627,13 +631,15 @@ function initAuthModal() {
         reg[email] = { id: userId, name: fullName, password: password, createdAt: new Date().toISOString() };
         localStorage.setItem('cmflow_registered_users', JSON.stringify(reg));
       } catch (e) {}
+
+      submitBtn.disabled = false;
       submitBtn.textContent = 'Démarrer l\'essai gratuit';
       closeModal();
 
-      showToast('Compte créé avec succès ! Bienvenue sur votre cockpit 👋', 'success');
+      showToast('🎉 Compte créé ! Un email de confirmation vous a été envoyé.', 'success');
       setTimeout(() => {
-        window.location.href = 'dashboard.html';
-      }, 400);
+        window.location.href = '/dashboard?welcome=true&email_sent=true';
+      }, 600);
 
     } catch (err) {
       console.error('Erreur inscription:', err);

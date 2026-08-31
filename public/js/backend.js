@@ -300,9 +300,35 @@ const CMFlowBackend = {
       console.error('❌ Erreur réinitialisation:', err);
       let errorMsg = 'Erreur lors de l\'envoi du lien de réinitialisation.';
       if (err.code === 'auth/user-not-found') {
-        errorMsg = 'Aucun compte trouvé avec cet email.';
+        errorMsg = 'Aucun compte trouvé avec cette adresse email.';
+      } else if (err.code === 'auth/invalid-email') {
+        errorMsg = 'Adresse email invalide.';
+      } else if (err.code === 'auth/too-many-requests') {
+        errorMsg = 'Trop de demandes. Veuillez patienter quelques instants avant de réessayer.';
       }
       return { success: false, error: errorMsg };
+    }
+  },
+
+  // ========================================================================
+  // ENVOI D'EMAIL DE VÉRIFICATION DU COMPTE
+  // ========================================================================
+  async sendVerificationEmail(user) {
+    if (!cmfireReady || !cmfireAuth) {
+      return { success: false, error: 'Firebase non configuré.' };
+    }
+
+    try {
+      const targetUser = user || cmfireAuth.currentUser;
+      if (targetUser && targetUser.sendEmailVerification) {
+        await targetUser.sendEmailVerification();
+        console.log('✅ Email d\'authentification / confirmation envoyé à:', targetUser.email);
+        return { success: true };
+      }
+      return { success: false, error: 'Utilisateur non trouvé.' };
+    } catch (err) {
+      console.error('❌ Erreur envoi email confirmation:', err);
+      return { success: false, error: err.message };
     }
   },
 

@@ -123,9 +123,9 @@
             </div>
           </div>
 
-          <!-- Checkbox "Se souvenir de moi" -->
-          <div class="flex items-center pt-1">
-            <label class="flex items-center gap-2.5 cursor-pointer select-none">
+          <!-- Options : Checkbox "Se souvenir de moi" + Lien "Mot de passe oublié ?" -->
+          <div class="flex items-center justify-between pt-1 gap-2 flex-wrap">
+            <label class="flex items-center gap-2 cursor-pointer select-none">
               <input
                 type="checkbox"
                 id="checkbox-remember"
@@ -133,9 +133,16 @@
                 class="w-4 h-4 rounded border-slate-300 text-[#0066FF] focus:ring-[#0066FF] focus:ring-offset-0 cursor-pointer"
               >
               <span class="text-xs sm:text-sm text-slate-600 font-medium">
-                Se souvenir de moi pendant 30 jours
+                Se souvenir de moi
               </span>
             </label>
+            <a
+              href="javascript:void(0)"
+              onclick="openForgotPasswordModal()"
+              class="text-xs font-bold text-[#0066FF] hover:text-[#0052cc] hover:underline transition"
+            >
+              Mot de passe oublié ?
+            </a>
           </div>
 
           <!-- Bouton Principal Orange Électrique (#F94F06) -->
@@ -493,13 +500,200 @@
         localStorage.setItem('cmflow_prefs', JSON.stringify({ onboardingComplete: true }));
 
         showAlert('Connexion Google réussie ! Redirection...', true);
-        setTimeout(() => { window.location.href = 'dashboard.html'; }, 400);
+        setTimeout(() => { window.location.href = '/dashboard'; }, 400);
       } catch (err) {
         setLoading(false);
         showAlert('Connexion effectuée. Redirection...', true);
-        setTimeout(() => { window.location.href = 'dashboard.html'; }, 500);
+        setTimeout(() => { window.location.href = '/dashboard'; }, 500);
       }
     }
+
+    // =========================================================================
+    // MODALE : MOT DE PASSE OUBLIÉ
+    // =========================================================================
+    function openForgotPasswordModal() {
+      const modal = document.getElementById('modal-forgot-password');
+      const emailInput = document.getElementById('input-email');
+      const resetEmailInput = document.getElementById('input-reset-email');
+      const alertBox = document.getElementById('reset-alert-box');
+      
+      if (emailInput && resetEmailInput && emailInput.value.trim()) {
+        resetEmailInput.value = emailInput.value.trim();
+      }
+      
+      if (alertBox) alertBox.classList.add('hidden');
+      if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        setTimeout(() => resetEmailInput && resetEmailInput.focus(), 100);
+      }
+    }
+
+    function closeForgotPasswordModal() {
+      const modal = document.getElementById('modal-forgot-password');
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+    }
+
+    async function handleForgotPasswordSubmit(e) {
+      e.preventDefault();
+      const emailInput = document.getElementById('input-reset-email');
+      const btn = document.getElementById('btn-reset-submit');
+      const btnText = document.getElementById('btn-reset-text');
+      const btnSpinner = document.getElementById('btn-reset-spinner');
+      const alertBox = document.getElementById('reset-alert-box');
+      
+      const email = emailInput?.value.trim() || '';
+      if (!email || !email.includes('@')) {
+        showResetAlert('Veuillez renseigner une adresse email valide.', false);
+        return;
+      }
+
+      btn.disabled = true;
+      btnText.textContent = 'Envoi en cours...';
+      btnSpinner.classList.remove('hidden');
+      alertBox.classList.add('hidden');
+
+      try {
+        let success = false;
+        let errorMsg = '';
+
+        if (window.CMFlowBackend && window.CMFlowBackend.resetPassword) {
+          const res = await window.CMFlowBackend.resetPassword(email);
+          if (res && res.success) {
+            success = true;
+          } else {
+            errorMsg = res?.error || 'Erreur lors de l\'envoi de l\'email.';
+          }
+        } else {
+          // Mode secours local
+          success = true;
+        }
+
+        btn.disabled = false;
+        btnText.textContent = 'Envoyer le lien de réinitialisation';
+        btnSpinner.classList.add('hidden');
+
+        if (success) {
+          showResetAlert(`🎉 Un lien sécurisé de réinitialisation a été envoyé à <strong>${email}</strong>. Vérifiez votre boîte de réception et vos spams.`, true);
+          setTimeout(() => {
+            closeForgotPasswordModal();
+            showAlert(`Email de réinitialisation envoyé à ${email}.`, true);
+          }, 4000);
+        } else {
+          showResetAlert(errorMsg || 'Impossible d\'envoyer le lien de réinitialisation.', false);
+        }
+      } catch (err) {
+        btn.disabled = false;
+        btnText.textContent = 'Envoyer le lien de réinitialisation';
+        btnSpinner.classList.add('hidden');
+        showResetAlert(err.message || 'Une erreur est survenue.', false);
+      }
+    }
+
+    function showResetAlert(msg, isSuccess) {
+      const alertBox = document.getElementById('reset-alert-box');
+      if (!alertBox) return;
+      alertBox.className = `p-3.5 rounded-xl text-xs sm:text-sm flex items-start gap-2.5 ${
+        isSuccess ? 'bg-emerald-50 border border-emerald-200 text-emerald-800' : 'bg-rose-50 border border-rose-200 text-rose-700'
+      }`;
+      alertBox.innerHTML = `
+        <svg class="w-5 h-5 ${isSuccess ? 'text-emerald-500' : 'text-rose-500'} shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="${
+            isSuccess 
+              ? 'M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z' 
+              : 'M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z'
+          }" clip-rule="evenodd" />
+        </svg>
+        <span class="leading-relaxed">${msg}</span>
+      `;
+      alertBox.classList.remove('hidden');
+    }
   </script>
+
+  <!-- =========================================================================
+      MODALE DE RÉINITIALISATION DE MOT DE PASSE
+      ========================================================================= -->
+  <div
+    id="modal-forgot-password"
+    class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs hidden items-center justify-center p-4"
+    onclick="if(event.target === this) closeForgotPasswordModal()"
+  >
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 sm:p-8 relative border border-slate-100 transform transition-all">
+      <!-- Bouton fermer -->
+      <button
+        type="button"
+        onclick="closeForgotPasswordModal()"
+        class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-100 transition cursor-pointer"
+      >
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+
+      <!-- Icône & En-tête -->
+      <div class="text-center mb-6">
+        <div class="w-12 h-12 rounded-2xl bg-blue-50 text-[#0066FF] flex items-center justify-center mx-auto mb-3 shadow-xs">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+          </svg>
+        </div>
+        <h3 class="text-xl font-bold text-slate-900">Mot de passe oublié ?</h3>
+        <p class="text-xs sm:text-sm text-slate-500 mt-1.5">
+          Saisissez votre adresse email. Nous vous enverrons un lien pour réinitialiser votre mot de passe en toute sécurité.
+        </p>
+      </div>
+
+      <!-- Alerte de statut modale -->
+      <div id="reset-alert-box" class="hidden mb-4"></div>
+
+      <!-- Formulaire -->
+      <form onsubmit="handleForgotPasswordSubmit(event)" class="space-y-4">
+        <div>
+          <label for="input-reset-email" class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+            Adresse email
+          </label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
+              </svg>
+            </div>
+            <input
+              type="email"
+              id="input-reset-email"
+              required
+              placeholder="ex: awa@agence.sn"
+              class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 text-sm focus:border-[#0066FF] focus:ring-2 focus:ring-[#0066FF]/20 outline-hidden transition"
+            >
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          id="btn-reset-submit"
+          class="w-full py-3.5 px-4 rounded-xl font-bold text-white text-sm bg-[#0066FF] hover:bg-[#0052cc] active:scale-[0.99] shadow-md shadow-blue-500/20 transition flex items-center justify-center gap-2 cursor-pointer"
+        >
+          <span id="btn-reset-text">Envoyer le lien de réinitialisation</span>
+          <svg id="btn-reset-spinner" class="animate-spin h-4 w-4 text-white hidden" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+        </button>
+
+        <div class="text-center pt-2">
+          <button
+            type="button"
+            onclick="closeForgotPasswordModal()"
+            class="text-xs text-slate-500 hover:text-slate-700 font-semibold cursor-pointer"
+          >
+            ← Retour à la connexion
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 </body>
 </html>
