@@ -400,7 +400,7 @@
         </div>
 
         <!-- YouTube -->
-        <div class="border border-dashed border-slate-300 bg-slate-50/70 hover:border-slate-400 hover:bg-white rounded-2xl p-6 flex flex-col justify-between transition-all duration-200 shadow-sm">
+        <div id="youtube-card" class="border border-dashed border-slate-300 bg-slate-50/70 hover:border-slate-400 hover:bg-white rounded-2xl p-6 flex flex-col justify-between transition-all duration-200 shadow-sm">
           <div>
             <div class="flex items-center justify-between mb-4">
               <div class="flex items-center gap-3">
@@ -414,19 +414,22 @@
                   <span class="text-[10px] font-semibold text-slate-400">Shorts & Vidéos</span>
                 </div>
               </div>
-              <span class="text-[11px] font-bold text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full">
+              <span id="youtube-status-badge" class="text-[11px] font-bold text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full">
                 Non configuré
               </span>
             </div>
-            <p class="text-xs text-slate-500 leading-relaxed">Diffusion automatique de Shorts verticaux et vidéos sur votre chaîne.</p>
+            <h3 id="youtube-account-name" class="text-base font-bold text-slate-900 hidden">Chaîne YouTube</h3>
+            <p id="youtube-account-desc" class="text-xs text-slate-500 leading-relaxed">Diffusion automatique de Shorts verticaux et vidéos sur votre chaîne.</p>
           </div>
-          <button
-            type="button"
-            onclick="showToast('YouTube Studio API disponible prochainement...', '🎬')"
-            class="mt-6 w-full py-2.5 px-4 rounded-xl bg-white border border-slate-300 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:border-slate-400 shadow-xs transition cursor-pointer flex items-center justify-center gap-2"
-          >
-            <span>+ Connecter YouTube</span>
-          </button>
+          <div id="youtube-action-container">
+            <button
+              type="button"
+              onclick="connectYouTube()"
+              class="mt-6 w-full py-2.5 px-4 rounded-xl bg-white border border-slate-300 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:border-slate-400 shadow-xs transition cursor-pointer flex items-center justify-center gap-2"
+            >
+              <span>+ Connecter YouTube</span>
+            </button>
+          </div>
         </div>
 
       </div>
@@ -582,8 +585,9 @@
           if (type === 'instagram') descEl.textContent = 'Publication directe sur vos comptes Instagram Professionnels.';
           if (type === 'linkedin') descEl.textContent = 'Publiez sur vos pages entreprise et profils LinkedIn B2B.';
           if (type === 'tiktok') descEl.textContent = 'Publication automatique de vidéos 9:16 HD et statistiques TikTok.';
+          if (type === 'youtube') descEl.textContent = 'Diffusion automatique de Shorts verticaux et vidéos sur votre chaîne.';
         }
-        const connectFn = type === 'facebook' || type === 'instagram' ? 'connectMeta()' : (type === 'linkedin' ? 'connectLinkedIn()' : 'connectTikTok()');
+        const connectFn = type === 'facebook' || type === 'instagram' ? 'connectMeta()' : (type === 'linkedin' ? 'connectLinkedIn()' : (type === 'youtube' ? 'connectYouTube()' : 'connectTikTok()'));
         actions.innerHTML = `
           <button
             type="button"
@@ -594,6 +598,11 @@
           </button>
         `;
       }
+    }
+
+    function connectYouTube() {
+      const wsId = getActiveWorkspaceId();
+      window.location.href = `/api/auth/youtube?workspaceId=${encodeURIComponent(wsId)}&redirectPath=${encodeURIComponent('/channels.html')}`;
     }
 
     async function disconnectChannel(type, name) {
@@ -640,9 +649,9 @@
       const params = new URLSearchParams(window.location.search);
       const status = params.get('status');
       const provider = params.get('provider') || params.get('connected');
-      const accName = params.get('name');
+      const accName = params.get('name') || params.get('channel');
 
-      if (status === 'success' || provider) {
+      if (status === 'success' || provider || params.get('success') === 'youtube_connected') {
         if (provider === 'meta' || provider === 'facebook') {
           localStorage.setItem('cmflow_facebook_connected', accName || 'siddiqsolutions');
           localStorage.setItem('cmflow_instagram_connected', '@siddiqsolutions');
@@ -653,6 +662,9 @@
         } else if (provider === 'tiktok') {
           localStorage.setItem('cmflow_tiktok_connected', accName || 'Compte TikTok');
           showToast('🎉 Compte TikTok connecté avec succès !', '✅');
+        } else if (params.get('success') === 'youtube_connected' || provider === 'youtube') {
+          localStorage.setItem('cmflow_youtube_connected', accName || 'Chaîne YouTube');
+          showToast('🎉 Chaîne YouTube connectée avec succès !', '✅');
         }
         // Nettoyer l'URL
         window.history.replaceState({}, document.title, window.location.pathname);

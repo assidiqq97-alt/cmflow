@@ -80,6 +80,10 @@ export default function ChannelsPage() {
     window.location.href = `/api/auth/linkedin?workspaceId=${encodeURIComponent(workspaceId)}&redirectPath=${encodeURIComponent('/dashboard/settings/channels')}`;
   };
 
+  const handleConnectYoutube = () => {
+    window.location.href = `/api/auth/youtube?workspaceId=${encodeURIComponent(workspaceId)}&redirectPath=${encodeURIComponent('/dashboard/settings/channels')}`;
+  };
+
   const handleDisconnect = async (accountName: string, accountId?: string) => {
     if (!confirm(`Êtes-vous sûr de vouloir déconnecter le compte "${accountName}" ?`)) return;
 
@@ -109,6 +113,7 @@ export default function ChannelsPage() {
   const igAccount = accounts.find((a) => a.type === 'instagram' || (a as any).provider === 'instagram');
   const linkedinAccount = accounts.find((a) => a.type === 'linkedin' || (a as any).provider === 'linkedin');
   const tiktokAccount = accounts.find((a) => a.type === 'tiktok' || (a as any).provider === 'tiktok');
+  const youtubeAccount = accounts.find((a) => a.type === 'youtube' || (a as any).provider === 'youtube');
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 pb-16">
@@ -503,22 +508,58 @@ export default function ChannelsPage() {
                     <span className="text-[10px] font-semibold text-slate-400">Shorts & Vidéos</span>
                   </div>
                 </div>
-                <span className="text-[11px] font-bold text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full">
-                  Non configuré
-                </span>
+                {youtubeAccount ? (
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    Connecté
+                  </span>
+                ) : (
+                  <span className="text-[11px] font-bold text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full">
+                    Non configuré
+                  </span>
+                )}
               </div>
-              <p className="text-xs text-slate-500 leading-relaxed">
-                Diffusion automatique de Shorts verticaux et vidéos longues directement sur votre chaîne YouTube.
-              </p>
+
+              {youtubeAccount ? (
+                <div>
+                  <h3 className="text-base font-bold text-slate-900">{youtubeAccount.name}</h3>
+                  <p className="text-xs text-slate-400 mt-0.5 font-mono">ID: {youtubeAccount.accountId || youtubeAccount.id}</p>
+                </div>
+              ) : (
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  Diffusion automatique de Shorts verticaux et vidéos longues directement sur votre chaîne YouTube.
+                </p>
+              )}
             </div>
-            <button
-              type="button"
-              onClick={() => showToast('Intégration YouTube Shorts API en cours d\'activation.', 'success')}
-              className="mt-6 w-full py-2.5 px-4 rounded-xl bg-white border border-slate-300 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:border-slate-400 shadow-xs transition cursor-pointer flex items-center justify-center gap-2"
-            >
-              <Plus className="w-3.5 h-3.5 text-slate-500" />
-              <span>+ Connecter YouTube</span>
-            </button>
+
+            {youtubeAccount ? (
+              <div className="mt-6 flex items-center gap-2 pt-4 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => handleTestFlow('YouTube', youtubeAccount.name)}
+                  className="flex-1 text-xs font-bold text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 py-2 rounded-xl transition cursor-pointer flex items-center justify-center gap-1.5"
+                >
+                  <Zap className="w-3.5 h-3.5 text-red-500 fill-red-500" />
+                  <span>Tester le flux</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleDisconnect(youtubeAccount.name, youtubeAccount.id)}
+                  className="text-xs font-bold text-rose-600 hover:text-rose-700 px-3 py-2 cursor-pointer hover:bg-rose-50 rounded-xl transition"
+                >
+                  Déconnecter
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={handleConnectYoutube}
+                className="mt-6 w-full py-2.5 px-4 rounded-xl bg-white border border-slate-300 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:border-slate-400 shadow-xs transition cursor-pointer flex items-center justify-center gap-2"
+              >
+                <Plus className="w-3.5 h-3.5 text-slate-500" />
+                <span>+ Connecter YouTube</span>
+              </button>
+            )}
           </div>
 
         </div>
