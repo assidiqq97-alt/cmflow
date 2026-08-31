@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
@@ -160,6 +161,11 @@ export default function ClientsPage() {
   const [countryFilter, setCountryFilter] = useState('all');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Formulaire Nouvel Onboarding
   const [formName, setFormName] = useState('');
@@ -601,8 +607,8 @@ export default function ClientsPage() {
       {/* =======================================================================
           E. MODALE D'ONBOARDING CLIENT (FORMULAIRE INTERACTIF)
           ======================================================================= */}
-      {isAddModalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-950/75 backdrop-blur-md flex items-center justify-center p-4">
+      {mounted && isAddModalOpen && typeof document !== 'undefined' && createPortal(
+        <div className="fixed inset-0 z-[9999] bg-slate-950/75 backdrop-blur-md flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl shadow-2xl max-w-lg w-full p-6 sm:p-8 border border-slate-200 animate-fadeIn max-h-[90vh] overflow-y-auto">
             
             <div className="flex items-center justify-between mb-5 pb-3 border-b border-slate-100">
@@ -804,7 +810,8 @@ export default function ClientsPage() {
             </form>
 
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
     </div>

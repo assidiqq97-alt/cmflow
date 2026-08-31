@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import {
   CheckCircle2,
   Copy,
@@ -62,7 +63,13 @@ export function WhatsAppShareModal({
   const effectiveWhatsapp = workspaceWhatsapp || workspace?.whatsappClient || workspace?.whatsappNumber || workspace?.whatsapp || '+221 77 842 19 02';
   const [customPhone, setCustomPhone] = useState(effectiveWhatsapp);
 
-  if (!isOpen) return null;
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!isOpen || !mounted || typeof document === 'undefined') return null;
 
   // Calcul du lien magique permanent
   const finalMagicUrl =
@@ -101,8 +108,8 @@ export function WhatsAppShareModal({
 
   const platforms = post?.platforms || (post?.network ? [post.network] : ['instagram']);
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-md animate-in fade-in duration-200">
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-md animate-in fade-in duration-200">
       {/* Conteneur Modale Dribbble / Linear */}
       <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col scale-100 transition-all">
         
@@ -140,63 +147,55 @@ export function WhatsAppShareModal({
           </p>
         </div>
 
-        {/* Corps de la modale */}
-        <div className="p-5 sm:p-6 space-y-5 overflow-y-auto max-h-[calc(85vh-160px)]">
+        {/* Corps de la Modale */}
+        <div className="p-6 space-y-4">
           
-          {/* 1. Carte Récapitulative Média + Date */}
-          <div className="p-3.5 bg-slate-50 border border-slate-200/80 rounded-2xl flex items-center gap-3.5">
-            {/* Vignette Média */}
-            <div className="w-16 h-16 rounded-xl bg-slate-900 shrink-0 overflow-hidden relative border border-slate-200 shadow-xs">
-              {post?.mediaUrl ? (
-                post.mediaType === 'video' ? (
-                  <div className="w-full h-full relative flex items-center justify-center bg-purple-950">
-                    <Video className="w-6 h-6 text-purple-300" />
-                    <span className="absolute bottom-1 right-1 text-[8px] font-bold px-1 bg-black/60 text-white rounded">
-                      Vidéo
-                    </span>
-                  </div>
-                ) : (
+          {/* Aperçu du Post Programmé */}
+          {post && (
+            <div className="flex items-center gap-3 p-3 bg-slate-50 border border-slate-100 rounded-2xl">
+              {post.mediaUrl ? (
+                <div className="relative w-12 h-12 rounded-xl overflow-hidden shrink-0 border border-slate-200">
                   <img
                     src={post.mediaUrl}
                     alt="Aperçu post"
                     className="w-full h-full object-cover"
                   />
-                )
+                </div>
               ) : (
-                <div className="w-full h-full flex items-center justify-center bg-slate-100 text-slate-400">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-slate-100 text-slate-400 shrink-0">
                   <Share2 className="w-5 h-5" />
                 </div>
               )}
-            </div>
 
-            {/* Infos Post */}
-            <div className="flex-1 min-width-0">
-              <div className="flex items-center gap-2 flex-wrap mb-1">
-                <span className="text-xs font-bold text-slate-900 truncate">
-                  {workspace?.name || 'Client actif'}
-                </span>
-                {workspace?.flag && <span>{workspace.flag}</span>}
-                <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-100/80 px-2 py-0.5 rounded-md">
-                  En attente
-                </span>
+              {/* Infos Post */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 flex-wrap mb-1">
+                  <span className="text-xs font-bold text-slate-900 truncate">
+                    {workspace?.name || 'Client actif'}
+                  </span>
+                  {workspace?.flag && <span>{workspace.flag}</span>}
+                  <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-100/80 px-2 py-0.5 rounded-md">
+                    En attente
+                  </span>
+                </div>
+
+                <p className="text-xs text-slate-600 line-clamp-1 italic mb-1.5">
+                  &ldquo;{post?.caption || 'Publication sans texte'}&rdquo;
+                </p>
+
+                <div className="flex items-center gap-3 text-[11px] text-slate-500 font-medium">
+                  <span className="flex items-center gap-1">
+                    <Calendar className="w-3 h-3 text-[#F94F06]" />
+                    <span>{post?.scheduledDate || 'Aujourd\'hui'}</span>
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Clock className="w-3 h-3 text-slate-400" />
+                    <span>{post?.scheduledTime || '18:30'}</span>
+                  </span>
+                </div>
               </div>
-
-              <p className="text-xs text-slate-600 line-clamp-1 italic mb-1.5">
-                "{post?.caption || 'Publication sans texte'}"
-              </p>
-
-              <div className="flex items-center gap-3 text-[11px] text-slate-500 font-medium">
-                <span className="flex items-center gap-1">
-                  <Calendar className="w-3 h-3 text-[#F94F06]" />
-                  <span>{post?.scheduledDate || 'Aujourd\'hui'}</span>
-                </span>
-                <span className="flex items-center gap-1">
-                  <Clock className="w-3 h-3 text-slate-400" />
-                  <span>{post?.scheduledTime || '18:30'}</span>
-                </span>
-              </div>
             </div>
-          </div>
+          )}
 
           {/* 2. Champ Lien Magique avec Bouton Copier */}
           <div className="space-y-1.5">
@@ -292,7 +291,8 @@ export function WhatsAppShareModal({
 
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 

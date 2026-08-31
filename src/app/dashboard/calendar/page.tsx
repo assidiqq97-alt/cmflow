@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import Image from 'next/image';
 import {
   Calendar as CalendarIcon,
@@ -239,6 +240,11 @@ export default function CalendarPage() {
   const [isWhatsAppModalOpen, setIsWhatsAppModalOpen] = useState(false);
   const [previewPost, setPreviewPost] = useState<CalendarPost | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // État Téléversement & Partage WhatsApp
   const [isUploading, setIsUploading] = useState(false);
@@ -828,8 +834,8 @@ export default function CalendarPage() {
       {/* =======================================================================
           D. MODALE DE CRÉATION DE POST ENRICHI (FORMATS, RATIOS, MULTI-MÉDIAS)
           ======================================================================= */}
-      {isCreatePostModalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+      {mounted && isCreatePostModalOpen && typeof document !== 'undefined' && createPortal(
+        <div className="fixed inset-0 z-[9999] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
           <div className="bg-white rounded-3xl shadow-2xl max-w-5xl w-full border border-slate-200/90 overflow-hidden my-auto max-h-[94vh] flex flex-col animate-in fade-in">
             
             {/* Header Modale */}
@@ -1456,14 +1462,15 @@ export default function CalendarPage() {
             </div>
 
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* =======================================================================
           E. MODALE TIROIR : SÉLECTEUR DE LA MÉDIATHÈQUE ASSETS
           ======================================================================= */}
-      {isAssetLibraryOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
+      {mounted && isAssetLibraryOpen && typeof document !== 'undefined' && createPortal(
+        <div className="fixed inset-0 z-[9999] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full border border-slate-200 p-6 max-h-[85vh] flex flex-col animate-in fade-in">
             <div className="flex items-center justify-between pb-4 border-b border-slate-100">
               <div>
@@ -1508,7 +1515,8 @@ export default function CalendarPage() {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* =======================================================================
