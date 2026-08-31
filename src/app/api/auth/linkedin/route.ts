@@ -14,7 +14,7 @@ export async function GET(req: Request) {
 
     const origin = process.env.NEXT_PUBLIC_APP_URL || new URL(req.url).origin;
     const clientId = process.env.LINKEDIN_CLIENT_ID || '77589j7j2nnfkw';
-    const redirectUri = process.env.LINKEDIN_REDIRECT_URI || `${origin}/api/auth/callback/linkedin`;
+    const redirectUri = process.env.LINKEDIN_REDIRECT_URI || `${origin}/api/auth/linkedin/callback`;
     const scope = 'openid profile email w_member_social';
 
     // On encode le workspaceId et le redirectPath dans le state pour lier le compte
