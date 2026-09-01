@@ -37,8 +37,13 @@ export async function GET(req: Request) {
   }
 
   try {
-    const clientId = process.env.YOUTUBE_CLIENT_ID || process.env.GOOGLE_CLIENT_ID || '';
-    const clientSecret = process.env.YOUTUBE_CLIENT_SECRET || process.env.GOOGLE_CLIENT_SECRET || '';
+    const clientId = (
+      process.env.YOUTUBE_CLIENT_ID ||
+      process.env.GOOGLE_CLIENT_ID ||
+      process.env.NEXT_PUBLIC_YOUTUBE_CLIENT_ID ||
+      '133931483094-5p5hnd9433bjn98dnsccc6fsotqpllap.apps.googleusercontent.com'
+    ).trim();
+    const clientSecret = (process.env.YOUTUBE_CLIENT_SECRET || process.env.GOOGLE_CLIENT_SECRET || '').trim();
     const redirectUri = `${appBaseUrl}/api/auth/callback/youtube`;
 
     // 1. Échange du code d'autorisation contre les tokens d'accès
