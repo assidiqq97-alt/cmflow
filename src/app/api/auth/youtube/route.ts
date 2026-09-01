@@ -41,27 +41,6 @@ export async function GET(req: Request) {
     authUrl.searchParams.set('state', state);
 
     return NextResponse.redirect(authUrl.toString());
-
-    const scopes = [
-      'https://www.googleapis.com/auth/youtube.upload',
-      'https://www.googleapis.com/auth/youtube.readonly',
-      'https://www.googleapis.com/auth/userinfo.profile',
-      'https://www.googleapis.com/auth/userinfo.email',
-    ].join(' ');
-
-    const stateObj = { workspaceId, redirectPath };
-    const state = encodeURIComponent(JSON.stringify(stateObj));
-
-    const authUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth');
-    authUrl.searchParams.set('client_id', clientId);
-    authUrl.searchParams.set('redirect_uri', redirectUri);
-    authUrl.searchParams.set('response_type', 'code');
-    authUrl.searchParams.set('scope', scopes);
-    authUrl.searchParams.set('access_type', 'offline');
-    authUrl.searchParams.set('prompt', 'consent');
-    authUrl.searchParams.set('state', state);
-
-    return NextResponse.redirect(authUrl.toString());
   } catch (error: any) {
     console.error('Erreur initialisation OAuth YouTube:', error);
     return NextResponse.json(
@@ -70,3 +49,4 @@ export async function GET(req: Request) {
     );
   }
 }
+
