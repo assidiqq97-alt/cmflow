@@ -51,6 +51,38 @@ export default function ChannelsPage() {
   useEffect(() => {
     fetchAccounts();
 
+    // Traitement des retours OAuth
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const success = urlParams.get('success');
+      const channelName = urlParams.get('channel') || urlParams.get('name');
+      const err = urlParams.get('error');
+      const details = urlParams.get('details') || urlParams.get('message');
+
+      if (success === 'youtube_connected' || urlParams.get('provider') === 'youtube') {
+        showToast(`🎉 Chaîne YouTube "${channelName || 'YouTube'}" connectée avec succès !`, 'success');
+        // Ajouter en fallback local si Firestore prend quelques secondes
+        setAccounts((prev) => {
+          if (prev.some((a) => a.type === 'youtube' || (a as any).provider === 'youtube')) return prev;
+          return [
+            ...prev,
+            {
+              id: 'youtube_live',
+              type: 'youtube',
+              name: channelName || 'Chaîne YouTube',
+              username: channelName || 'Chaîne YouTube',
+              status: 'connected',
+              avatar: 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=200&h=200&fit=crop',
+            } as any,
+          ];
+        });
+        window.history.replaceState({}, document.title, window.location.pathname);
+      } else if (err) {
+        showToast(`⚠️ Erreur de connexion : ${decodeURIComponent(details || err)}`, 'error');
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+    }
+
     if (db) {
       try {
         const q = query(collection(db, 'workspaces', workspaceId, 'social_accounts'));
