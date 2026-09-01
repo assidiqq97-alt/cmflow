@@ -649,7 +649,8 @@
       const params = new URLSearchParams(window.location.search);
       const status = params.get('status');
       const provider = params.get('provider') || params.get('connected');
-      const accName = params.get('name') || params.get('channel');
+      const errParam = params.get('error');
+      const detailsParam = params.get('details') || params.get('message');
 
       if (status === 'success' || provider || params.get('success') === 'youtube_connected') {
         if (provider === 'meta' || provider === 'facebook') {
@@ -668,6 +669,9 @@
         }
         // Nettoyer l'URL
         window.history.replaceState({}, document.title, window.location.pathname);
+      } else if (errParam) {
+        showToast(`⚠️ Erreur de connexion : ${decodeURIComponent(detailsParam || errParam)}`, '❌');
+        window.history.replaceState({}, document.title, window.location.pathname);
       }
 
       // Nettoyage automatique des anciennes valeurs de démo factices
@@ -683,11 +687,13 @@
       const ig = localStorage.getItem('cmflow_instagram_connected');
       const li = localStorage.getItem('cmflow_linkedin_connected');
       const tt = localStorage.getItem('cmflow_tiktok_connected');
+      const yt = localStorage.getItem('cmflow_youtube_connected');
 
       renderChannelCard('facebook', !!fb, fb || '');
       renderChannelCard('instagram', !!ig, ig || '');
       renderChannelCard('linkedin', !!li, li || '');
       renderChannelCard('tiktok', !!tt, tt || '');
+      renderChannelCard('youtube', !!yt, yt || '');
 
       // Sidebar Mobile & Interactions
       const side = document.getElementById('sidebar');
